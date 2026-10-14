@@ -164,6 +164,22 @@ tr.link:hover{background:var(--surface-2)}
 
 .toast{position:fixed;inset-inline:16px;bottom:calc(16px + env(safe-area-inset-bottom,0px));margin-inline:auto;max-width:440px;background:var(--ink);color:var(--bg);padding:12px 18px;border-radius:12px;font-weight:700;text-align:center;z-index:9}
 @media (prefers-reduced-motion:no-preference){.toast{animation:up .2s ease-out}@keyframes up{from{transform:translateY(10px);opacity:0}}}
+
+/* big numbers */
+.in.num{font-size:26px;font-weight:900;letter-spacing:.1em;min-height:58px}
+.kv b.num{font-size:28px;font-weight:900;letter-spacing:.08em}
+.bignum{display:flex;flex-wrap:wrap;align-items:baseline;gap:6px 14px;margin:0 0 12px;padding:10px 14px;border-radius:12px;background:var(--surface-2);border:1px solid var(--line)}
+.bignum small{font-size:14px;font-weight:700;color:var(--muted)}
+.bignum b{font-size:38px;font-weight:900;letter-spacing:.12em}
+label.btn[data-scan],label.btn[for=scancam],label.btn[for=scangal]{min-height:56px;font-size:15px}
+div.f{display:flex;flex-direction:column;gap:6px;font-size:13px;font-weight:700;color:var(--muted)}
+div.f.grow{flex:1 1 100%}
+.brow{padding:8px 0;border-bottom:1px dashed var(--line)}
+.brow .in,.brow .in.num{font-size:16px;font-weight:700;min-height:46px;letter-spacing:0;padding:8px 10px}
+div.f .row .in{flex:1 1 240px;min-width:220px}
+div.f .row .btn{flex:0 0 auto}
+.cfgrow{display:flex;flex-wrap:wrap;align-items:flex-end;gap:10px;margin:8px 0}
+.cfgrow .in{width:90px}
 </style>
 
 <div class="wrap" id="app" aria-live="polite"></div>
@@ -243,7 +259,7 @@ var SHEETS={
 };
 var FORM_CODE='FPQ.3401/02',PAGES=6,PRODUCT='پادرا پلاس (تک‌سوز / دوگانه‌سوز)';
 SHEETS.mech.page=3;SHEETS.roll.page=3;SHEETS.road.page=3;SHEETS.comm.page=4;SHEETS.comm.keyKind='chassis';SHEETS.mech2.page=3;SHEETS.mech2.keyKind='chassis';SHEETS.mech.keyKind=SHEETS.roll.keyKind=SHEETS.road.keyKind='chassis';SHEETS.final1.page=2;SHEETS.final2.page=2;SHEETS.gas.page=2;SHEETS.engine.keyKind='engine';SHEETS.trim.keyKind='room';SHEETS.chassis.keyKind='chassis';SHEETS.final1.keyKind='chassis';SHEETS.final2.keyKind='chassis';SHEETS.gas.keyKind='chassis';['final1','final2','gas','mech','roll','road','mech2','comm'].forEach(function(k){SHEETS[k].keyKind='serial';SHEETS[k].keyLabel='شماره سریال ساخت'});SHEETS.trim.page=1;SHEETS.chassis.page=5;SHEETS.engine.page=6;
-var STATION_NAME={owner:'مدیریت',engine:'پیش‌مونتاژ موتور',chassis:'شاسی',trim:'تزئینات',st4:'خط نهایی - بالای برگه',st5:'خط نهایی - چال نهایی',gas:'تست نشتی گاز',mech:'مکانیکی',quality:'کیفیت',roll:'رول تست',commercial:'واحد تجاری'};
+var STATION_NAME={owner:'مدیریت',engine:'پیش‌مونتاژ موتور',chassis:'شاسی',trim:'تزئینات',st4:'خط نهایی - بالای برگه',st5:'خط نهایی - چال نهایی',gas:'تست نشتی گاز',mech:'مکانیکی',quality:'کیفیت',roll:'رول تست',commercial:'واحد تجاری',planning:'برنامه‌ریزی'};
 function sha(t){
   if(window.crypto&&window.crypto.subtle&&window.TextEncoder){
     return window.crypto.subtle.digest('SHA-256',new TextEncoder().encode(t)).then(function(b){return Array.prototype.map.call(new Uint8Array(b),function(x){return ('0'+x.toString(16)).slice(-2)}).join('')});
@@ -346,7 +362,7 @@ function connect(){
   function use(st){
     if(done)return;done=true;store=st;S.mode=st.mode;S.supa=!!st.supa;if(st.mode==='local')S.isOwner=true;
     st.sub('inspections',function(rows){S.data.insp=rows;render()});
-    st.sub('users',function(rows){S.ownerRec=rows.filter(function(r){return r.id==='__owner'})[0]||null;S.data.users=rows.filter(function(r){return r.id!=='__owner'});render()});
+    st.sub('users',function(rows){S.ownerRec=rows.filter(function(r){return r.id==='__owner'})[0]||null;S.cfg=rows.filter(function(r){return r.id==='__cfg'})[0]||null;S.corr=rows.filter(function(r){return String(r.id).indexOf('corr_')===0}).sort(function(a,b){return (b.at||'')<(a.at||'')?-1:1});S.data.users=rows.filter(function(r){return r.id!=='__owner'&&r.id!=='__cfg'&&String(r.id).indexOf('corr_')!==0});render()});
     st.sub('archives',function(rows){S.data.arch=rows;render()});
     render();
   }
@@ -359,25 +375,46 @@ function connect(){
   setTimeout(function(){if(!done)use(makeLocal())},12000);
 }
 function save(fn,okMsg){
-  return Promise.resolve().then(fn).then(function(){if(okMsg)toast(okMsg)}).catch(function(e){toast('ذخیره نشد. '+((e&&e.message)||'دوباره تلاش کنید.'))});
+  return Promise.resolve().then(fn).then(function(){if(okMsg)toast(okMsg);return true}).catch(function(e){toast('ذخیره نشد. '+((e&&e.message)||'دوباره تلاش کنید.'));return false});
 }
 
 /* ---------- derived ---------- */
 function docId(sheet,key){return sheet+'_'+key}
 function insp(sheet,key){var id=docId(sheet,key);return S.data.insp.filter(function(x){return x.id===id})[0]}
 function secItemId(sec,i){return sec.id+'-'+i}
-function allDefItems(sheet){
-  var out=[];SHEETS[sheet].sections.forEach(function(sec){sec.items.forEach(function(l,i){out.push({id:secItemId(sec,i),label:l,sec:sec.id})})});return out;
+function allDefItems(sheet,d){
+  var out=[],hid=d?hiddenItems(d):[];SHEETS[sheet].sections.forEach(function(sec){sec.items.forEach(function(l,i){if(hid.indexOf(l)<0)out.push({id:secItemId(sec,i),label:l,sec:sec.id})})});return out;
 }
 function labelOf(sheet,id){var f=allDefItems(sheet).filter(function(x){return x.id===id})[0];return f?f.label:'توضیح دستی'}
 function stat(d){
-  var sh=SHEETS[d.sheet],items=d.items||{},total=allDefItems(d.sheet).length,ans=0,open=0,signed=0;
-  allDefItems(d.sheet).forEach(function(x){if(items[x.id]&&items[x.id].r)ans++});
+  var sh=SHEETS[d.sheet],items=d.items||{},vis=allDefItems(d.sheet,d),total=vis.length,ans=0,open=0,signed=0;
+  vis.forEach(function(x){if(items[x.id]&&items[x.id].r)ans++});
   Object.keys(items).forEach(function(id){var it=items[id];if((it.r==='ng'||it.r==='sample'||it.r==='shortage')&&!it.closedAt)open++});
   sh.sections.forEach(function(s){if(d.signs&&d.signs[s.id])signed++});
   return {total:total,ans:ans,open:open,signed:signed,secs:sh.sections.length};
 }
-var HIDE={chassis:['serial','color','room'],trim:['chassisNo','engine']};
+var HIDE={chassis:['serial','color','room'],trim:['chassisNo','engine'],engine:['serial','color','chassisNo','room']};
+/* نوع سوخت: در برگه شاسی ثبت می‌شود و در بقیه‌ی برگه‌های همان خودرو خوانده می‌شود */
+var SINGLE_HIDE={
+  chassis:['اتصالات لوله گاز (CNG)','مجموعه پالت مخزن مونتاژ شده روی شاسی','مجموعه لوله گاز به شیر پرکن و مخزن CNG'],
+  trim:['مجموعه رگلاتور']
+};
+var CNG_PARTS=['پالت مخزن CNG','رگلاتور'];
+function fuelRaw(d){
+  if(!d)return '';
+  if(d.fuel)return d.fuel;
+  if(d.sheet==='chassis'||d.sheet==='engine')return '';
+  var c=carRecords(d.key).recs.filter(function(x){return x.sheet==='chassis'&&x.fuel})[0];
+  return c?c.fuel:'';
+}
+function fuelOf(d){return fuelRaw(d)||'dual'}
+function stagesFor(recs){var sg=(recs||[]).some(function(x){return x.sheet==='chassis'&&x.fuel==='single'});return sg?STAGES.filter(function(k){return k!=='gas'}):STAGES}
+function hiddenItems(d){return fuelOf(d)==='single'?(SINGLE_HIDE[d.sheet]||[]):[]}
+function visItems(d,sec){
+  var hid=hiddenItems(d),out=[];
+  sec.items.forEach(function(l,i){if(hid.indexOf(l)<0)out.push({l:l,i:i})});
+  return out;
+}
 var SHORT_PARTS=['سنسور اکسیژن','سنسور مپ','دینام','پالت مخزن CNG','بند زاپاس'];
 var NG_PRESETS=['نصب ناقص','لقی','نشتی','ساییدگی','جاافتاده / کج','پیچ یا مهره شل','خط‌وخش','کثیف / آلوده'];
 var CHAIN=['mech','roll','road','mech2','comm'];
@@ -416,16 +453,18 @@ function loginView(){
   return h+'</div>';
 }
 function testBar(){
-  var ks=['chassis','engine','trim','gas','st4','st5','mech','roll','quality','commercial'];
+  var ks=['chassis','engine','trim','gas','st4','st5','mech','roll','quality','commercial','planning'];
   var h='<div class="card"><b>حالت آزمایش (فقط مالک):</b> <span class="hint">کار را به‌جای هر ایستگاه بدون رمز انجام دهید. ثبت‌ها با نام «'+esc(S.user.id==='owner'?'علی بابایی (آزمایشی)':S.user.name)+'» ذخیره می‌شود.</span><div class="row" style="margin-top:8px">';
   ks.forEach(function(k){h+='<button class="btn sm" data-act="teststation" data-id="'+k+'" aria-pressed="'+(S.user.station===k)+'">'+esc(STATION_NAME[k])+'</button>'});
   return h+'</div></div>';
 }
 function isCom(){return !!S.user&&(S.user.station==='commercial'||S.user.id==='owner')}
+function shortTab(){return '<button class="tab" role="tab" data-act="tab" data-t="short" aria-selected="'+(S.tab==='short')+'">کسری‌های باز'+(shortOpenCount()?'<span class="cnt">'+fa(shortOpenCount())+'</span>':'')+'</button>'}
 function tabsBar(){
   var o=totalOpen();
+  if(S.user&&S.user.station==='planning'&&S.user.id!=='owner')return '<div class="tabs" role="tablist">'+shortTab()+'</div>';
   return '<div class="tabs" role="tablist"><button class="tab" role="tab" data-act="tab" data-t="inspect" aria-selected="'+(S.tab==='inspect')+'">بازدید</button>'+
-  '<button class="tab" role="tab" data-act="tab" data-t="list" aria-selected="'+(S.tab==='list')+'">همه بازدیدها'+(o?'<span class="cnt">'+fa(o)+' مورد باز</span>':'')+'</button>'+(isCom()?'<button class="tab" role="tab" data-act="tab" data-t="short" aria-selected="'+(S.tab==='short')+'">کسری‌های باز'+(shortOpenCount()?'<span class="cnt">'+fa(shortOpenCount())+'</span>':'')+'</button><button class="tab" role="tab" data-act="tab" data-t="report" aria-selected="'+(S.tab==='report')+'">گزارش</button><button class="tab" role="tab" data-act="tab" data-t="car" aria-selected="'+(S.tab==='car')+'">پرونده خودرو</button><button class="tab" role="tab" data-act="tab" data-t="archive" aria-selected="'+(S.tab==='archive')+'">بایگانی</button>':'')+(S.isOwner?'<button class="tab" role="tab" data-act="tab" data-t="admin" aria-selected="'+(S.tab==='admin')+'">مدیریت</button>':'')+'</div>';
+  '<button class="tab" role="tab" data-act="tab" data-t="list" aria-selected="'+(S.tab==='list')+'">همه بازدیدها'+(o?'<span class="cnt">'+fa(o)+' مورد باز</span>':'')+'</button>'+shortTab()+(isCom()?'<button class="tab" role="tab" data-act="tab" data-t="report" aria-selected="'+(S.tab==='report')+'">گزارش</button><button class="tab" role="tab" data-act="tab" data-t="car" aria-selected="'+(S.tab==='car')+'">پرونده خودرو</button><button class="tab" role="tab" data-act="tab" data-t="archive" aria-selected="'+(S.tab==='archive')+'">بایگانی</button>':'')+(isQual()?'<button class="tab" role="tab" data-act="tab" data-t="corr" aria-selected="'+(S.tab==='corr')+'">اصلاح شماره'+(corrPendingCount()?'<span class="cnt">'+fa(corrPendingCount())+'</span>':'')+'</button>':'')+(S.isOwner?'<button class="tab" role="tab" data-act="tab" data-t="admin" aria-selected="'+(S.tab==='admin')+'">مدیریت</button>':'')+'</div>';
 }
 function searchCard(){
   var sh=SHEETS[S.sheet],mine=mySheets();
@@ -433,8 +472,20 @@ function searchCard(){
   if(mine.length>1)mine.forEach(function(k){h+='<button class="btn sm" data-act="sheet" data-id="'+k+'" aria-pressed="'+(k===S.sheet)+'">'+esc(SHEETS[k].name)+'</button>'});
   h+='</div><form data-form="search" class="row"><label class="f grow">'+esc(sh.keyLabel)+' (یا سریال / موتور / اتاق)<input class="in num ltr" id="key" inputmode="numeric" autocomplete="off" autofocus placeholder="مثلاً '+(S.sheet==='engine'?'1081513':S.sheet==='trim'?'1009537':SHEETS[S.sheet].keyKind==='serial'?'5032668':'0865751')+'" value="'+esc(S.key)+'"></label><label class="btn" for="scancam" style="align-self:flex-end">اسکن بارکد با دوربین</label><label class="btn" for="scangal" style="align-self:flex-end">انتخاب عکس از گالری</label><button class="btn primary" type="submit" style="align-self:flex-end">باز کردن برگه</button></form>';
   if(S.searchErr)h+='<p class="err">'+esc(S.searchErr)+'</p>';
-  var recent=S.data.insp.filter(function(d){return d.sheet===S.sheet}).slice(0,6);
-  if(recent.length){h+='<div class="row" style="margin-top:12px"><span class="hint">بازدیدهای ثبت‌شده:</span>';recent.forEach(function(d){h+='<button class="btn sm" data-act="open" data-sheet="'+esc(d.sheet)+'" data-key="'+esc(d.key)+'"><span class="num">'+esc(d.key)+'</span></button>'});h+='</div>'}
+  var tj0=jal(nowIso()),mineAll=S.data.insp.filter(function(d){return d.sheet===S.sheet}).sort(function(a,b){return (b.createdAt||'')<(a.createdAt||'')?-1:1});
+  var today=mineAll.filter(function(d){var j=jal(d.createdAt);return tj0&&j&&j.y===tj0.y&&j.m===tj0.m&&j.d===tj0.d});
+  var prog=mineAll.filter(function(d){return !d.final}).slice(0,8);
+  if(prog.length){h+='<div class="row" style="margin-top:12px"><span class="hint">در جریان:</span>';prog.forEach(function(d){h+='<button class="btn sm" data-act="open" data-sheet="'+esc(d.sheet)+'" data-key="'+esc(d.key)+'"><span class="num">'+esc(d.key)+'</span></button>'});h+='</div>'}
+  if(mineAll.length){
+    var nProg=today.filter(function(d){return !d.final}).length;
+    h+='<div class="row" style="margin-top:10px"><button class="btn sm" data-act="todaylist" aria-pressed="'+(!!S.todayOpen)+'">امروز '+fa(today.length)+' خودرو بازدید شد'+(nProg?' · '+fa(nProg)+' در جریان':'')+(S.todayOpen?' ▴':' ▾')+'</button></div>';
+    if(S.todayOpen){
+      h+='<div style="margin-top:10px"><input class="in num ltr" id="tq" inputmode="numeric" autocomplete="off" placeholder="جست‌وجو در بازدیدهای امروز" style="max-width:320px"><div class="row" id="todaylist" style="margin-top:8px">';
+      today.slice(0,60).forEach(function(d){h+='<button class="btn sm" data-k="'+esc(d.key)+'" data-act="open" data-sheet="'+esc(d.sheet)+'" data-key="'+esc(d.key)+'"><span class="num">'+esc(d.key)+'</span>'+(d.final?' ✓':'')+'</button>'});
+      if(!today.length)h+='<span class="hint">امروز هنوز بازدیدی ثبت نشده است.</span>';
+      h+='</div></div>';
+    }
+  }
   return h+'</div>';
 }
 function linkCard(){
@@ -533,14 +584,14 @@ function itemRow(d,id,label,edit,locked){
 }
 function sectionCard(d,sec){
   var edit=canEdit(d.sheet,d.key),sg=d.signs&&d.signs[sec.id],locked=!!sg;
-  var ids=sec.items.map(function(l,i){return secItemId(sec,i)}),items=d.items||{};
+  var vi=visItems(d,sec),ids=vi.map(function(x){return secItemId(sec,x.i)}),items=d.items||{};
   var ans=ids.filter(function(id){return items[id]&&items[id].r}).length,left=ids.length-ans;
   var h='<div class="card"><div class="sechead"><h2>بخش '+esc(sec.name)+'</h2><span class="prog">'+fa(ans)+' از '+fa(ids.length)+' '+(sec.choice?'انجام شده':'بازدید شده')+'</span></div>'+
    '<div class="meter"><i style="width:'+Math.round(ans/ids.length*100)+'%"></i></div>';
   if(edit&&!locked&&sec.choice)h+='<p class="hint" style="margin-bottom:8px">هر کدام از موارد را که انجام شد بزنید تا سبز شود. برای برداشتن دوباره بزنید.</p>';
   else if(edit&&!locked)h+='<p class="hint" style="margin-bottom:8px">فقط مورد دارای ایراد را علامت بزنید. بقیه موارد با «تأیید کلی» پایین همین بخش سالم ثبت می‌شوند.</p>';
   h+='<div class="items">';
-  sec.items.forEach(function(l,i){h+=itemRow(d,secItemId(sec,i),l,edit,locked)});
+  vi.forEach(function(x){h+=itemRow(d,secItemId(sec,x.i),x.l,edit,locked)});
   h+='</div><div class="signrow">';
   if(sg)h+='<div class="stamp done"><b>'+esc(sec.name)+'</b><span>'+esc(sg.by)+'</span><small>'+esc(when(sg.at))+'</small></div><div><b>بازدید این بخش تأیید شده است.</b><p class="hint">'+fa(sg.open||0)+' مورد باز هنگام تأیید.</p></div>';
   else{
@@ -622,7 +673,7 @@ function shortCard(d,edit){
     var have={},sel=S.shSel||{};
     Object.keys(d.items||{}).forEach(function(id){var it=d.items[id];if(it.r==='shortage'&&!it.closedAt)have[(it.part||it.note||'').trim()]=1});
     var opts=shortParts();Object.keys(sel).forEach(function(p){if(opts.indexOf(p)<0)opts.push(p)});
-    opts=opts.filter(function(p){return !have[p]});
+    opts=opts.filter(function(p){return !have[p]&&!(fuelOf(d)==='single'&&CNG_PARTS.indexOf(p)>=0)});
     h+='<div class="chips" style="margin-top:10px">';
     opts.forEach(function(p){h+='<button type="button" class="pick" data-act="shtoggle" data-p="'+esc(p)+'" aria-pressed="'+(!!sel[p])+'">'+esc(p)+'</button>'});
     h+='</div><div class="row" style="margin-top:10px"><button type="button" class="btn sm" data-act="shprev">کسری‌های خودروی قبلی</button>'+(Object.keys(sel).length?'<button type="button" class="btn sm" data-act="shclear">پاک کردن انتخاب</button>':'')+'</div>';
@@ -634,26 +685,102 @@ function exportCard(d){
   var st=stat(d);if(st.signed<st.secs)return '';
   return '<div class="card"><h2>ذخیره پرونده خودرو</h2><p class="hint" style="margin-bottom:10px">خروجی شامل همه مراحل ثبت‌شده این خودرو است.</p><div class="row"><button class="btn" data-act="xlsx" data-q="'+esc(d.key)+'">ذخیره Excel</button><button class="btn" data-act="pdf" data-q="'+esc(d.key)+'">ذخیره PDF</button></div></div>';
 }
+function canShort(){return !!S.user}
+function shortScope(d){
+  if(!S.user)return false;var st=S.user.station;
+  if(S.user.id==='owner'||st==='commercial'||st==='planning')return true;
+  return SHEETS[d.sheet].station===st;
+}
 function shortGroups(){
-  var g={};
-  S.data.insp.forEach(function(d){if(!SHEETS[d.sheet])return;Object.keys(d.items||{}).forEach(function(id){var it=d.items[id];if(it.r==='shortage'&&!it.closedAt){var p=(it.part||it.note||'—').trim();(g[p]=g[p]||[]).push({d:d,id:id,it:it})}})});
+  var g={},qs=null;
+  if(S.shQ){qs={};carRecords(S.shQ).recs.forEach(function(r){qs[r.id]=1})}
+  S.data.insp.forEach(function(d){if(!SHEETS[d.sheet]||!shortScope(d))return;if(qs&&!qs[d.id])return;Object.keys(d.items||{}).forEach(function(id){var it=d.items[id];if(it.r==='shortage'&&!it.closedAt){var p=(it.part||it.note||'—').trim();(g[p]=g[p]||[]).push({d:d,id:id,it:it})}})});
   return Object.keys(g).map(function(p){return {p:p,list:g[p].sort(function(a,b){return (a.it.at||'')<(b.it.at||'')?-1:1})}}).sort(function(a,b){return b.list.length-a.list.length});
 }
 function shortOpenCount(){return shortGroups().reduce(function(n,g){return n+g.list.length},0)}
 function shortView(){
-  var gs=shortGroups(),chk=S.shChk||{};
-  var h='<div class="card"><h2>کسری‌های باز بر اساس قطعه</h2><p class="hint">وقتی قطعه‌ای تأمین و نصب شد، خودروها را انتخاب کنید، اقدام انجام‌شده را بنویسید و یک‌جا ببندید.</p></div>';
-  if(!gs.length)return h+'<div class="card"><p class="hint" style="margin:0">کسری بازی نیست.</p></div>';
+  var gs=shortGroups(),chk=S.shChk||{},scopeTxt=(S.user.id==='owner'||S.user.station==='commercial'||S.user.station==='planning')?'همه‌ی خودروها':'فقط کسری‌های برگه‌های ایستگاه «'+STATION_NAME[S.user.station]+'»';
+  var h='<div class="card"><h2>کسری‌های باز بر اساس قطعه</h2><p class="hint">نمایش: '+esc(scopeTxt)+'. وقتی قطعه‌ای تأمین و نصب شد، خودروها را انتخاب کنید، اقدام انجام‌شده را بنویسید و یک‌جا ببندید.</p>'+
+   '<form data-form="shsearch" class="row" style="margin-top:10px"><label class="f grow">پیدا کردن خودرو با سریال، شاسی، موتور یا اتاق<input class="in num ltr" id="sq" inputmode="numeric" autocomplete="off" value="'+esc(S.shQ||'')+'"></label><label class="btn" for="scancam" style="align-self:flex-end">اسکن بارکد با دوربین</label><label class="btn" for="scangal" style="align-self:flex-end">انتخاب عکس از گالری</label><button class="btn primary" type="submit" style="align-self:flex-end">جست‌وجو</button>'+(S.shQ?'<button type="button" class="btn" data-act="shqclear" style="align-self:flex-end">نمایش همه</button>':'')+'</form></div>';
+  if(!gs.length)return h+'<div class="card"><p class="hint" style="margin:0">'+(S.shQ?'برای این شماره کسری بازی پیدا نشد.':'کسری بازی نیست.')+'</p></div>';
   gs.forEach(function(g,i){
     var nsel=g.list.filter(function(x){return chk[x.d.id+'|'+x.id]}).length;
     h+='<div class="card"><div class="row"><h2 class="grow" style="margin:0">'+esc(g.p)+' <span class="chip open">'+fa(g.list.length)+' خودرو</span></h2><button class="btn sm" data-act="shall" data-i="'+i+'">'+(nsel===g.list.length?'برداشتن انتخاب':'انتخاب همه')+'</button></div><div class="items" style="margin-top:10px">';
     g.list.forEach(function(x){
       var k=x.d.id+'|'+x.id,ser=identOf(x.d).serial||x.d.key;
-      h+='<div class="it"><div class="row"><input type="checkbox" data-act="shchk" data-k="'+esc(k)+'" '+(chk[k]?'checked':'')+' style="width:24px;height:24px" aria-label="انتخاب"><span class="grow"><b class="num">'+esc(ser)+'</b> <small>'+esc(SHEETS[x.d.sheet].name)+' · '+esc(when(x.it.at))+'</small></span><button type="button" class="btn sm" data-act="opencar" data-q="'+esc(ser)+'">پرونده</button></div></div>';
+      h+='<div class="it"><div class="row"><input type="checkbox" data-act="shchk" data-k="'+esc(k)+'" '+(chk[k]?'checked':'')+' style="width:24px;height:24px" aria-label="انتخاب"><span class="grow"><b class="num">'+esc(ser)+'</b> <small>'+esc(SHEETS[x.d.sheet].name)+' · '+esc(when(x.it.at))+'</small></span>'+(isCom()?'<button type="button" class="btn sm" data-act="opencar" data-q="'+esc(ser)+'">پرونده</button>':'')+'</div></div>';
     });
     h+='</div><label class="f" style="margin-top:10px">اقدام انجام‌شده برای '+fa(nsel)+' خودروی انتخاب‌شده<textarea class="in" id="sgn_'+i+'" placeholder="مثلاً: قطعه تأمین و نصب شد"></textarea></label><div class="row" style="margin-top:8px"><button class="btn primary sm" data-act="shclose" data-i="'+i+'">ثبت اقدام و بستن انتخاب‌شده‌ها</button></div></div>';
   });
   return h;
+}
+
+/* ---------- اصلاح شماره‌ی اشتباه (درخواست چکمن، تأیید کیفیت یا مالک) ---------- */
+var CORR_REC={serial:'serial',chassis:'chassisNo',engine:'engine',room:'room'};
+var CORR_FIELDS=['chassis','engine','serial','room'];
+function isQual(){return !!S.user&&(S.user.station==='quality'||S.user.id==='owner')}
+function corrAll(){return S.corr||[]}
+function corrPendingCount(){return corrAll().filter(function(r){return r.status==='pending'}).length}
+function corrStatusTxt(r){return r.status==='applied'?'اعمال شد':r.status==='rejected'?'رد شد':'در انتظار بررسی'}
+function corrLine(r){
+  return '<div class="it"><div class="row"><span class="grow"><b>'+esc(NUM_LABEL[r.field])+':</b> <span class="num">'+esc(r.oldVal)+'</span> ← <b class="num">'+esc(r.newVal)+'</b> <span class="chip '+(r.status==='pending'?'open':'closed')+'">'+corrStatusTxt(r)+'</span></span></div>'+
+  '<div class="m">دلیل: '+esc(r.reason)+' · درخواست: '+esc(r.by)+' · '+esc(when(r.at))+'</div>'+
+  (r.decidedAt?'<div class="m">'+(r.status==='applied'?'اعمال':'رد')+': '+esc(r.decidedBy)+' · '+esc(when(r.decidedAt))+(r.decNote?' · '+esc(r.decNote):'')+'</div>':'')+'</div>';
+}
+function corrCard(d,edit){
+  var c=carRecords(d.key),I=c.I,vals=[d.key,I.serial,I.chassis,I.engine,I.room].filter(Boolean);
+  var mine=corrAll().filter(function(r){return vals.indexOf(r.oldVal)>=0||vals.indexOf(r.newVal)>=0});
+  var done=[];c.recs.forEach(function(x){Object.keys(x.corrections||{}).forEach(function(k){if(!mine.some(function(r){return r.id===k})&&!done.some(function(y){return y.id===k}))done.push(Object.assign({id:k,status:'applied',decidedBy:x.corrections[k].by,decidedAt:x.corrections[k].at,by:x.corrections[k].reqBy||x.corrections[k].by,at:x.corrections[k].reqAt||x.corrections[k].at},x.corrections[k]))})});
+  var any=mine.length||done.length;
+  if(!edit&&!any)return '';
+  var h='<div class="card"><h2>اصلاح شماره‌ی اشتباه</h2>';
+  if(any)h+='<div class="chip open" style="margin-bottom:8px">شماره در این پرونده اصلاح شده یا درخواست اصلاح دارد</div><div class="items">'+mine.concat(done).map(corrLine).join('')+'</div>';
+  if(edit){
+    var pend=mine.some(function(r){return r.status==='pending'});
+    h+='<p class="hint" style="margin:10px 0">اگر شماره‌ای اشتباه ثبت شده، شماره‌ی درست و دلیل را بنویسید. کیفیت یا مالک برنامه بررسی و اعمال می‌کند؛ شماره‌ی قبلی و ثبت‌کننده در تاریخچه می‌ماند.</p>';
+    if(pend)h+='<p class="hint">یک درخواست در انتظار بررسی دارد؛ تا تعیین تکلیف، درخواست تازه نمی‌شود.</p>';
+    else{
+      var opts='';CORR_FIELDS.forEach(function(f){if(I[f])opts+='<option value="'+f+'">'+esc(NUM_LABEL[f])+' — '+esc(I[f])+'</option>'});
+      h+='<form data-form="corrreq" style="display:flex;flex-direction:column;gap:10px"><label class="f">کدام شماره اشتباه است؟<select class="in" id="cr_f">'+opts+'</select></label>'+
+      '<label class="f">شماره‌ی درست<input class="in num ltr" id="cr_new" inputmode="numeric" autocomplete="off"></label>'+
+      '<label class="f">دلیل اصلاح (الزامی)<textarea class="in" id="cr_reason" placeholder="مثلاً: هنگام تایپ دو رقم جابه‌جا شد"></textarea></label>'+
+      (S.corrErr?'<p class="err">'+esc(S.corrErr)+'</p>':'')+'<button class="btn primary" type="submit">ارسال درخواست اصلاح</button></form>';
+    }
+  }
+  return h+'</div>';
+}
+function corrView(){
+  var all=corrAll(),pend=all.filter(function(r){return r.status==='pending'}),dn=all.filter(function(r){return r.status!=='pending'}).slice(0,40);
+  var h='<div class="card"><h2>درخواست‌های اصلاح شماره ('+fa(pend.length)+' در انتظار)</h2><p class="hint">با «اعمال»، شماره در همه‌ی برگه‌های همان خودرو عوض می‌شود و شماره‌ی قبلی، دلیل و نام شما در تاریخچه می‌ماند. تأییدهای قبلی چکمن‌ها دست‌نخورده می‌ماند.</p></div>';
+  if(!pend.length)h+='<div class="card"><p class="hint" style="margin:0">درخواستی در انتظار نیست.</p></div>';
+  pend.forEach(function(r){
+    h+='<div class="card">'+corrLine(r)+'<div class="kvs" style="margin-top:8px"><div class="kv"><small>شماره‌ی قبلی</small><b class="num">'+esc(r.oldVal)+'</b></div><div class="kv"><small>شماره‌ی جدید</small><b class="num">'+esc(r.newVal)+'</b></div></div>'+
+    '<label class="f" style="margin-top:10px">توضیح (برای رد کردن الزامی است)<input class="in" id="cn_'+esc(r.id)+'" autocomplete="off"></label><div class="row" style="margin-top:8px"><button class="btn primary" data-act="corrapply" data-id="'+esc(r.id)+'">اعمال اصلاح</button><button class="btn" data-act="corrreject" data-id="'+esc(r.id)+'">رد درخواست</button><button class="btn sm" data-act="opencar" data-q="'+esc(r.oldVal)+'">پرونده</button></div></div>';
+  });
+  if(dn.length){h+='<div class="card"><h2>تاریخچه</h2><div class="items">'+dn.map(corrLine).join('')+'</div></div>'}
+  return h;
+}
+function corrApply(r){
+  var f=r.field,ov=r.oldVal,nv=r.newVal,e=numErr(f,nv);
+  if(e)return Promise.reject(new Error(e));
+  if(S.data.insp.some(function(x){return SHEETS[x.sheet]&&identOf(x)[f]===nv}))return Promise.reject(new Error('شماره‌ی جدید قبلاً برای خودروی دیگری ثبت شده است.'));
+  var recs=carRecords(ov).recs.filter(function(x){return identOf(x)[f]===ov});
+  if(!recs.length)return Promise.reject(new Error('پرونده‌ای با شماره‌ی قبلی پیدا نشد (شاید قبلاً اصلاح شده).'));
+  var ts=nowIso(),entry={field:f,oldVal:ov,newVal:nv,by:S.user.name,byId:S.user.id,at:ts,reason:r.reason,reqBy:r.by,reqAt:r.at},ops=[];
+  recs.forEach(function(x){
+    var corr={};corr[r.id]=entry;
+    if(SHEETS[x.sheet].keyKind===f){
+      var cp=Object.assign({},x);delete cp.id;cp.key=nv;cp.corrections=Object.assign({},x.corrections||{},corr);
+      ops.push(store.set('inspections',docId(x.sheet,nv),cp).then(function(){return store.del('inspections',x.id)}));
+    }else{
+      var u={corrections:corr};u[CORR_REC[f]]=nv;ops.push(store.update('inspections',x.id,u));
+    }
+  });
+  S.data.arch.filter(function(a){return a.id===ov||a[f]===ov}).forEach(function(a){
+    if(a.id===ov){var ac=Object.assign({},a);delete ac.id;ac.key=nv;ac[f]=nv;ops.push(store.set('archives',nv,ac).then(function(){return store.del('archives',a.id)}))}
+    else{var au={};au[f]=nv;ops.push(store.update('archives',a.id,au))}
+  });
+  return Promise.all(ops).then(function(){return store.update('users',r.id,{status:'applied',decidedBy:S.user.name,decidedById:S.user.id,decidedAt:ts})});
 }
 function finalCard(d,edit){
   var st=stat(d),f=d.final;
@@ -696,12 +823,48 @@ function kvList(d){
   function kv(l,v,n,k){return hid.indexOf(k)>=0?'':'<div class="kv"><small>'+l+'</small><b'+(n?' class="num"':'')+'>'+esc(v||'—')+'</b></div>'}
   var kk=SHEETS[sh].keyKind;o+=kv('شماره سریال',kk==='serial'?d.key:m.serial,1,'serial')+kv('رنگ',m.color,0,'color');
   o+=kv('شماره شاسی',kk==='chassis'?d.key:m.chassisNo,1,'chassisNo')+kv('شماره موتور',kk==='engine'?d.key:m.engine,1,'engine')+kv('شماره اتاق',kk==='room'?d.key:m.room,1,'room');
+  var fz=fuelRaw(d);if(fz)o+='<div class="kv"><small>نوع سوخت</small><b>'+(fz==='single'?'تک‌سوز':'دوگانه‌سوز')+'</b></div>';
   return o;
+}
+var LEN_DEF={serial:[5,9],chassis:[5,9],engine:[5,9],room:[5,9]};
+var NUM_LABEL={serial:'شماره سریال',chassis:'شماره شاسی',engine:'شماره موتور',room:'شماره اتاق'};
+var FIELD_KIND={serial:'serial',chassisNo:'chassis',engine:'engine',room:'room'};
+function lenOf(k){return (S.cfg&&S.cfg.len&&S.cfg.len[k])||LEN_DEF[k]}
+function numErr(kind,v){
+  if(!v)return '';
+  if(!/^\d+$/.test(v))return NUM_LABEL[kind]+' فقط باید رقم باشد.';
+  var r=lenOf(kind);
+  if(v.length<r[0]||v.length>r[1])return NUM_LABEL[kind]+' باید '+(r[0]===r[1]?fa(r[0]):fa(r[0])+' تا '+fa(r[1]))+' رقم باشد.';
+  return '';
+}
+function typedErr(sheet,vals){
+  var e='';
+  Object.keys(FIELD_KIND).forEach(function(f){if(!e&&vals[f]!==undefined)e=numErr(FIELD_KIND[f],vals[f])});
+  if(!e&&sheet==='chassis'&&!vals.engine)e='شماره موتور الزامی است.';
+  if(!e&&sheet==='chassis'&&vals.fuel!=='dual'&&vals.fuel!=='single')e='نوع سوخت (دوگانه‌سوز یا تک‌سوز) را انتخاب کنید.';
+  return e;
+}
+function conflictFor(sheet,key,vals){
+  var o=identOf({sheet:sheet,key:key,serial:vals.serial,chassisNo:vals.chassisNo,engine:vals.engine,room:vals.room,color:''});
+  var id=docId(sheet,key),F=['serial','chassis','engine','room'],msg='';
+  S.data.insp.forEach(function(x){
+    if(msg||!SHEETS[x.sheet]||x.id===id)return;
+    var ox=identOf(x);
+    F.forEach(function(f){
+      if(msg||!o[f]||ox[f]!==o[f])return;
+      F.forEach(function(g){
+        if(msg||g===f||!o[g]||!ox[g]||o[g]===ox[g])return;
+        msg=NUM_LABEL[f]+' '+o[f]+' قبلاً برای خودروی دیگری ثبت شده است ('+NUM_LABEL[g]+' '+ox[g]+').';
+      });
+    });
+  });
+  return msg;
 }
 function idFields(sheet,pre,d){
   d=d||{};var out='';
   var kind=SHEETS[sheet].keyKind,L=sheet==='chassis'?[]:[['color','رنگ',d.color,0]];
   if(sheet!=='chassis'&&kind!=='serial')L.unshift(['serial','شماره سریال',d.serial,0]);
+  if(sheet==='chassis')L.push(['fuel','نوع سوخت',d.fuel,0]);
   if(sheet==='chassis')L.push(['engine','شماره موتور',d.engine,1]);
   else{
   if(kind!=='chassis')L.push(['chassisNo','شماره شاسی',d.chassisNo,1]);
@@ -709,14 +872,17 @@ function idFields(sheet,pre,d){
   if(SHEETS[sheet].keyKind!=='engine')L.push(['engine','شماره موتور',d.engine,1]);
   }
   var hid=HIDE[sheet]||[];L=L.filter(function(f){return hid.indexOf(f[0])<0});
-  L.forEach(function(f){out+='<label class="f grow">'+f[1]+((f[0]==='chassisNo'||f[0]==='room')&&kind==='serial'&&!d[f[0]]?' (لازم، از روی برچسب)':' (اختیاری)')+'<input class="in'+(f[3]?' num ltr':'')+'" id="'+pre+f[0]+'" autocomplete="off" value="'+esc(f[2]||'')+'"></label>'});
+  L.forEach(function(f){
+    if(f[0]==='fuel'){out+='<label class="f grow">نوع سوخت (الزامی)<select class="in" id="'+pre+'fuel" style="font-size:20px;font-weight:700"><option value="">انتخاب کنید…</option><option value="dual"'+(f[2]==='dual'?' selected':'')+'>دوگانه‌سوز</option><option value="single"'+(f[2]==='single'?' selected':'')+'>تک‌سوز</option></select></label>';return}
+    if(sheet==='chassis'&&f[0]==='engine'){out+='<div class="f grow"><label for="'+pre+'engine">'+f[1]+' (الزامی)</label><div class="row"><input class="in num ltr grow" id="'+pre+'engine" inputmode="numeric" autocomplete="off" value="'+esc(f[2]||'')+'"><label class="btn" for="scancam" data-scan="'+pre+'engine">اسکن بارکد</label><label class="btn" for="scangal" data-scan="'+pre+'engine">عکس از گالری</label></div></div>';return}
+    out+='<label class="f grow">'+f[1]+((f[0]==='chassisNo'||f[0]==='room')&&kind==='serial'&&!d[f[0]]?' (لازم، از روی برچسب)':' (اختیاری)')+'<input class="in'+(f[3]?' num ltr':'')+'" id="'+pre+f[0]+'" autocomplete="off" value="'+esc(f[2]||'')+'"></label>'});
   return out;
 }
 function idVals(sheet,pre){
   var o=idVals0(sheet,pre);(HIDE[sheet]||[]).forEach(function(k){delete o[k]});return o;
 }
 function idVals0(sheet,pre){
-  if(sheet==='chassis')return {engine:digits(val(pre+'engine'))};
+  if(sheet==='chassis')return {engine:digits(val(pre+'engine')),fuel:val(pre+'fuel')};
   var o={color:val(pre+'color')};
   if(SHEETS[sheet].keyKind!=='serial')o.serial=val(pre+'serial');
   if(SHEETS[sheet].keyKind!=='chassis')o.chassisNo=digits(val(pre+'chassisNo'));
@@ -730,10 +896,11 @@ function blockCard(sheet,key){
 }
 function inspView(){
   var d=insp(S.sheet,S.key),sh=SHEETS[S.sheet],st=stat(d),edit=canEdit(S.sheet,S.key);
-  var h='<div class="card"><div class="formhead"><span><b>فرم ثبت سوابق خودکنترلی · زامیاد</b></span><span>محصول: <b>'+esc(PRODUCT)+'</b></span><span>صفحه <b>'+fa(sh.page)+'</b> از <b>'+fa(PAGES)+'</b></span><span>تاریخ و ساعت شروع بازدید: <b>'+esc(when(d.createdAt))+'</b></span>'+(d.final?'<span>تأیید نهایی: <b>'+esc(when(d.final.at))+'</b></span>':'')+'</div><div class="kvs"><div class="kv"><small>برگه</small><b>'+esc(sh.name)+'</b></div>'+
+  var h='<div class="card"><div class="formhead"><span><b>فرم ثبت سوابق خودکنترلی · زامیاد</b></span><span>محصول: <b>'+esc(PRODUCT)+'</b></span><span>صفحه <b>'+fa(sh.page)+'</b> از <b>'+fa(PAGES)+'</b></span><span>تاریخ و ساعت شروع بازدید: <b>'+esc(when(d.createdAt))+'</b></span>'+(d.final?'<span>تأیید نهایی: <b>'+esc(when(d.final.at))+'</b></span>':'')+'</div><div class="bignum"><small>'+esc(sh.keyLabel)+'</small><b class="num">'+esc(d.key)+'</b></div><div class="kvs"><div class="kv"><small>برگه</small><b>'+esc(sh.name)+'</b></div>'+
     kvList(d)+
     '</div>';
-  if(edit){
+  if(edit&&d.final)h+='<p class="hint" style="margin-top:10px">شماره‌ها بعد از تأیید نهایی قفل است. برای اصلاح، از «اصلاح شماره‌ی اشتباه» پایین صفحه درخواست بدهید.</p>';
+  if(edit&&!d.final){
     h+='<form data-form="ids" class="row" style="margin-top:14px">'+idFields(d.sheet,'i_',mergedFor(d.sheet,d.key,d))+'<button class="btn sm" type="submit" style="align-self:flex-end">ذخیره مشخصات</button></form>';
   }
   if(S.isOwner&&S.user&&S.user.id==='owner'&&SHEETS[d.sheet].keyKind==='serial'){
@@ -762,7 +929,7 @@ function inspView(){
   }
   if(STAGES.indexOf(d.sheet)>=0&&['serial','chassis'].indexOf(SHEETS[d.sheet].keyKind)>=0){
     var cr=carRecords(d.key).recs;
-    STAGES.forEach(function(k){
+    stagesFor(cr).forEach(function(k){
       if(k===d.sheet||k==='engine'||k==='trim')return;var x=cr.filter(function(y){return y.sheet===k})[0];
       if(x){var xs=stat(x);h+='<div class="card"><div class="row"><span><b>'+esc(SHEETS[k].name)+':</b> '+(xs.open?fa(xs.open)+' مورد باز':'بدون مورد باز')+' · '+fa(xs.signed)+' از '+fa(xs.secs)+' بخش تأیید شده'+(x.final?' · تأیید نهایی شده':'')+'</span><button class="btn sm" data-act="open" data-sheet="'+k+'" data-key="'+esc(x.key)+'">مشاهده</button></div></div>'}
     });
@@ -780,6 +947,7 @@ function inspView(){
   h+=shortCard(d,edit);
   h+=rmCard(d,edit);
   h+=finalCard(d,edit);
+  h+=corrCard(d,edit||isQual());
   h+=exportCard(d);
   h+='<div class="formfoot">کد فرم: <span class="num">'+esc(d.formCode||FORM_CODE)+'</span></div>';
   return h;
@@ -797,7 +965,7 @@ function carRecords(q){
 function reportData(q){
   var c=carRecords(q),I=c.I,stages=[],rows=[];
   var arch=S.data.arch.filter(function(a){return a.id===c.key})[0];
-  STAGES.forEach(function(k){
+  stagesFor(c.recs).forEach(function(k){
     var sh=SHEETS[k],r=c.recs.filter(function(d){return d.sheet===k})[0],st=r?stat(r):null;
     var sg=r?sh.sections.map(function(sec){return r.signs&&r.signs[sec.id]}).filter(Boolean):[];
     stages.push({k:k,name:sh.name,page:sh.page,rec:r,status:!r?'ثبت نشده':(st.signed===st.secs?'تأیید شده':'در حال بازدید'),
@@ -806,8 +974,8 @@ function reportData(q){
     if(!r)return;
     var known={};
     sh.sections.forEach(function(sec){
-      sec.items.forEach(function(l,i){
-        var id=secItemId(sec,i),it=(r.items&&r.items[id])||{};known[id]=1;
+      visItems(r,sec).forEach(function(x){
+        var l=x.l,id=secItemId(sec,x.i),it=(r.items&&r.items[id])||{};known[id]=1;
         var s=it.r==='ng'?'ایراد':it.r==='sample'?'قطعه نمونه':it.r==='shortage'?'کسری':it.r==='done'?'انجام شد':sec.choice?(r.signs&&r.signs[sec.id]?'انجام نشده':'بازدید نشده'):(it.r==='ok'||(r.signs&&r.signs[sec.id]))?'سالم':'بازدید نشده';
         rows.push({stage:sh.name,item:l,r:it.r||'',status:s+((it.r==='ng'||it.r==='sample'||it.r==='shortage')?(it.closedAt?' (بسته شد)':' (باز)'):''),note:it.note||'',by:it.by||'',at:it.at?when(it.at):'',closedBy:it.closedBy||'',closedAt:it.closedAt?when(it.closedAt):'',closeNote:it.closeNote||''});
       });
@@ -994,7 +1162,7 @@ function carView(){
   h+='<div class="card"><div class="kvs"><div class="kv"><small>شماره سریال</small><b class="num">'+esc(I.serial||'—')+'</b></div><div class="kv"><small>رنگ</small><b>'+esc(I.color||'—')+'</b></div><div class="kv"><small>شماره شاسی</small><b class="num">'+esc(I.chassis||'—')+'</b></div><div class="kv"><small>شماره موتور</small><b class="num">'+esc(I.engine||'—')+'</b></div><div class="kv"><small>شماره اتاق</small><b class="num">'+esc(I.room||'—')+'</b></div></div><div class="row" style="margin-top:12px"><button class="btn sm" data-act="xlsx" data-q="'+esc(c.key)+'">خروجی Excel</button><button class="btn sm" data-act="pdf" data-q="'+esc(c.key)+'">خروجی PDF</button></div></div>';
   var miss=[],open=[];
   h+='<div class="card"><h2>مراحل تولید</h2><div class="items">';
-  STAGES.forEach(function(k){
+  stagesFor(c.recs).forEach(function(k){
     var r=c.recs.filter(function(d){return d.sheet===k})[0],st=r?stat(r):null,done=r&&st.signed===st.secs;
     if(!done)miss.push(SHEETS[k].name);
     var who='';if(r){var sg=Object.keys(r.signs||{}).map(function(i){return r.signs[i]});who=sg.map(function(x){return x.by}).filter(function(v,i,a){return a.indexOf(v)===i}).join('، ')}
@@ -1007,15 +1175,18 @@ function carView(){
   open.forEach(function(o){
     var aid='ca_'+o.r.id+'__'+o.id;
     h+='<div class="it ng"><div class="nt '+o.it.r+'"><div><span class="chip '+(o.it.r==='ng'?'open':o.it.r)+'">'+(o.it.r==='ng'?'ایراد':o.it.r==='shortage'?'کسری':'قطعه نمونه')+'</span> <b>'+esc(SHEETS[o.r.sheet].name)+'</b> · '+esc(labelOf(o.r.sheet,o.id))+'</div>'+(o.it.note?'<p>'+esc(o.it.note)+'</p>':'')+'<div class="m">ثبت: '+esc(o.it.by)+' · '+esc(when(o.it.at))+'</div>'+
-      (arch?'':'<label class="f" style="margin-top:8px">اقدام انجام‌شده<textarea class="in" id="'+aid+'" placeholder="چه اقدامی برای رفع انجام شد؟"></textarea></label><div class="row"><button class="btn sm ok" data-act="cclose" data-doc="'+esc(o.r.id)+'" data-id="'+esc(o.id)+'">ثبت اقدام و بستن مورد</button></div>')+'</div></div>';
+      ((arch&&o.it.r!=='shortage')?'':'<label class="f" style="margin-top:8px">اقدام انجام‌شده<textarea class="in" id="'+aid+'" placeholder="چه اقدامی برای رفع انجام شد؟"></textarea></label><div class="row"><button class="btn sm ok" data-act="cclose" data-doc="'+esc(o.r.id)+'" data-id="'+esc(o.id)+'">ثبت اقدام و بستن مورد</button></div>')+'</div></div>';
   });
   h+='</div>';
   var closed=[];c.recs.forEach(function(r){Object.keys(r.items||{}).forEach(function(id){var it=r.items[id];if((it.r==='ng'||it.r==='sample'||it.r==='shortage')&&it.closedAt)closed.push({r:r,id:id,it:it})})});
   if(closed.length){h+='<div class="card"><h2>مورد‌های بسته‌شده ('+fa(closed.length)+')</h2>';closed.forEach(function(o){h+='<div class="it"><b>'+esc(SHEETS[o.r.sheet].name)+'</b> · '+esc(labelOf(o.r.sheet,o.id))+noteBlock(o.r,o.id,o.it,false)+'</div>'});h+='</div>'}
   h+='<div class="card"><h2>بایگانی پرونده</h2>';
   if(arch)h+='<div class="signrow" style="border:0;margin:0;padding:0"><div class="stamp done"><b>بایگانی</b><span>'+esc(arch.by)+'</span><small>'+esc(when(arch.at))+'</small></div><div><b>این پرونده بایگانی شده است.</b></div></div>';
-  else if(miss.length||open.length)h+='<p class="hint">بایگانی وقتی ممکن است که همه مراحل تأیید شده و مورد بازی نمانده باشد.'+(miss.length?' مرحله‌های ناقص: '+esc(miss.join('، '))+'.':'')+(open.length?' '+fa(open.length)+' مورد باز.':'')+'</p>';
-  else h+='<p class="hint" style="margin-bottom:10px">همه مراحل تأیید شده و مورد بازی نیست.</p><button class="btn primary" data-act="archive" data-q="'+esc(c.key)+'">بایگانی پرونده به نام من</button>';
+  else{
+    var openDef=open.filter(function(o){return o.it.r!=='shortage'}),openShort=open.filter(function(o){return o.it.r==='shortage'});
+    if(miss.length||openDef.length)h+='<p class="hint">بایگانی وقتی ممکن است که همه مراحل تأیید شده و ایراد یا نمونه‌ی بازی نمانده باشد. کسری باز مانع بایگانی نیست.'+(miss.length?' مرحله‌های ناقص: '+esc(miss.join('، '))+'.':'')+(openDef.length?' '+fa(openDef.length)+' ایراد یا نمونه‌ی باز.':'')+'</p>';
+    else h+='<p class="hint" style="margin-bottom:10px">'+(openShort.length?fa(openShort.length)+' کسری باز است. خودرو با کد ۷۴۵ بایگانی می‌شود و کسری‌ها باز می‌ماند تا برنامه‌ریزی یا چکمن همان واحد ببندد.':'همه مراحل تأیید شده و مورد بازی نیست.')+'</p><button class="btn primary" data-act="archive" data-q="'+esc(c.key)+'">'+(openShort.length?'بایگانی با کد ۷۴۵ به نام من':'بایگانی پرونده به نام من')+'</button>';
+  }
   return h+'</div>';
 }
 function archiveView(){
@@ -1023,7 +1194,7 @@ function archiveView(){
   if(!S.data.arch.length)return h+'<p class="hint" style="margin:0">هنوز پرونده‌ای بایگانی نشده است.</p></div>';
   h+='<div class="tbl"><table><thead><tr><th>شماره شاسی</th><th>سریال</th><th>رنگ</th><th>بایگانی‌کننده</th><th>تاریخ و ساعت</th><th></th></tr></thead><tbody>';
   S.data.arch.slice().sort(function(a,b){return (b.at||'')<(a.at||'')?-1:1}).forEach(function(a){
-    h+='<tr><td><b class="num">'+esc(a.chassis||a.key)+'</b></td><td class="num">'+esc(a.serial||'')+'</td><td>'+esc(a.color||'')+'</td><td>'+esc(a.by||'')+'</td><td>'+esc(when(a.at))+'</td><td><button class="btn sm" data-act="opencar" data-q="'+esc(a.key)+'">مشاهده</button></td></tr>';
+    h+='<tr><td><b class="num">'+esc(a.chassis||a.key)+'</b></td><td class="num">'+esc(a.serial||'')+'</td><td>'+esc(a.color||'')+(a.code745?' <span class="chip open">کد ۷۴۵'+(function(){var n=0;carRecords(a.key).recs.forEach(function(r){Object.keys(r.items||{}).forEach(function(i3){var x=r.items[i3];if(x.r==='shortage'&&!x.closedAt)n++})});return n?' · '+fa(n)+' کسری باز':' · کسری‌ها بسته شد'})()+'</span>':'')+'</td><td>'+esc(a.by||'')+'</td><td>'+esc(when(a.at))+'</td><td><button class="btn sm" data-act="opencar" data-q="'+esc(a.key)+'">مشاهده</button></td></tr>';
   });
   return h+'</tbody></table></div></div>';
 }
@@ -1037,7 +1208,8 @@ function inspectView(){
   var tj=jal(nowIso());h+=returnedCard()+(tj?repeatCard(tj.y,tj.m,tj.d):'');
   if(mine.length)h+=searchCard();
   if(S.key){
-    if(insp(S.sheet,S.key))h+=inspView();
+    if(S.sheet==='gas'&&!insp('gas',S.key)&&stagesFor(carRecords(S.key).recs).indexOf('gas')<0)h+='<div class="card"><h2>این خودرو تک‌سوز است</h2><p class="hint" style="margin:0">برای خودروی تک‌سوز تست نشتی گاز لازم نیست و برگه‌ای برایش باز نمی‌شود. نوع سوخت در برگه شاسی ثبت شده است.</p></div>';
+    else if(insp(S.sheet,S.key))h+=inspView();
     else if(canEdit(S.sheet,S.key))h+=(S.linkConfirm&&S.linkConfirm.sheet===S.sheet&&S.linkConfirm.key===S.key)?linkCard():createCard();
     else if(S.user&&SHEETS[S.sheet].station===S.user.station&&blockedBy(S.sheet,S.key))h+=blockCard(S.sheet,S.key);
   }
@@ -1151,6 +1323,11 @@ function csvSave(name,rows){
   var t='\ufeff'+rows.map(function(r){return r.map(function(v){v=String(v==null?'':v);return /[",\n]/.test(v)?'"'+v.replace(/"/g,'""')+'"':v}).join(',')}).join('\r\n');
   return saveFile(name,new Blob([t],{type:'text/csv;charset=utf-8'}));
 }
+function bulkRowHtml(n){
+  var opts=['engine','chassis','trim','st4','st5','gas','mech','quality','roll','commercial','planning'].map(function(k){return '<option value="'+k+'">'+esc(STATION_NAME[k])+'</option>'}).join(''),o='';
+  for(var i=0;i<n;i++)o+='<div class="row brow" style="gap:8px"><input class="in num ltr" data-bf="c" inputmode="numeric" autocomplete="off" placeholder="کد پرسنلی" aria-label="کد پرسنلی" style="flex:1 1 120px;min-width:100px"><input class="in" data-bf="n" autocomplete="off" placeholder="نام و نام خانوادگی" aria-label="نام" style="flex:2 1 170px;min-width:140px"><select class="in" data-bf="s" aria-label="ایستگاه" style="flex:1 1 140px;min-width:120px">'+opts+'</select><input class="in num ltr" data-bf="p" autocomplete="off" inputmode="numeric" placeholder="رمز" aria-label="رمز" style="flex:1 1 90px;min-width:80px"></div>';
+  return o;
+}
 function usersCard(){
   var us=S.data.users.slice().sort(function(a,b){return a.id<b.id?-1:1});
   var h='<div class="card"><h2>کاربران و کد پرسنلی ('+fa(us.length)+')</h2><p class="hint" style="margin-bottom:10px">هر چکمن با کد پرسنلی و رمز خودش وارد می‌شود. برای تغییر رمز، همان کد را دوباره با رمز جدید ذخیره کنید.</p>';
@@ -1159,13 +1336,19 @@ function usersCard(){
     us.forEach(function(u){h+='<tr><td><b class="num">'+esc(u.id)+'</b></td><td>'+esc(u.name)+'</td><td>'+esc(STATION_NAME[u.station]||u.station)+'</td><td>'+(S.confirmUser===u.id?'<button class="btn sm" data-act="udelyes" data-id="'+esc(u.id)+'">تأیید حذف</button> <button class="btn sm" data-act="udelno">انصراف</button>':'<button class="btn sm" data-act="udelask" data-id="'+esc(u.id)+'">حذف</button>')+'</td></tr>'});
     h+='</tbody></table></div>';
   }
-  h+='<form data-form="adduser" style="display:flex;flex-direction:column;gap:10px;margin-top:14px"><div class="row"><label class="f grow">کد پرسنلی<input class="in num ltr" id="uc" inputmode="numeric" autocomplete="off"></label><label class="f grow">نام و نام خانوادگی<input class="in" id="un" autocomplete="off"></label></div><div class="row"><label class="f grow">ایستگاه<select class="in" id="us">'+['engine','chassis','trim','st4','st5','gas','mech','quality','roll','commercial'].map(function(k){return '<option value="'+k+'">'+esc(STATION_NAME[k])+'</option>'}).join('')+'</select></label><label class="f grow">رمز<input class="in" id="up" type="password" autocomplete="new-password"></label></div>'+(S.formErr?'<p class="err">'+esc(S.formErr)+'</p>':'')+'<button class="btn primary" type="submit">ذخیره کاربر</button></form></div>';
-  h+='<form data-form="bulkusers" style="display:flex;flex-direction:column;gap:8px;margin-top:18px;padding-top:14px;border-top:1px solid var(--line)"><b>افزودن گروهی کاربران</b><p class="hint">هر کاربر در یک خط: کد پرسنلی، نام، ایستگاه، رمز (با ویرگول یا Tab جدا شود). ایستگاه را به فارسی همان‌طور که در لیست بالا هست یا با کلید لاتین بنویسید. می‌توانید از اکسل کپی و اینجا بچسبانید. کد تکراری، جایگزین کاربر قبلی می‌شود.</p><textarea class="in ltr" id="bulk" rows="6" placeholder="1234567, علی رضایی, رول تست, 4821"></textarea>'+(S.bulkMsg?'<p class="hint">'+esc(S.bulkMsg)+'</p>':'')+'<button class="btn" type="submit">افزودن همه</button></form>';
+  h+='<form data-form="adduser" style="display:flex;flex-direction:column;gap:10px;margin-top:14px"><div class="row"><label class="f grow">کد پرسنلی<input class="in num ltr" id="uc" inputmode="numeric" autocomplete="off"></label><label class="f grow">نام و نام خانوادگی<input class="in" id="un" autocomplete="off"></label></div><div class="row"><label class="f grow">ایستگاه<select class="in" id="us">'+['engine','chassis','trim','st4','st5','gas','mech','quality','roll','commercial','planning'].map(function(k){return '<option value="'+k+'">'+esc(STATION_NAME[k])+'</option>'}).join('')+'</select></label><label class="f grow">رمز<input class="in" id="up" type="password" autocomplete="new-password"></label></div>'+(S.formErr?'<p class="err">'+esc(S.formErr)+'</p>':'')+'<button class="btn primary" type="submit">ذخیره کاربر</button></form></div>';
+  h+='<form data-form="bulkusers" style="display:flex;flex-direction:column;gap:8px;margin-top:18px;padding-top:14px;border-top:1px solid var(--line)"><b>افزودن گروهی کاربران</b><p class="hint">هر کاربر یک ردیف: کد پرسنلی، نام، ایستگاه و رمز را در کادر خودش بنویسید. با «ردیف جدید» ردیف اضافه کنید. کد تکراری، جایگزین کاربر قبلی می‌شود.</p><div id="bulkrows">'+bulkRowHtml(5)+'</div><div class="row"><button type="button" class="btn sm" data-act="bulkrow">+ ردیف جدید</button></div>'+
+  '<details style="margin-top:6px"><summary class="hint" style="cursor:pointer">یا از اکسل کپی کنید و اینجا بچسبانید</summary><p class="hint" style="margin:8px 0">هر خط: کد پرسنلی، نام، ایستگاه، رمز (با ویرگول یا Tab جدا).</p><textarea class="in" id="bulk" rows="5" dir="rtl" style="unicode-bidi:plaintext;text-align:right" placeholder="1234567, علی رضایی, رول تست, 4821"></textarea></details>'+(S.bulkMsg?'<p class="hint">'+esc(S.bulkMsg)+'</p>':'')+'<button class="btn primary" type="submit">افزودن همه</button></form>';
   return h;
+}
+function cfgCard(){
+  var h='<div class="card"><h2>طول مجاز شماره‌ها</h2><p class="hint">اگر تعداد رقم شماره‌ها تغییر کرد، بازه را اینجا عوض کنید. شماره فقط رقم و در همین بازه پذیرفته می‌شود.</p><form data-form="cfglen">';
+  ['serial','chassis','engine','room'].forEach(function(k){var r=lenOf(k);h+='<div class="cfgrow"><b style="min-width:110px">'+NUM_LABEL[k]+'</b><label class="f">حداقل<input class="in num ltr" id="cl_'+k+'_a" inputmode="numeric" value="'+r[0]+'"></label><label class="f">حداکثر<input class="in num ltr" id="cl_'+k+'_b" inputmode="numeric" value="'+r[1]+'"></label></div>'});
+  return h+'<button class="btn primary" type="submit" style="margin-top:6px">ذخیره بازه‌ها</button></form></div>';
 }
 function adminView(){
   var ds=S.data.insp.filter(function(d){return SHEETS[d.sheet]}).sort(function(a,b){return (b.createdAt||'')<(a.createdAt||'')?-1:1});
-  var h=usersCard()+'<div class="card"><h2>مدیریت برنامه</h2><p class="hint">این بخش فقط برای مالک برنامه (علی بابایی) دیده می‌شود. حذف برگشت‌پذیر نیست و برای پاک‌کردن ثبت‌های آزمایشی است.</p>'+(S.confirmWipe?'<p class="err">همه '+fa(S.data.insp.length)+' بازدید و '+fa(S.data.arch.length)+' پرونده بایگانی پاک می‌شود. کاربران می‌مانند.</p><div class="row"><button class="btn sm" data-act="wipeyes">تأیید پاک‌کردن همه</button><button class="btn sm" data-act="wipeno">انصراف</button></div>':'<div class="row"><button class="btn sm" data-act="wipeask">پاک‌کردن همه پرونده‌ها (شروع تازه)</button></div>')+'</div><div class="card"><h2>بازدیدهای ثبت‌شده ('+fa(ds.length)+')</h2>';
+  var h=usersCard()+cfgCard()+'<div class="card"><h2>مدیریت برنامه</h2><p class="hint">این بخش فقط برای مالک برنامه (علی بابایی) دیده می‌شود. حذف برگشت‌پذیر نیست و برای پاک‌کردن ثبت‌های آزمایشی است.</p>'+(S.confirmWipe?'<p class="err">همه '+fa(S.data.insp.length)+' بازدید و '+fa(S.data.arch.length)+' پرونده بایگانی پاک می‌شود. کاربران می‌مانند.</p><div class="row"><button class="btn sm" data-act="wipeyes">تأیید پاک‌کردن همه</button><button class="btn sm" data-act="wipeno">انصراف</button></div>':'<div class="row"><button class="btn sm" data-act="wipeask">پاک‌کردن همه پرونده‌ها (شروع تازه)</button></div>')+'</div><div class="card"><h2>بازدیدهای ثبت‌شده ('+fa(ds.length)+')</h2>';
   if(!ds.length)return h+'<div class="empty-note">بازدیدی ثبت نشده است.</div></div>';
   h+='<div class="tbl"><table><thead><tr><th>برگه</th><th>شماره</th><th>ثبت‌کننده</th><th>تاریخ و ساعت</th><th></th></tr></thead><tbody>';
   ds.forEach(function(d){
@@ -1179,7 +1362,7 @@ function html(){
   if(!S.user)return h+loginView()+credit;
   h+=tabsBar();
   if(S.user&&S.user.id==='owner')h+=testBar();
-  return h+(S.tab==='admin'&&S.isOwner?adminView():S.tab==='list'?listView():S.tab==='car'&&isCom()?carView():S.tab==='short'&&isCom()?shortView():S.tab==='report'&&isCom()?reportView():S.tab==='archive'&&isCom()?archiveView():inspectView())+credit;
+  return h+(S.tab==='admin'&&S.isOwner?adminView():S.tab==='corr'&&isQual()?corrView():S.tab==='list'?listView():S.tab==='car'&&isCom()?carView():S.tab==='short'&&canShort()?shortView():S.tab==='report'&&isCom()?reportView():S.tab==='archive'&&isCom()?archiveView():inspectView())+credit;
 }
 
 /* ---------- render, keeping typed text ---------- */
@@ -1216,20 +1399,30 @@ function scanFile(f){
     toast('در حال خواندن بارکد…');
     decodePhoto(f).then(function(raw){
       var t=digits(raw).replace(/[^A-Za-z0-9]/g,''),msg='بارکد خوانده شد';
+      if(S.scanFor){
+        var tf=document.getElementById(S.scanFor);S.scanFor='';
+        if(!t)throw new Error('empty');
+        if(tf){tf.value=t.replace(/\D/g,'')||t;toast('بارکد خوانده شد');return}
+      }
       if(/^[A-Za-z0-9]{17}$/.test(t)){t=t.slice(-7);msg='بارکد VIN خوانده شد؛ ۷ رقم آخر به‌عنوان شماره شاسی گذاشته شد'}
       if(!t)throw new Error('empty');
-      if(S.tab==='car')S.carq=t;else S.key=resolveKey(S.sheet,t);S.searchErr='';S.formErr='';S.editing=null;render();toast(msg);
+      if(S.tab==='short')S.shQ=t;else if(S.tab==='car')S.carq=t;else S.key=resolveKey(S.sheet,t);S.searchErr='';S.formErr='';S.editing=null;render();toast(msg);
     }).catch(function(){toast('بارکد خوانده نشد. نزدیک‌تر، صاف و بدون انعکاس عکس بگیرید یا شماره را تایپ کنید.')});
   })();
 }
 document.addEventListener('input',function(ev){
   var t=ev.target,id=t&&t.id;if(!id)return;
+  if(id==='tq'){var q0=digits(t.value);Array.prototype.forEach.call(document.querySelectorAll('#todaylist [data-k]'),function(b){b.style.display=(!q0||b.getAttribute('data-k').indexOf(q0)>=0)?'':'none'});return}
   var box=document.getElementById('sg-'+id);if(!box)return;
   var seg=t.value.split(/[,،\n]/).pop(),q=norm(seg);
   if(!q){box.innerHTML='';return}
   var out=[];suggPool(id).forEach(function(c){var n=norm(c);if(n!==q&&n.indexOf(q)>=0&&out.indexOf(c)<0)out.push(c)});
   box.innerHTML=out.slice(0,6).map(function(c){return '<button type="button" class="pick" data-act="sugg" data-f="'+esc(id)+'" data-v="'+esc(c)+'">'+esc(c)+'</button>'}).join('');
 });
+document.addEventListener('click',function(ev){
+  var sc=ev.target.closest&&ev.target.closest('label[for=scancam],label[for=scangal]');
+  if(sc)S.scanFor=sc.getAttribute('data-scan')||'';
+},true);
 document.addEventListener('change',function(ev){
   var t=ev.target;
   if(t&&/^rd_[ymd]$/.test(t.id)){S.rd={y:+val('rd_y'),m:+val('rd_m'),d:+val('rd_d')};render();return}
@@ -1257,8 +1450,8 @@ document.addEventListener('click',function(ev){
     S.shSel=sel;render();toast('کسری‌های خودروی قبلی انتخاب شد؛ مواردی که تأمین شده را بردارید.');return;
   }
   if(a==='shchk'){S.shChk=S.shChk||{};var kk3=el.getAttribute('data-k');if(el.checked)S.shChk[kk3]=1;else delete S.shChk[kk3];render();return}
-  if(a==='shall'&&isCom()){var g1=shortGroups()[+el.getAttribute('data-i')];if(!g1)return;S.shChk=S.shChk||{};var allOn=g1.list.every(function(x){return S.shChk[x.d.id+'|'+x.id]});g1.list.forEach(function(x){var k4=x.d.id+'|'+x.id;if(allOn)delete S.shChk[k4];else S.shChk[k4]=1});render();return}
-  if(a==='shclose'&&isCom()){
+  if(a==='shall'&&canShort()){var g1=shortGroups()[+el.getAttribute('data-i')];if(!g1)return;S.shChk=S.shChk||{};var allOn=g1.list.every(function(x){return S.shChk[x.d.id+'|'+x.id]});g1.list.forEach(function(x){var k4=x.d.id+'|'+x.id;if(allOn)delete S.shChk[k4];else S.shChk[k4]=1});render();return}
+  if(a==='shclose'&&canShort()){
     var ix=+el.getAttribute('data-i'),g2=shortGroups()[ix];if(!g2)return;
     var note2=val('sgn_'+ix);if(!note2){toast('اقدام انجام‌شده را بنویسید.');return}
     var sl=g2.list.filter(function(x){return (S.shChk||{})[x.d.id+'|'+x.id]});
@@ -1280,6 +1473,7 @@ document.addEventListener('click',function(ev){
     }
     csvSave(nm,rows2);return;
   }
+  if(a==='shqclear'){S.shQ='';render();return}
   if(a==='wipeask'&&S.isOwner){S.confirmWipe=true;render();return}
   if(a==='wipeno'){S.confirmWipe=false;render();return}
   if(a==='wipeyes'&&S.isOwner){S.confirmWipe=false;var dl=S.data.insp.map(function(x){return function(){return store.del('inspections',x.id)}}).concat(S.data.arch.map(function(x){return function(){return store.del('archives',x.id)}}));save(function(){return Promise.all(dl.map(function(f){return f()}))},'همه پرونده‌ها پاک شد');return}
@@ -1293,19 +1487,35 @@ document.addEventListener('click',function(ev){
   }
   if(a==='archive'&&isCom()){
     var q2=el.getAttribute('data-q'),c2=carRecords(q2),I2=c2.I;
-    var st2=STAGES.map(function(k){var r=c2.recs.filter(function(d){return d.sheet===k})[0];var sg=r?Object.keys(r.signs||{}).map(function(i){return r.signs[i]}):[];return {sheet:k,name:SHEETS[k].name,by:sg.map(function(x){return x.by}).join('، '),at:sg.length?sg[sg.length-1].at:''}});
-    save(function(){return store.set('archives',c2.key,{key:c2.key,serial:I2.serial||'',color:I2.color||'',chassis:I2.chassis||'',engine:I2.engine||'',room:I2.room||'',by:S.user.name,byId:S.user.id,at:nowIso(),formCode:FORM_CODE,stages:st2})},'پرونده بایگانی شد');return;
+    var st2=stagesFor(c2.recs).map(function(k){var r=c2.recs.filter(function(d){return d.sheet===k})[0];var sg=r?Object.keys(r.signs||{}).map(function(i){return r.signs[i]}):[];return {sheet:k,name:SHEETS[k].name,by:sg.map(function(x){return x.by}).join('، '),at:sg.length?sg[sg.length-1].at:''}});
+    var badOpen=0,shortOpen=0;
+    c2.recs.forEach(function(r){Object.keys(r.items||{}).forEach(function(i2){var x=r.items[i2];if(x.closedAt)return;if(x.r==='ng'||x.r==='sample')badOpen++;else if(x.r==='shortage')shortOpen++})});
+    var missA=stagesFor(c2.recs).some(function(k){var r=c2.recs.filter(function(d){return d.sheet===k})[0];return !r||stat(r).signed<stat(r).secs});
+    if(badOpen||missA){toast(badOpen?'خودرو ایراد یا نمونه‌ی باز دارد و بایگانی نمی‌شود.':'همه مراحل خودرو هنوز تأیید نشده است.');return}
+    var doc745=shortOpen>0;
+    save(function(){return store.set('archives',c2.key,{key:c2.key,serial:I2.serial||'',color:I2.color||'',chassis:I2.chassis||'',engine:I2.engine||'',room:I2.room||'',by:S.user.name,byId:S.user.id,at:nowIso(),formCode:FORM_CODE,stages:st2,code745:doc745,shortAtArchive:shortOpen})},doc745?'پرونده با کد ۷۴۵ بایگانی شد':'پرونده بایگانی شد');return;
   }
   if(a==='opencar'&&isCom()){S.carq=el.getAttribute('data-q');S.tab='car';render();return}
   if(a==='teststation'&&S.isOwner&&S.user&&S.user.id==='owner'){
     S.user={id:'owner',name:'علی بابایی (آزمایشی)',station:id};
-    var ms2=mySheets();S.sheet=ms2[0]||S.sheet;S.key='';S.tab=id==='commercial'?'car':'inspect';S.searchErr='';S.formErr='';S.editing=null;render();
+    var ms2=mySheets();S.sheet=ms2[0]||S.sheet;S.key='';S.tab=id==='commercial'?'car':id==='planning'?'short':'inspect';S.searchErr='';S.formErr='';S.editing=null;render();
   }else if(a==='ownerlogin'&&S.isOwner){S.user={id:'owner',name:'علی بابایی',station:'owner'};S.tab='admin';S.key='';render()}
   else if(a==='udelask'&&S.isOwner){S.confirmUser=id;render()}
   else if(a==='udelno'){S.confirmUser=null;render()}
   else if(a==='udelyes'&&S.isOwner){S.confirmUser=null;save(function(){return store.del('users',id)},'کاربر حذف شد')}
   else if(a==='logout'){S.user=null;S.key='';S.pick=null;if(S.supa)S.isOwner=false;S.ownerAsk=false;render()}
   else if(a==='ownerask'){S.ownerAsk=true;S.ownerErr='';render()}
+  else if(a==='corrapply'&&isQual()){
+    var rq=corrAll().filter(function(x){return x.id===id&&x.status==='pending'})[0];if(!rq)return;
+    save(function(){return corrApply(rq)},'اصلاح شماره اعمال شد').then(function(ok){if(ok&&S.key===rq.oldVal&&SHEETS[S.sheet].keyKind===rq.field){S.key=rq.newVal;render()}});
+  }
+  else if(a==='corrreject'&&isQual()){
+    var rq2=corrAll().filter(function(x){return x.id===id&&x.status==='pending'})[0];if(!rq2)return;
+    var nt=val('cn_'+id);if(!nt){toast('برای رد کردن، توضیح بنویسید.');return}
+    save(function(){return store.update('users',id,{status:'rejected',decidedBy:S.user.name,decidedById:S.user.id,decidedAt:nowIso(),decNote:nt})},'درخواست رد شد');
+  }
+  else if(a==='bulkrow'){var bx=document.getElementById('bulkrows');if(bx)bx.insertAdjacentHTML('beforeend',bulkRowHtml(1))}
+  else if(a==='todaylist'){S.todayOpen=!S.todayOpen;render()}
   else if(a==='tab'){S.tab=el.getAttribute('data-t');render()}
   else if(a==='sheet'){S.sheet=id;S.key='';render()}
   else if(a==='open'){open_(el.getAttribute('data-sheet'),el.getAttribute('data-key'))}  else if(a==='mark'&&d){
@@ -1384,7 +1594,7 @@ document.addEventListener('click',function(ev){
   else if(a==='close'&&d){var m3={};m3[id]={closedAt:nowIso(),closedBy:S.user.name};writeItems(m3,'مورد بسته شد')}
   else if(a==='allok'&&d){
     var sec=SHEETS[S.sheet].sections.filter(function(s){return s.id===el.getAttribute('data-sec')})[0],m4={},t0=nowIso();
-    sec.items.forEach(function(l,i){var iid=secItemId(sec,i);if(!(d.items&&d.items[iid]&&d.items[iid].r))m4[iid]={r:'ok',note:'',by:S.user.name,byId:S.user.id,at:t0,closedAt:'',closedBy:''}});
+    visItems(d,sec).forEach(function(x){var iid=secItemId(sec,x.i);if(!(d.items&&d.items[iid]&&d.items[iid].r))m4[iid]={r:'ok',note:'',by:S.user.name,byId:S.user.id,at:t0,closedAt:'',closedBy:''}});
     writeItems(m4,'همه موارد باقی‌مانده سالم ثبت شد');
   }
   else if(a==='delask'&&S.isOwner){S.confirmDel=id;render()}
@@ -1394,17 +1604,22 @@ document.addEventListener('click',function(ev){
     if(S.editing){toast('یک ایراد در حال ثبت است؛ ابتدا «ثبت در پرونده» یا «انصراف» را بزنید');return}
     var shx=SHEETS[S.sheet],mm2={},sg2={},t2=nowIso(),fc=d.formCode||FORM_CODE,op2=stat(d).open;
     shx.sections.forEach(function(sc2){
-      sc2.items.forEach(function(l,i){var iid=secItemId(sc2,i);if(!(d.items&&d.items[iid]&&d.items[iid].r))mm2[iid]={r:'ok',note:'',by:S.user.name,byId:S.user.id,at:t2,closedAt:'',closedBy:''}});
+      visItems(d,sc2).forEach(function(x){var iid=secItemId(sc2,x.i);if(!(d.items&&d.items[iid]&&d.items[iid].r))mm2[iid]={r:'ok',note:'',by:S.user.name,byId:S.user.id,at:t2,closedAt:'',closedBy:''}});
       if(!(d.signs&&d.signs[sc2.id]))sg2[sc2.id]={by:S.user.name,byId:S.user.id,at:t2,open:op2,formCode:fc};
     });
     S.editing=null;
-    save(function(){return store.update('inspections',docId(S.sheet,S.key),{items:mm2,signs:sg2,final:{by:S.user.name,byId:S.user.id,at:t2,open:op2,formCode:fc}})},op2?'تأیید نهایی ثبت شد':'تأیید نهایی ثبت شد؛ بدون ایراد');
+    save(function(){return store.update('inspections',docId(S.sheet,S.key),{items:mm2,signs:sg2,final:{by:S.user.name,byId:S.user.id,at:t2,open:op2,formCode:fc}})},op2?'تأیید نهایی ثبت شد':'تأیید نهایی ثبت شد؛ بدون ایراد').then(function(ok){
+      if(!ok)return;
+      S.key='';S.searchErr='';S.formErr='';S.editing=null;render();
+      var ke=document.getElementById('key');if(ke){ke.value='';ke.focus()}
+      window.scrollTo(0,0);
+    });
   }
   else if(a==='sign'&&d){
     if(S.editing){toast('یک ایراد در حال ثبت است؛ ابتدا «ثبت در پرونده» یا «انصراف» را بزنید');return}
     var sid=el.getAttribute('data-sec'),sg={},mm={},t1=nowIso();
     var sc=SHEETS[S.sheet].sections.filter(function(s){return s.id===sid})[0];
-    if(!sc.choice)sc.items.forEach(function(l,i){var iid=secItemId(sc,i);if(!(d.items&&d.items[iid]&&d.items[iid].r))mm[iid]={r:'ok',note:'',by:S.user.name,byId:S.user.id,at:t1,closedAt:'',closedBy:''}});
+    if(!sc.choice)visItems(d,sc).forEach(function(x){var iid=secItemId(sc,x.i);if(!(d.items&&d.items[iid]&&d.items[iid].r))mm[iid]={r:'ok',note:'',by:S.user.name,byId:S.user.id,at:t1,closedAt:'',closedBy:''}});
     sg[sid]={by:S.user.name,byId:S.user.id,at:t1,open:stat(d).open,formCode:d.formCode||FORM_CODE};
     S.editing=null;
     save(function(){return store.update('inspections',docId(S.sheet,S.key),{items:mm,signs:sg})},'بخش '+sc.name+' به نام '+S.user.name+' تأیید شد');
@@ -1426,7 +1641,7 @@ document.addEventListener('submit',function(ev){
     if(!u){S.loginErr='کد پرسنلی یا رمز درست نیست.';render();return}
     sha(u.salt+pw).then(function(hh){
       if(hh!==u.hash){S.loginErr='کد پرسنلی یا رمز درست نیست.';render();return}
-      S.user={id:u.id,name:u.name,station:u.station};S.loginErr='';var ms=mySheets();S.sheet=ms[0]||'chassis';S.key='';S.tab=u.station==='commercial'?'car':'inspect';render();
+      S.user={id:u.id,name:u.name,station:u.station};S.loginErr='';var ms=mySheets();S.sheet=ms[0]||'chassis';S.key='';S.tab=u.station==='commercial'?'car':u.station==='planning'?'short':'inspect';render();
     });
   }else if(f==='adduser'&&S.isOwner){
     var uc=digits(val('uc')),un=val('un'),us=val('us'),up=digits(val('up'));
@@ -1436,21 +1651,38 @@ document.addEventListener('submit',function(ev){
     S.formErr='';var salt=uid();
     sha(salt+up).then(function(hh){return save(function(){return store.set('users',uc,{name:un,station:us,salt:salt,hash:hh,createdAt:nowIso()})},'کاربر ذخیره شد')}).then(function(){['uc','un','up'].forEach(function(i){var e=document.getElementById(i);if(e)e.value=''})});
   }else if(f==='bulkusers'&&S.isOwner){
-    var lines=val('bulk').split(/\n+/).map(function(x){return x.trim()}).filter(Boolean),ok=[],bad=[];
+    var ok=[],bad=[],seenC={},n0=0;
+    var addU=function(c,n,stn,pw,label){
+      c=digits(c);pw=digits(pw);n=String(n||'').trim();
+      if(/^[A-Za-z0-9]+$/.test(c)&&n&&stn&&pw&&pw.length>=4&&!seenC[c]){seenC[c]=1;ok.push({c:c,n:n,st:stn,pw:pw})}else bad.push(label);
+    }
     var byName={};Object.keys(STATION_NAME).forEach(function(k){if(k!=='owner'){byName[STATION_NAME[k]]=k;byName[k]=k}});
-    lines.forEach(function(ln,i){
-      var p=ln.split(/[,\t;،]/).map(function(x){return x.trim()});
-      var c=digits(p[0]),n=p[1],st=byName[p[2]],pw=digits(p[3]);
-      if(/^[A-Za-z0-9]+$/.test(c)&&n&&st&&pw&&pw.length>=4)ok.push({c:c,n:n,st:st,pw:pw});else bad.push(i+1);
+    Array.prototype.forEach.call(document.querySelectorAll('#bulkrows .brow'),function(rw,i){
+      var g=function(k){var e=rw.querySelector('[data-bf='+k+']');return e?e.value:''};
+      if(!g('c').trim()&&!g('n').trim()&&!g('p').trim())return;
+      addU(g('c'),g('n'),g('s'),g('p'),'ردیف '+fa(i+1));
     });
+    val('bulk').split(/\n+/).map(function(x){return x.trim()}).filter(Boolean).forEach(function(ln,i){
+      var p=ln.split(/[,\t;،]/).map(function(x){return x.trim()});
+      addU(p[0],p[1],byName[p[2]],p[3],'خط چسبانده '+fa(i+1));
+    });
+    if(!ok.length&&!bad.length){S.bulkMsg='هیچ ردیفی پر نشده است.';render();return}
     Promise.all(ok.map(function(u){var salt=uid();return sha(salt+u.pw).then(function(hh){return store.set('users',u.c,{name:u.n,station:u.st,salt:salt,hash:hh,createdAt:nowIso()})})}))
-      .then(function(){S.bulkMsg=fa(ok.length)+' کاربر ذخیره شد.'+(bad.length?' خط‌های ردشده (کد، نام، ایستگاه یا رمز درست نیست): '+bad.map(fa).join('، '):'');if(!bad.length){var e=document.getElementById('bulk');if(e)e.value=''}render()})
+      .then(function(){S.bulkMsg=fa(ok.length)+' کاربر ذخیره شد.'+(bad.length?' ردشده (کد، نام، ایستگاه یا رمز درست نیست یا کد تکراری است): '+bad.join('، '):'');render()})
       .catch(function(e){S.bulkMsg='ذخیره نشد. '+((e&&e.message)||'');render()});
+  }else if(f==='cfglen'&&S.isOwner){
+    var lenObj={},bad3='';
+    ['serial','chassis','engine','room'].forEach(function(k){var a=parseInt(digits(val('cl_'+k+'_a')),10),b2=parseInt(digits(val('cl_'+k+'_b')),10);if(!(a>=1&&b2>=a&&b2<=20))bad3=NUM_LABEL[k];lenObj[k]=[a,b2]});
+    if(bad3){toast('بازه‌ی '+bad3+' درست نیست (حداقل ۱ و حداکثر ۲۰، و حداکثر کمتر از حداقل نباشد).');return}
+    save(function(){return store.set('users','__cfg',{len:lenObj,updatedAt:nowIso(),by:S.user.name})},'بازه‌ها ذخیره شد');
   }else if(f==='relink'&&S.isOwner){
     var rc=digits(val('rl_c')),rr=digits(val('rl_r'));
-    if(!/^\d{7}$/.test(rc)||!/^\d{7}$/.test(rr)){toast('شماره شاسی و اتاق باید ۷ رقم باشد.');return}
+    var rle=numErr('chassis',rc)||numErr('room',rr)||(!rc||!rr?'شماره شاسی و اتاق را وارد کنید.':'');
+    if(rle){toast(rle);return}
     var kk2=S.key,tg=S.data.insp.filter(function(x){return SHEETS[x.sheet]&&SHEETS[x.sheet].keyKind==='serial'&&x.key===kk2});
     save(function(){return Promise.all(tg.map(function(x){return store.update('inspections',x.id,{chassisNo:rc,room:rr})}))},'اتصال در '+fa(tg.length)+' برگه اصلاح شد');
+  }else if(f==='shsearch'){
+    S.shQ=digits(val('sq'));render();
   }else if(f==='carsearch'){
     S.carq=digits(val('cq'));render();
   }else if(f==='search'){
@@ -1460,14 +1692,18 @@ document.addEventListener('submit',function(ev){
     S.key=resolveKey(S.sheet,k);S.searchErr='';S.formErr='';S.editing=null;render();
   }else if(f==='create'){
     var rec=Object.assign(idVals(S.sheet,'c_'),{sheet:S.sheet,key:S.key,createdBy:S.user.name,createdAt:nowIso(),formCode:FORM_CODE,formPage:SHEETS[S.sheet].page,items:{},signs:{}});
+    var vKey=numErr(SHEETS[S.sheet].keyKind,S.key);
+    if(vKey){S.formErr=vKey;render();return}
+    var vTyped=typedErr(S.sheet,rec);
+    if(vTyped){S.formErr=vTyped;render();return}
+    var vDup=conflictFor(S.sheet,S.key,rec);
+    if(vDup){S.formErr=vDup+' اگر اشتباه ثبت شده، با کیفیت یا مالک برنامه تماس بگیرید.';render();return}
     var I3=identity(S.key);
     if(SHEETS[S.sheet].keyKind==='serial'){
       var needC=!(rec.chassisNo||I3.chassis),needR=!(rec.room||I3.room);
       if(needC||needR){S.formErr='این سریال هنوز به خودرو وصل نشده است. شماره شاسی و شماره اتاق را از روی برچسب شیشه وارد کنید تا به برگه‌های قبلی (شاسی، موتور، تزئینات) وصل شود.';render();return}
       var typed=!!(rec.chassisNo||rec.room);
       if(typed){
-        if(rec.chassisNo&&!/^\d{7}$/.test(rec.chassisNo)){S.formErr='شماره شاسی باید ۷ رقم باشد (مثل ۰۸۶۵۷۴۲).';render();return}
-        if(rec.room&&!/^\d{7}$/.test(rec.room)){S.formErr='شماره اتاق باید ۷ رقم باشد (مثل ۱۰۰۹۳۷۴).';render();return}
         var ch=rec.chassisNo||I3.chassis,rm=rec.room||I3.room,bad='';
         S.data.insp.forEach(function(x){var o=identOf(x);if(!o.serial||o.serial===S.key)return;
           if(ch&&o.chassis===ch)bad='شاسی '+ch+' قبلاً به سریال '+o.serial+' وصل شده است.';
@@ -1480,8 +1716,23 @@ document.addEventListener('submit',function(ev){
       }
     }
     save(function(){return store.set('inspections',docId(S.sheet,S.key),rec)},'برگه باز شد');
+  }else if(f==='corrreq'){
+    var dq=insp(S.sheet,S.key),Iq=identity(S.key),fq=val('cr_f'),nq=digits(val('cr_new')),rq3=val('cr_reason'),oq=Iq[fq],eq='';
+    if(!dq||!fq||!oq)eq='شماره‌ای که اشتباه است را انتخاب کنید.';
+    else if(!nq)eq='شماره‌ی درست را وارد کنید.';
+    else if(numErr(fq,nq))eq=numErr(fq,nq);
+    else if(nq===oq)eq='شماره‌ی جدید با شماره‌ی قبلی یکی است.';
+    else if(rq3.length<3)eq='دلیل اصلاح را بنویسید.';
+    else if(S.data.insp.some(function(x){return SHEETS[x.sheet]&&identOf(x)[fq]===nq}))eq='این شماره قبلاً برای خودروی دیگری ثبت شده است؛ اگر آن هم اشتباه است با کیفیت هماهنگ کنید.';
+    else if(corrAll().some(function(x){return x.status==='pending'&&x.field===fq&&x.oldVal===oq}))eq='برای این شماره درخواست باز وجود دارد.';
+    if(eq){S.corrErr=eq;render();return}
+    S.corrErr='';
+    save(function(){return store.set('users','corr_'+uid(),{kind:'corr',field:fq,oldVal:oq,newVal:nq,reason:rq3,sheet:S.sheet,key:S.key,by:S.user.name,byId:S.user.id,station:S.user.station,at:nowIso(),status:'pending'})},'درخواست اصلاح ارسال شد');
   }else if(f==='ids'){
-    save(function(){return store.update('inspections',docId(S.sheet,S.key),idVals(S.sheet,'i_'))},'مشخصات ذخیره شد');
+    var dI=insp(S.sheet,S.key);if(dI&&dI.final){toast('شماره‌ها بعد از تأیید نهایی قفل است؛ درخواست اصلاح بدهید.');return}
+    var iv=idVals(S.sheet,'i_'),ie=typedErr(S.sheet,iv)||conflictFor(S.sheet,S.key,iv);
+    if(ie){toast(ie);return}
+    save(function(){return store.update('inspections',docId(S.sheet,S.key),iv)},'مشخصات ذخیره شد');
   }else if(f==='short'){
     var dd2=insp(S.sheet,S.key),have2={};
     Object.keys((dd2&&dd2.items)||{}).forEach(function(id){var it=dd2.items[id];if(it.r==='shortage'&&!it.closedAt)have2[(it.part||it.note||'').trim()]=1});
