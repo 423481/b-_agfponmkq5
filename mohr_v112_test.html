@@ -681,7 +681,7 @@ function serverLogin(code,rawPw){
     });
 }
 /* v112: عملیات رمز/کاربر از طریق تابع admin (فقط وقتی AUTH_FN و ADMIN_FN هر دو پر باشند) */
-var ADMIN_FN='admin';
+var ADMIN_FN='bright-action';
 function srvAdmin(){return !!AUTH_FN&&!!ADMIN_FN}
 function adminCall(action,body){
   return fetch(SUPA_URL+'/functions/v1/'+ADMIN_FN,{method:'POST',headers:{apikey:SUPA_KEY,Authorization:'Bearer '+authBearer(),'Content-Type':'application/json'},body:JSON.stringify(Object.assign({action:action},body||{}))})
