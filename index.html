@@ -5045,6 +5045,8 @@ document.addEventListener('submit',function(ev){
 
 render();
 connect();
+/* v128: ذخیره‌ی صفحه برای باز شدن بدون اینترنت (نیازمند فایل sw.js کنار این صفحه) */
+try{if('serviceWorker' in navigator&&/^https?:$/.test(location.protocol))navigator.serviceWorker.register('sw.js').catch(function(){})}catch(e){}
 })();
 </script>
 
