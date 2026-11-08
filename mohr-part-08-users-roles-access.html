@@ -1,0 +1,1166 @@
+<!doctype html>
+<html lang="fa" dir="rtl">
+<head><meta charset="utf-8" /><title>بخش 08 — کاربران، نقش‌ها و دسترسی‌ها</title></head>
+<body>
+<!-- Structural source container only. Open index.html or the existing page URLs.
+     Original executable blocks are copied verbatim, not rewritten.
+     Cross-file execution remains controlled by each block's original data-order.
+     Empty script-section lists mean that the source is a station/page entry only;
+     the existing shared inspection engine remains in group 10. -->
+<script type="application/json" id="mohr-group-map">
+{
+  "group": "08",
+  "title": "کاربران، نقش‌ها و دسترسی‌ها",
+  "sources": [
+    {
+      "file": "users.html",
+      "page": {
+        "tab": "admin",
+        "adm": "users",
+        "label": "کاربران"
+      },
+      "scriptSections": [
+        "views/admin/bulkRowHtml",
+        "views/admin/secBtns",
+        "views/admin/stationLabel",
+        "views/admin/usersSummary",
+        "views/admin/userRow",
+        "views/admin/usersList",
+        "views/admin/stationFields",
+        "views/admin/mgrFields",
+        "views/admin/roleFields",
+        "views/admin/addUserForm",
+        "views/admin/bulkUsersForm",
+        "views/admin/usersCard"
+      ],
+      "styleSections": []
+    },
+    {
+      "file": "roles.html",
+      "page": {
+        "tab": "admin",
+        "adm": "roles",
+        "label": "نقش‌ها"
+      },
+      "scriptSections": [
+        "features/roles"
+      ],
+      "styleSections": []
+    }
+  ]
+}
+</script>
+<!-- Source: users.html; original block bodies and data-order are unchanged. -->
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- Source: roles.html; original block bodies and data-order are unchanged. -->
+
+
+
+<script type="text/x-mohr-section" data-mohr-section="features/sampling/owned-smpCanWrite" data-order="24.071428571428573">
+
+              function smpCanWrite() {
+                return isQual() || (isCustomRole(S.user) && rolePerm('smp'));
+              }
+              function smpCanView() {
+                return isQual() || isCom() || rolePerm('smp');
+              }
+</script>
+
+<script type="text/x-mohr-section" data-mohr-section="views/admin/bulkRowHtml" data-order="27">
+
+      // BEGIN SECTION: views/admin/bulkRowHtml
+              function bulkRowHtml(n) {
+
+                var opts = [
+
+                    'chassis',
+
+                    'trim',
+
+                    'st4',
+
+                    'st5',
+
+                    'gas',
+
+                    'mech',
+
+                    'quality',
+
+                    'roll',
+
+                    'commercial',
+
+                    'planning',
+
+                  ]
+
+                    .map(function (k) {
+
+                      return (
+
+                        '<option value="' +
+
+                        k +
+
+                        '">' +
+
+                        esc(k === 'chassis' ? 'شاسی و موتور' : STATION_NAME[k]) +
+
+                        '</option>'
+
+                      );
+
+                    })
+
+                    .join(''),
+
+                  o = '';
+
+                for (var i = 0; i < n; i++)
+
+                  o +=
+
+                    '<div class="row brow" style="gap:8px"><input class="in num ltr" data-bf="c" inputmode="numeric" autocomplete="off" placeholder="کد پرسنلی" aria-label="کد پرسنلی" style="flex:1 1 120px;min-width:100px"><input class="in" data-bf="n" autocomplete="off" placeholder="نام و نام خانوادگی" aria-label="نام" style="flex:2 1 170px;min-width:140px"><select class="in" data-bf="s" aria-label="ایستگاه" style="flex:1 1 140px;min-width:120px">' +
+
+                    opts +
+
+                    '</select><input class="in num ltr" data-bf="p" autocomplete="off" inputmode="numeric" placeholder="رمز" aria-label="رمز" style="flex:1 1 90px;min-width:80px"></div>';
+
+                return o;
+
+              }
+      // END SECTION: views/admin/bulkRowHtml
+    
+</script>
+
+<script type="text/x-mohr-section" data-mohr-section="views/admin/secBtns" data-order="27.025">
+
+      // BEGIN SECTION: views/admin/secBtns
+
+
+              function secBtns(u) {
+
+                var stn = u.station === 'engine' ? 'chassis' : u.station;
+
+                if (['chassis', 'trim', 'st4', 'st5'].indexOf(stn) < 0)
+
+                  return '<span class="hint">—</span>';
+
+                return [
+
+                  ['', 'هر دو'],
+
+                  ['ewt1', 'EWT1'],
+
+                  ['ewt2', 'EWT2'],
+
+                ]
+
+                  .map(function (x) {
+
+                    return (
+
+                      '<button class="btn sm" data-act="usec" data-u="' +
+
+                      esc(u.id) +
+
+                      '" data-v="' +
+
+                      x[0] +
+
+                      '" aria-pressed="' +
+
+                      ((u.sec || '') === x[0]) +
+
+                      '">' +
+
+                      x[1] +
+
+                      '</button>'
+
+                    );
+
+                  })
+
+                  .join(' ');
+
+              }
+      // END SECTION: views/admin/secBtns
+    
+</script>
+
+<script type="text/x-mohr-section" data-mohr-section="views/admin/stationLabel" data-order="27.05">
+
+      // BEGIN SECTION: views/admin/stationLabel
+
+
+              function stationLabel(u) {
+
+                if (isCustomRole(u)) return roleSheetsTxt(u);
+
+                if (isMgrUser(u))
+
+                  return u.role === 'mgr'
+
+                    ? (u.mgrTitle || 'مدیریت') + (u.mgrUnit ? ' ' + u.mgrUnit : '')
+
+                    : 'مدیر/معاون تولید و مهندسی';
+
+                var k = u.station === 'engine' ? 'chassis' : u.station;
+
+                return k === 'chassis' ? 'شاسی و موتور' : STATION_NAME[k] || k;
+
+              }
+      // END SECTION: views/admin/stationLabel
+    
+</script>
+
+<script type="text/x-mohr-section" data-mohr-section="views/admin/usersSummary" data-order="27.075">
+
+      // BEGIN SECTION: views/admin/usersSummary
+
+
+              function usersSummary(us) {
+
+                var by = {};
+
+                us.forEach(function (u) {
+
+                  var l = stationLabel(u);
+
+                  by[l] = (by[l] || 0) + 1;
+
+                });
+
+                var chips = Object.keys(by)
+
+                  .map(function (l) {
+
+                    return '<span class="mgpill">' + esc(l) + ' <b>' + fa(by[l]) + '</b></span>';
+
+                  })
+
+                  .join('');
+
+                return (
+
+                  '<div class="mgstat"><div class="mgbig"><b>' +
+
+                  fa(us.length) +
+
+                  '</b><span>کاربر ثبت‌شده</span></div><div class="mgchips">' +
+
+                  (chips || '<span class="hint">هنوز کاربری اضافه نشده است.</span>') +
+
+                  '</div></div>'
+
+                );
+
+              }
+      // END SECTION: views/admin/usersSummary
+    
+</script>
+
+<script type="text/x-mohr-section" data-mohr-section="views/admin/userRow" data-order="27.1">
+
+      // BEGIN SECTION: views/admin/userRow
+
+
+              function userRow(u) {
+
+                var open = S.uOpen === u.id,
+
+                  sb = secBtns(u),
+
+                  pw = pwCell(u);
+
+                function row(label, body) {
+
+                  return body && body !== '<span class="hint">—</span>'
+
+                    ? '<div class="mgu-row"><span>' + label + '</span><div>' + body + '</div></div>'
+
+                    : '';
+
+                }
+
+                var del =
+
+                  S.confirmUser === u.id
+
+                    ? '<button class="btn sm" data-act="udelyes" data-id="' +
+
+                      esc(u.id) +
+
+                      '">تأیید حذف</button> <button class="btn sm" data-act="udelno">انصراف</button>'
+
+                    : '<button class="btn sm danger" data-act="udelask" data-id="' +
+
+                      esc(u.id) +
+
+                      '">حذف کاربر</button>';
+
+                return (
+
+                  '<details class="mgu"' +
+
+                  (open ? ' open' : '') +
+
+                  ' data-q="' +
+
+                  esc(u.name + ' ' + u.id) +
+
+                  '"><summary data-act="uopen" data-id="' +
+
+                  esc(u.id) +
+
+                  '"><span class="mgav">' +
+
+                  esc((u.name || '?').trim().charAt(0)) +
+
+                  '</span><span class="mgu-main"><b>' +
+
+                  esc(u.name) +
+
+                  '</b><small class="num">' +
+
+                  esc(u.id) +
+
+                  '</small></span><span class="mgpill">' +
+
+                  esc(stationLabel(u)) +
+
+                  '</span>' +
+
+                  '</summary><div class="mgu-body">' +
+
+                  row('بخش چکمن', sb) +
+
+                  row('رمز', pw) +
+
+                  row('', del) +
+
+                  '</div></details>'
+
+                );
+
+              }
+      // END SECTION: views/admin/userRow
+    
+</script>
+
+<script type="text/x-mohr-section" data-mohr-section="views/admin/usersList" data-order="27.125">
+
+      // BEGIN SECTION: views/admin/usersList
+
+
+              function usersList(us) {
+
+                if (!us.length) return '';
+
+                return (
+
+                  '<input class="in mgsearch" id="mguq" placeholder="جست‌وجوی نام یا کد پرسنلی" autocomplete="off"><div id="mgulist">' +
+
+                  us.map(userRow).join('') +
+
+                  '</div>'
+
+                );
+
+              }
+      // END SECTION: views/admin/usersList
+    
+</script>
+
+<script type="text/x-mohr-section" data-mohr-section="views/admin/stationFields" data-order="27.3">
+
+      // BEGIN SECTION: views/admin/stationFields
+
+
+              function stationFields() {
+
+                var opts = [
+
+                  'chassis',
+
+                  'trim',
+
+                  'st4',
+
+                  'st5',
+
+                  'gas',
+
+                  'mech',
+
+                  'quality',
+
+                  'roll',
+
+                  'commercial',
+
+                  'planning',
+
+                ]
+
+                  .map(function (k) {
+
+                    return (
+
+                      '<option value="' +
+
+                      k +
+
+                      '">' +
+
+                      esc(k === 'chassis' ? 'شاسی و موتور' : STATION_NAME[k]) +
+
+                      '</option>'
+
+                    );
+
+                  })
+
+                  .join('');
+
+                return (
+
+                  '<div class="mgrow"><label class="f">ایستگاه<select class="in" id="us">' +
+
+                  opts +
+
+                  '</select></label><label class="f">رمز<input class="in" id="up" type="password" autocomplete="new-password"></label></div>'
+
+                );
+
+              }
+      // END SECTION: views/admin/stationFields
+    
+</script>
+
+<script type="text/x-mohr-section" data-mohr-section="views/admin/mgrFields" data-order="27.325">
+
+      // BEGIN SECTION: views/admin/mgrFields
+
+
+              function mgrFields() {
+
+                return (
+
+                  '<div class="mgrow"><label class="f">سمت<select class="in" id="ut">' +
+
+                  listOptions(mgrTitles()) +
+
+                  '</select></label><label class="f">بخش<select class="in" id="uu"><option value="">بدون بخش</option>' +
+
+                  listOptions(mgrUnits()) +
+
+                  '</select></label></div><label class="f">رمز<input class="in" id="up" type="password" autocomplete="new-password"></label>'
+
+                );
+
+              }
+      // END SECTION: views/admin/mgrFields
+    
+</script>
+
+<script type="text/x-mohr-section" data-mohr-section="views/admin/roleFields" data-order="27.35">
+
+      // BEGIN SECTION: views/admin/roleFields
+
+
+              function roleFields() {
+
+                return (
+
+                  '<div class="mgrow"><label class="f">نقش<select class="in" id="ur2">' +
+
+                  roleDefs()
+
+                    .map(function (r) {
+
+                      return '<option value="' + esc(r.id) + '">' + esc(r.name) + '</option>';
+
+                    })
+
+                    .join('') +
+
+                  '</select></label><label class="f">رمز<input class="in" id="up" type="password" autocomplete="new-password"></label></div>'
+
+                );
+
+              }
+      // END SECTION: views/admin/roleFields
+    
+</script>
+
+<script type="text/x-mohr-section" data-mohr-section="views/admin/addUserForm" data-order="27.375">
+
+      // BEGIN SECTION: views/admin/addUserForm
+
+
+              function addUserForm() {
+
+                var mgr = S.ukind === 'mgr';
+
+                return (
+
+                  '<form data-form="adduser" class="mgform"><label class="f">نوع حساب<select class="in" id="ukind"><option value="">چکمن / ایستگاه</option><option value="mgr"' +
+
+                  (mgr ? ' selected' : '') +
+
+                  '>مدیریتی (داشبورد)</option><option value="role"' +
+
+                  (S.ukind === 'role' ? ' selected' : '') +
+
+                  '>نقش دلخواه (سرپرست و ...)</option></select></label><div class="mgrow"><label class="f">کد پرسنلی<input class="in num ltr" id="uc" inputmode="numeric" autocomplete="off"></label><label class="f">نام و نام خانوادگی<input class="in" id="un" autocomplete="off"></label></div>' +
+
+                  (mgr ? mgrFields() : S.ukind === 'role' ? roleFields() : stationFields()) +
+
+                  (S.formErr ? '<p class="err">' + esc(S.formErr) + '</p>' : '') +
+
+                  '<button class="btn primary" type="submit">ذخیره کاربر</button></form>'
+
+                );
+
+              }
+      // END SECTION: views/admin/addUserForm
+    
+</script>
+
+<script type="text/x-mohr-section" data-mohr-section="views/admin/bulkUsersForm" data-order="27.4">
+
+      // BEGIN SECTION: views/admin/bulkUsersForm
+
+
+              function bulkUsersForm() {
+
+                return (
+
+                  '<form data-form="bulkusers" class="mgform"><p class="hint">هر کاربر یک ردیف: کد پرسنلی، نام، ایستگاه و رمز. با «ردیف جدید» ردیف اضافه کنید. کد تکراری، جایگزین کاربر قبلی می‌شود.</p><div id="bulkrows">' +
+
+                  bulkRowHtml(5) +
+
+                  '</div><div class="row"><button type="button" class="btn sm" data-act="bulkrow">+ ردیف جدید</button></div>' +
+
+                  '<details><summary class="hint" style="cursor:pointer">یا از اکسل کپی کنید و اینجا بچسبانید</summary><p class="hint" style="margin:8px 0">هر خط: کد پرسنلی، نام، ایستگاه، رمز (با ویرگول یا Tab جدا).</p><textarea class="in" id="bulk" rows="5" dir="rtl" style="unicode-bidi:plaintext;text-align:right" placeholder="1234567, علی رضایی, رول تست, 4821"></textarea></details>' +
+
+                  (S.bulkMsg ? '<p class="hint">' + esc(S.bulkMsg) + '</p>' : '') +
+
+                  '<button class="btn primary" type="submit">افزودن همه</button></form>'
+
+                );
+
+              }
+      // END SECTION: views/admin/bulkUsersForm
+    
+</script>
+
+<script type="text/x-mohr-section" data-mohr-section="views/admin/usersCard" data-order="27.425">
+
+      // BEGIN SECTION: views/admin/usersCard
+
+
+              function usersCard() {
+
+                var us = S.data.users.slice().sort(function (a, b) {
+
+                    return a.id < b.id ? -1 : 1;
+
+                  }),
+
+                  open = S.uAdd || S.formErr || S.bulkMsg;
+
+                var add =
+
+                  '<button class="btn mgadd" data-act="uadd" aria-expanded="' +
+
+                  !!open +
+
+                  '">' +
+
+                  mgIcon('userplus') +
+
+                  '<span>' +
+
+                  (open ? 'بستن فرم افزودن' : 'افزودن کاربر جدید') +
+
+                  '</span></button>' +
+
+                  (open
+
+                    ? addUserForm() +
+
+                      '<details class="mgbulk"' +
+
+                      (S.bulkMsg ? ' open' : '') +
+
+                      '><summary>افزودن گروهی کاربران</summary>' +
+
+                      bulkUsersForm() +
+
+                      '</details>'
+
+                    : '');
+
+                return (
+
+                  mgCard(
+
+                    'users',
+
+                    'کاربران و کد پرسنلی',
+
+                    'هر چکمن با کد پرسنلی و رمز خودش وارد می‌شود. برای تغییر رمز، «رمز تازه» را در جزئیات کاربر بزنید یا همان کد را دوباره با رمز جدید ذخیره کنید.',
+
+                    usersSummary(us) + usersList(us),
+
+                  ) + mgCard('userplus', 'افزودن کاربر', '', add)
+
+                );
+
+              }
+      // END SECTION: views/admin/usersCard
+    
+</script>
+
+<script type="text/x-mohr-section" data-mohr-section="features/roles" data-order="29">
+
+      // BEGIN SECTION: features/roles
+              /* ---------- نقش‌ها و دسترسی‌ها (مدیر می‌سازد؛ حساب نقش دلخواه role="cr:<id>" دارد) ---------- */
+              var ROLE_PERMS = [
+                ['dash', 'داشبورد'],
+                ['short', 'کسری‌های باز'],
+                ['smp', 'نمونه‌زنی'],
+                ['report', 'گزارش'],
+                ['car', 'پرونده خودرو'],
+                ['cpf', 'فرم حفاظت از مشتری'],
+              ];
+              var AREAS = {
+                all: { label: 'همه‌ی حوزه‌ها', sheets: null },
+                chassis: { label: 'شاسی و موتور', sheets: ['chassis', 'engine'] },
+                trim: { label: 'تزیینات', sheets: ['trim'] },
+                gas: { label: 'تست گاز', sheets: ['gas'] },
+                final: { label: 'نهایی (بالا و پایین)', sheets: ['final1', 'final2'] },
+                mech: { label: 'مکانیکی', sheets: ['mech', 'mech2'] },
+                roll: { label: 'رول تست', sheets: ['roll'] },
+                road: { label: 'تست جاده', sheets: ['road'] },
+                comm: { label: 'تجاری', sheets: ['comm'] },
+              };
+              var ROLE_DEFAULTS = [
+                {
+                  id: 'sup_chassis',
+                  name: 'سرپرست شاسی و موتور',
+                  scope: 'chassis',
+                  tabs: { dash: true, cpf: true },
+                },
+                {
+                  id: 'sup_final',
+                  name: 'سرپرست نهایی',
+                  scope: 'final',
+                  tabs: { dash: true, cpf: true },
+                },
+                {
+                  id: 'sup_trim',
+                  name: 'سرپرست تزیینات',
+                  scope: 'trim',
+                  tabs: { dash: true, cpf: true },
+                },
+              ];
+              function roleDefs() {
+                var r = S.lists && S.lists.roles;
+                return Array.isArray(r) ? r : ROLE_DEFAULTS;
+              }
+              function customRoleId(u) {
+                var m = u && /^cr:(.+)$/.exec(u.role || '');
+                return m ? m[1] : '';
+              }
+              function isCustomRole(u) {
+                return !!customRoleId(u);
+              }
+              function roleDefOf(u) {
+                var id = customRoleId(u);
+                return id
+                  ? roleDefs().filter(function (r) {
+                      return r.id === id;
+                    })[0] || null
+                  : null;
+              }
+              function rolePerm(p) {
+                var d = roleDefOf(S.user);
+                return !!(d && d.tabs && d.tabs[p]);
+              }
+              /* حوزه‌ی مجاز کاربر: فهرست برگه‌ها، یا null یعنی همه */
+              function userSheets() {
+                var d = roleDefOf(S.user);
+                return d && AREAS[d.scope] ? AREAS[d.scope].sheets : null;
+              }
+              function firstRoleTab() {
+                var t = ROLE_PERMS.map(function (x) {
+                  return x[0];
+                }).filter(rolePerm);
+                return t[0] || 'dash';
+              }
+              function customTabs() {
+                var h = '<div class="tabs" role="tablist">';
+                ROLE_PERMS.forEach(function (p) {
+                  if (rolePerm(p[0]))
+                    h += p[0] === 'short' ? shortTab() : p[0] === 'cpf' ? cpfTab() : tabBtn(p[0], p[1]);
+                });
+                return h + '</div>';
+              }
+              function roleEmptyView() {
+                return '<div class="card"><p class="hint" style="margin:0">برای این نقش تبی فعال نشده است. با مدیر تماس بگیرید.</p></div>';
+              }
+              function roleSheetsTxt(u) {
+                var d = roleDefOf(u);
+                return d ? d.name : 'نقش حذف‌شده';
+              }
+
+              /* ---------- صفحه‌ی مدیریت نقش‌ها ---------- */
+              function roleForm(r) {
+                var tabs = ROLE_PERMS.map(function (p) {
+                  return (
+                    '<label class="chk"><input type="checkbox" id="rp_' +
+                    r.id +
+                    '_' +
+                    p[0] +
+                    '"' +
+                    (r.tabs && r.tabs[p[0]] ? ' checked' : '') +
+                    '> ' +
+                    p[1] +
+                    '</label>'
+                  );
+                }).join('');
+                var scope = areaOptions(r.scope);
+                var del =
+                  S.roleDel === r.id
+                    ? '<button type="button" class="btn sm danger" data-act="roledelyes" data-id="' +
+                      esc(r.id) +
+                      '">تأیید حذف</button><button type="button" class="btn sm" data-act="roledelno">انصراف</button>'
+                    : '<button type="button" class="btn sm danger" data-act="roledelask" data-id="' +
+                      esc(r.id) +
+                      '">حذف نقش</button>';
+                return (
+                  '<form data-form="rolesave" data-id="' +
+                  esc(r.id) +
+                  '" class="mgform" style="border-bottom:1px solid var(--line);padding-bottom:12px;margin-bottom:12px"><label class="f">نام نقش<input class="in" id="rn_' +
+                  r.id +
+                  '" value="' +
+                  esc(r.name) +
+                  '" maxlength="40"></label><label class="f">محدود به حوزه<select class="in" id="rs_' +
+                  r.id +
+                  '">' +
+                  scope +
+                  '</select></label><div class="row">' +
+                  tabs +
+                  '</div><div class="row"><button class="btn primary" type="submit">ذخیره</button>' +
+                  del +
+                  '</div></form>'
+                );
+              }
+              function areaOptions(cur) {
+                return Object.keys(AREAS)
+                  .map(function (k) {
+                    return (
+                      '<option value="' +
+                      k +
+                      '"' +
+                      (k === cur ? ' selected' : '') +
+                      '>' +
+                      esc(AREAS[k].label) +
+                      '</option>'
+                    );
+                  })
+                  .join('');
+              }
+              function restoreBtns() {
+                return S.roleRestore
+                  ? '<span class="hint">سه نقش آماده به حالت اولشان برمی‌گردند (نقش‌های دیگر دست نمی‌خورند).</span><button type="button" class="btn sm danger" data-act="rolerestoreyes">تأیید</button><button type="button" class="btn sm" data-act="rolerestoreno">انصراف</button>'
+                  : '<button type="button" class="btn sm" data-act="rolerestoreask">برگرداندن سه نقش آماده</button>';
+              }
+              function rolesCards() {
+                var add =
+                  '<form data-form="roleadd" class="mgform"><label class="f">نقش تازه (مثلاً مدیر نقاشی)<input class="in" id="rnew" autocomplete="off" maxlength="40"></label><label class="f">حوزه<select class="in" id="rnew_sc">' +
+                  areaOptions('all') +
+                  '</select></label><button class="btn" type="submit">افزودن نقش</button></form><div class="row" style="margin-top:12px">' +
+                  restoreBtns() +
+                  '</div>';
+                return mgCard(
+                  'shield',
+                  'نقش‌ها و دسترسی‌ها',
+                  'برای هر نقش مشخص کنید کدام تب‌ها را ببیند و به کدام حوزه محدود باشد. حساب این نقش‌ها بازدید ثبت نمی‌کند و فقط تب‌های انتخاب‌شده را دارد. دسترسی فعلاً فقط در ظاهر برنامه اعمال می‌شود.',
+                  roleDefs().map(roleForm).join('') + add,
+                );
+              }
+              /* ذخیره‌ی کل فهرست نقش‌ها در سند فهرست‌ها */
+              function rolesSave(next, what) {
+                return lsSave(
+                  function (c) {
+                    c.roles = next;
+                  },
+                  what,
+                  false,
+                );
+              }
+              function roleFromForm(r) {
+                var tabs = {};
+                ROLE_PERMS.forEach(function (p) {
+                  var e = document.getElementById('rp_' + r.id + '_' + p[0]);
+                  if (e && e.checked) tabs[p[0]] = true;
+                });
+                return {
+                  id: r.id,
+                  name: val('rn_' + r.id),
+                  scope: val('rs_' + r.id) || 'all',
+                  tabs: tabs,
+                };
+              }
+              function roleSaveForm(id) {
+                var cur = roleDefs(),
+                  r = cur.filter(function (x) {
+                    return x.id === id;
+                  })[0];
+                if (!r) return;
+                var nr = roleFromForm(r);
+                if (!nr.name) {
+                  toast('نام نقش را بنویسید.');
+                  return;
+                }
+                rolesSave(
+                  cur.map(function (x) {
+                    return x.id === id ? nr : x;
+                  }),
+                  'ذخیره‌ی نقش ' + nr.name,
+                );
+              }
+              function roleAddForm() {
+                var name = val('rnew');
+                if (!name) {
+                  toast('نام نقش را بنویسید.');
+                  return;
+                }
+                rolesSave(
+                  roleDefs().concat([
+                    {
+                      id: 'r' + Date.now().toString(36),
+                      name: name,
+                      scope: val('rnew_sc') || 'all',
+                      tabs: { dash: true, cpf: true },
+                    },
+                  ]),
+                  'افزودن نقش ' + name,
+                );
+              }
+              /* نقش‌های آماده با همان شناسه جایگزین می‌شوند یا اگر نیستند اضافه می‌شوند */
+              function rolesRestore() {
+                S.roleRestore = false;
+                var cur = roleDefs().map(function (r) {
+                  var d = ROLE_DEFAULTS.filter(function (x) {
+                    return x.id === r.id;
+                  })[0];
+                  return d || r;
+                });
+                ROLE_DEFAULTS.forEach(function (d) {
+                  if (
+                    !cur.some(function (r) {
+                      return r.id === d.id;
+                    })
+                  )
+                    cur.push(d);
+                });
+                rolesSave(cur, 'برگرداندن نقش‌های آماده');
+              }
+              function roleDelete(id) {
+                var r = roleDefs().filter(function (x) {
+                  return x.id === id;
+                })[0];
+                S.roleDel = '';
+                rolesSave(
+                  roleDefs().filter(function (x) {
+                    return x.id !== id;
+                  }),
+                  'حذف نقش ' + (r ? r.name : ''),
+                );
+              }
+      // END SECTION: features/roles
+    
+</script>
+
+<script type="text/x-mohr-section" data-mohr-section="dashboard/quality/owned-dashAllowed" data-order="30.083333333333332">
+ /* DASHD: فهرست تخت رکوردها/ایرادها؛ DASHR: نتیجه‌ی آخرین فیلتر */
+
+              function dashAllowed() {
+                var u = S.user;
+                if (!u) return false;
+                if (isCustomRole(u)) return rolePerm('dash');
+                return (
+                  u.id === 'owner' || u.station === 'quality' || u.station === 'planning' || isMgrUser(u)
+                );
+              }
+</script>
+
+<script type="text/x-mohr-section" data-mohr-section="features/stops/owned-canStop" data-order="31">
+
+      // BEGIN SECTION: features/stops
+              /* ---------- ثبت توقف خط (واحد برنامه‌ریزی) ---------- */
+              function canStop() {
+                return !!S.user && S.user.station === 'planning';
+              }
+</script>
+
+<script type="text/x-mohr-section" data-mohr-section="features/planning/owned-isPlanningUser" data-order="32">
+
+      // BEGIN SECTION: features/planning
+              /* ---------- کسری‌های برنامه‌ریزی (جدا از ایراد/کسری چکمن‌ها؛ هر ردیف یک سند psh_*) ---------- */
+              function isPlanningUser(u) {
+                return !!u && u.station === 'planning' && !isMgrUser(u) && !isCustomRole(u);
+              }
+              function canPlanShort() {
+                return isPlanningUser(S.user);
+              }
+</script>
+
+<script type="text/x-mohr-section" data-mohr-section="features/customer-protection/owned-mgrUnitOf" data-order="33.05882352941177">
+
+              function mgrUnitOf(u) {
+                if (!u) return '';
+                if (u.mgrUnit) return u.mgrUnit;
+                var r = (S.data.users || []).filter(function (x) {
+                  return x.id === u.id;
+                })[0];
+                return (r && r.mgrUnit) || '';
+              }
+              function canCpfCreate() {
+                return !!S.user && isCustomRole(S.user) && rolePerm('cpf');
+              }
+              function cpfAllowed() {
+                var u = S.user;
+                return (
+                  !!u && (u.id === 'owner' || u.station === 'quality' || isMgrUser(u) || canCpfCreate())
+                );
+              }
+</script>
+
+<script type="text/x-mohr-section" data-mohr-section="runtime/registrations-08" data-order="41.911764705882355">
+MOHRRuntime.views.register("roleEmptyView", roleEmptyView, "mohr-part-08-users-roles-access.html");
+MOHRRuntime.forms.register("submitAddUser", submitAddUser, "mohr-part-08-users-roles-access.html");
+MOHRRuntime.forms.register("submitBulkUsers", submitBulkUsers, "mohr-part-08-users-roles-access.html");
+MOHRRuntime.forms.register("submitRoleSave", submitRoleSave, "mohr-part-08-users-roles-access.html");
+MOHRRuntime.forms.register("submitRoleAdd", submitRoleAdd, "mohr-part-08-users-roles-access.html");
+</script>
+
+<script type="text/x-mohr-section" data-mohr-section="actions/forms/owned-submitAddUser" data-order="43.22857142857143">
+
+              function submitAddUser() {
+                var uc = digits(val('uc')),
+                  un = val('un'),
+                  up = digits(val('up')),
+                  mgr = S.ukind === 'mgr',
+                  cust = S.ukind === 'role';
+                var us = mgr || cust ? 'planning' : val('us'),
+                  extra = mgr ? { mgrTitle: val('ut'), mgrUnit: val('uu') } : {};
+                if (!/^[A-Za-z0-9]+$/.test(uc)) {
+                  S.formErr = 'کد پرسنلی را (فقط حرف لاتین و عدد) وارد کنید.';
+                  render();
+                  return;
+                }
+                if (!un) {
+                  S.formErr = 'نام را بنویسید.';
+                  render();
+                  return;
+                }
+                if (up.length < 4) {
+                  S.formErr = 'رمز دست‌کم ۴ کاراکتر باشد.';
+                  render();
+                  return;
+                }
+                if (mgr && !extra.mgrTitle) {
+                  S.formErr = 'سمت را انتخاب کنید.';
+                  render();
+                  return;
+                }
+                if (cust && !val('ur2')) {
+                  S.formErr = 'نقش را انتخاب کنید.';
+                  render();
+                  return;
+                }
+                var ur = mgr ? 'mgr' : cust ? 'cr:' + val('ur2') : '';
+                S.formErr = '';
+                if (srvAdmin()) {
+                  save(function () {
+                    return adminCall('adduser', {
+                      users: [
+                        Object.assign({ id: uc, name: un, station: us, role: ur, password: up }, extra),
+                      ],
+                    });
+                  }, 'کاربر ذخیره شد').then(function (ok) {
+                    if (ok)
+                      ['uc', 'un', 'up'].forEach(function (i) {
+                        var e = document.getElementById(i);
+                        if (e) e.value = '';
+                      });
+                  });
+                  return;
+                }
+                var salt = uid();
+                sha(salt + up)
+                  .then(function (hh) {
+                    return save(function () {
+                      return store.set(
+                        'users',
+                        uc,
+                        Object.assign(
+                          { name: un, station: us, role: ur, salt: salt, hash: hh, createdAt: nowIso() },
+                          extra,
+                        ),
+                      );
+                    }, 'کاربر ذخیره شد');
+                  })
+                  .then(function () {
+                    ['uc', 'un', 'up'].forEach(function (i) {
+                      var e = document.getElementById(i);
+                      if (e) e.value = '';
+                    });
+                  });
+              }
+              function submitBulkUsers() {
+                var ok = [],
+                  bad = [],
+                  seenC = {};
+                var addU = function (c, n, stn, pw, label) {
+                  c = digits(c);
+                  pw = digits(pw);
+                  n = String(n || '').trim();
+                  if (/^[A-Za-z0-9]+$/.test(c) && n && stn && pw && pw.length >= 4 && !seenC[c]) {
+                    seenC[c] = 1;
+                    ok.push({ c: c, n: n, st: stn, pw: pw });
+                  } else bad.push(label);
+                };
+                var byName = {};
+                Object.keys(STATION_NAME).forEach(function (k) {
+                  if (k !== 'owner') {
+                    byName[STATION_NAME[k]] = k;
+                    byName[k] = k;
+                  }
+                });
+                byName['شاسی'] = 'chassis';
+                byName[STATION_NAME.engine] = 'chassis';
+                byName.engine = 'chassis';
+                Array.prototype.forEach.call(
+                  document.querySelectorAll('#bulkrows .brow'),
+                  function (rw, i) {
+                    var g = function (k) {
+                      var e = rw.querySelector('[data-bf=' + k + ']');
+                      return e ? e.value : '';
+                    };
+                    if (!g('c').trim() && !g('n').trim() && !g('p').trim()) return;
+                    addU(g('c'), g('n'), g('s'), g('p'), 'ردیف ' + fa(i + 1));
+                  },
+                );
+                val('bulk')
+                  .split(/\n+/)
+                  .map(function (x) {
+                    return x.trim();
+                  })
+                  .filter(Boolean)
+                  .forEach(function (ln, i) {
+                    var p = ln.split(/[,\t;،]/).map(function (x) {
+                      return x.trim();
+                    });
+                    addU(p[0], p[1], byName[p[2]], p[3], 'خط چسبانده ' + fa(i + 1));
+                  });
+                if (!ok.length && !bad.length) {
+                  S.bulkMsg = 'هیچ ردیفی پر نشده است.';
+                  render();
+                  return;
+                }
+                if (srvAdmin()) {
+                  adminCall('adduser', {
+                    users: ok.map(function (u) {
+                      return { id: u.c, name: u.n, station: u.st, password: u.pw };
+                    }),
+                  })
+                    .then(function () {
+                      S.bulkMsg =
+                        fa(ok.length) +
+                        ' کاربر ذخیره شد.' +
+                        (bad.length
+                          ? ' ردشده (کد، نام، ایستگاه یا رمز درست نیست یا کد تکراری است): ' +
+                            bad.join('، ')
+                          : '');
+                      render();
+                    })
+                    .catch(function (e) {
+                      S.bulkMsg = 'ذخیره نشد. ' + ((e && e.message) || '');
+                      render();
+                    });
+                  return;
+                }
+                Promise.all(
+                  ok.map(function (u) {
+                    var salt = uid();
+                    return sha(salt + u.pw).then(function (hh) {
+                      return store.set('users', u.c, {
+                        name: u.n,
+                        station: u.st,
+                        salt: salt,
+                        hash: hh,
+                        createdAt: nowIso(),
+                      });
+                    });
+                  }),
+                )
+                  .then(function () {
+                    S.bulkMsg =
+                      fa(ok.length) +
+                      ' کاربر ذخیره شد.' +
+                      (bad.length
+                        ? ' ردشده (کد، نام، ایستگاه یا رمز درست نیست یا کد تکراری است): ' + bad.join('، ')
+                        : '');
+                    render();
+                  })
+                  .catch(function (e) {
+                    S.bulkMsg = 'ذخیره نشد. ' + ((e && e.message) || '');
+                    render();
+                  });
+              }
+</script>
+
+<script type="text/x-mohr-section" data-mohr-section="actions/forms/owned-submitRoleSave" data-order="43.34285714285714">
+
+              function submitRoleSave(ev) {
+                roleSaveForm(ev.target.getAttribute('data-id'));
+              }
+              function submitRoleAdd() {
+                roleAddForm();
+              }
+</script>
+</body>
+</html>

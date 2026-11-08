@@ -1,0 +1,117 @@
+<!doctype html>
+<html lang="fa" dir="rtl">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover" />
+    <meta name="theme-color" content="#1f3a8a" />
+    <title>پرونده خودرو · مُهر</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Vazirmatn:wght@400;500;700;900&display=swap"
+    />
+  </head>
+  <body>
+    <!-- This page owns the feature sections below. Shared code is loaded from the
+     other local HTML parts. There are no separate JavaScript or CSS files.
+     Keep data-order and section markers stable. See guide.html for the file map. -->
+    <div class="wrap" id="app" aria-live="polite">
+      <div class="card" id="boot" style="margin: 40px 16px; text-align: center">
+        <h2>مُهر</h2>
+        <p class="hint">در حال اتصال…</p>
+      </div>
+    </div>
+    <div id="toastbox"></div>
+    
+    
+    
+    
+
+    <script type="application/json" id="mohr-page">
+      { "tab": "car", "label": "پرونده خودرو" }
+    </script>
+    <script id="mohr-loader">
+      (async function loadMohrParts() {
+        'use strict';
+        const currentFile = decodeURIComponent(location.pathname.split('/').pop() || 'index.html');
+        const controller = new AbortController();
+        const timeout = setTimeout(() => controller.abort(), 20000);
+        try {
+          const route = JSON.parse(document.getElementById('mohr-page').textContent);
+          async function readPart(filename) {
+            const response = await fetch(new URL(filename, location.href), {
+              cache: 'no-cache',
+              signal: controller.signal,
+            });
+            if (!response.ok) throw new Error(filename + ': HTTP ' + response.status);
+            return new DOMParser().parseFromString(await response.text(), 'text/html');
+          }
+          const shared = currentFile === 'shared.html' ? document : await readPart('shared.html');
+          // The file map lives in shared.html so adding a part needs one manifest edit.
+          const manifest = JSON.parse(shared.getElementById('mohr-manifest').textContent);
+          const documents = await Promise.all(
+            manifest.parts.map(async function (filename) {
+              if (filename === 'shared.html') return shared;
+              if (filename === currentFile) return document;
+              return readPart(filename);
+            }),
+          );
+          const sections = documents
+            .flatMap(function (part) {
+              return Array.from(part.querySelectorAll('script[data-mohr-section]'));
+            })
+            .sort((a, b) => Number(a.dataset.order) - Number(b.dataset.order));
+          if (
+            sections.length !== manifest.sectionCount ||
+            new Set(sections.map((section) => section.dataset.mohrSection)).size !== sections.length
+          ) {
+            throw new Error('HTML parts are incomplete or contain duplicate script sections.');
+          }
+          const styles = documents
+            .flatMap(function (part) {
+              return Array.from(part.querySelectorAll('style[data-mohr-style]'));
+            })
+            .sort((a, b) => Number(a.dataset.order) - Number(b.dataset.order));
+          const style = document.createElement('style');
+          style.id = 'app-styles';
+          style.textContent = styles.map((block) => block.textContent).join('\n\n');
+          document.head.appendChild(style);
+          document.querySelectorAll('style[data-mohr-style]').forEach((block) => block.remove());
+          const icon = documents.flatMap((part) =>
+            Array.from(part.querySelectorAll('link[data-mohr-icon]')),
+          )[0];
+          if (icon && !document.querySelector('link[rel="icon"]'))
+            document.head.appendChild(icon.cloneNode(true));
+          window.__MOHR_PAGE_ROUTE = route;
+          window.__MOHR_PAGE_CONFIG = manifest.pages;
+          const script = document.createElement('script');
+          script.id = 'app-script';
+          // Parts are trusted local HTML documents. A single private scope preserves
+          // the existing app's function hoisting and initialization order.
+          script.textContent =
+            '(function () {\n"use strict";\n' +
+            sections.map((section) => section.textContent).join('\n\n') +
+            '\n})();';
+          document.body.appendChild(script);
+        } catch (error) {
+          const root = document.getElementById('app');
+          root.textContent = '';
+          const message = document.createElement('p');
+          message.textContent = 'بارگذاری برنامه انجام نشد. صفحه را دوباره بارگذاری کنید.';
+          const details = document.createElement('pre');
+          details.dir = 'ltr';
+          details.style.whiteSpace = 'pre-wrap';
+          details.textContent = error.message;
+          const retry = document.createElement('button');
+          retry.textContent = 'بارگذاری دوباره';
+          retry.onclick = () => location.reload();
+          root.append(message, details, retry);
+          console.error(error);
+        } finally {
+          clearTimeout(timeout);
+        }
+      })();
+    </script>
+  </body>
+</html>

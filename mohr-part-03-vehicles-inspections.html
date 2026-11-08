@@ -1,0 +1,2259 @@
+<!doctype html>
+<html lang="fa" dir="rtl">
+<head><meta charset="utf-8" /><title>بخش 03 — مدیریت خودرو و بازدیدها</title></head>
+<body>
+<!-- Structural source container only. Open index.html or the existing page URLs.
+     Original executable blocks are copied verbatim, not rewritten.
+     Cross-file execution remains controlled by each block's original data-order.
+     Empty script-section lists mean that the source is a station/page entry only;
+     the existing shared inspection engine remains in group 10. -->
+<script type="application/json" id="mohr-group-map">
+{
+  "group": "03",
+  "title": "مدیریت خودرو و بازدیدها",
+  "sources": [
+    {
+      "file": "inspections.html",
+      "page": {
+        "tab": "list",
+        "label": "همه بازدیدها"
+      },
+      "scriptSections": [
+        "features/archive/listView"
+      ],
+      "styleSections": []
+    },
+    {
+      "file": "vehicles.html",
+      "page": {
+        "tab": "car",
+        "label": "پرونده خودرو"
+      },
+      "scriptSections": [
+        "features/archive/declarations-0",
+        "features/archive/declarations-1",
+        "features/archive/declarations-5",
+        "features/archive/carView"
+      ],
+      "styleSections": []
+    },
+    {
+      "file": "archive.html",
+      "page": {
+        "tab": "archive",
+        "label": "بایگانی"
+      },
+      "scriptSections": [
+        "features/archive/archIdSet",
+        "features/archive/carIdents",
+        "features/archive/isArchivedCar",
+        "features/archive/assertNotArchived",
+        "features/archive/archOf",
+        "features/archive/archHist",
+        "features/archive/archiveCheck",
+        "features/archive/archiveStages",
+        "features/archive/archiveEvent",
+        "features/archive/archiveCar",
+        "features/archive/rearchiveCar",
+        "features/archive/pdiReturn",
+        "features/archive/archivedBlock",
+        "features/archive/histRows",
+        "features/archive/pdiCard",
+        "features/archive/pdiPendingCard",
+        "features/archive/archiveView"
+      ],
+      "styleSections": []
+    },
+    {
+      "file": "history.html",
+      "page": {
+        "label": "بخش مشترک"
+      },
+      "scriptSections": [
+        "views/history"
+      ],
+      "styleSections": []
+    }
+  ]
+}
+</script>
+<!-- Source: inspections.html; original block bodies and data-order are unchanged. -->
+
+
+
+<!-- Source: vehicles.html; original block bodies and data-order are unchanged. -->
+
+
+
+
+
+
+
+
+
+<!-- Source: archive.html; original block bodies and data-order are unchanged. -->
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- Source: history.html; original block bodies and data-order are unchanged. -->
+
+
+
+<script type="text/x-mohr-section" data-mohr-section="views/history/owned-blockCard" data-order="22">
+
+      // BEGIN SECTION: views/history
+              function blockCard(sheet, key) {
+                var b = blockedBy(sheet, key);
+                return (
+                  '<div class="card"><h2>مرحله قبل هنوز تأیید نشده است</h2><p class="hint">این برگه برای شماره <span class="num">' +
+                  esc(key) +
+                  '</span> وقتی باز می‌شود که برگه «' +
+                  esc(SHEETS[b].name) +
+                  '» کامل و تأیید شده باشد.</p></div>'
+                );
+              }
+              var CLOSE_STATIONS = [
+                'chassis',
+                'trim',
+                'st4',
+                'st5',
+                'gas',
+                'mech',
+                'roll',
+                'quality',
+                'commercial',
+                'planning',
+              ];
+              var CLOSE_DEFAULT = { close: { mech: 1, commercial: 1 }, closeSh: { commercial: 1 } };
+              /* kind: close = ایراد و نمونه، closeSh = کسری؛ تا مدیر تنظیم نکرده پیش‌فرض اعمال می‌شود */
+              function closeMapOf(kind) {
+                var m = {},
+                  base = (S.lists && S.lists.perm && S.lists.perm[kind]) || null;
+                CLOSE_STATIONS.forEach(function (k) {
+                  m[k] = base ? !!base[k] : !!CLOSE_DEFAULT[kind][k];
+                });
+                return m;
+              }
+              function permClose(st, type) {
+                return !!closeMapOf(type === 'shortage' ? 'closeSh' : 'close')[
+                  st === 'engine' ? 'chassis' : st
+                ];
+              }
+              function canCloseItem(type) {
+                return !!S.user && (S.user.id === 'owner' || permClose(S.user.station, type));
+              }
+              function itemTypeOf(docId, itemId) {
+                var r = S.data.insp.filter(function (x) {
+                    return x.id === docId;
+                  })[0],
+                  it = r && r.items && r.items[itemId];
+                return it ? it.r : '';
+              }
+              var ITEM_TYPES = { ng: 1, sample: 1, shortage: 1 };
+              /* همه‌ی ایراد/نمونه/کسری‌های یک خودرو در همه‌ی ایستگاه‌ها؛ باز: قدیمی‌تر اول، بسته: تازه‌تر اول */
+              function carHistoryItems(d) {
+                var open = [],
+                  closed = [],
+                  ord = { ng: 0, sample: 1, shortage: 2 };
+                carRecords(d.key).recs.forEach(function (r) {
+                  Object.keys(r.items || {}).forEach(function (id) {
+                    var it = r.items[id];
+                    if (!it || !ITEM_TYPES[it.r]) return;
+                    (it.closedAt ? closed : open).push({ r: r, id: id, it: it });
+                  });
+                });
+                open.sort(function (a, b) {
+                  return ord[a.it.r] - ord[b.it.r] || ((a.it.at || '') < (b.it.at || '') ? -1 : 1);
+                });
+                closed.sort(function (a, b) {
+                  return (b.it.closedAt || '') < (a.it.closedAt || '') ? -1 : 1;
+                });
+                return { open: open, closed: closed };
+              }
+              function openOnCar(d) {
+                return carHistoryItems(d).open;
+              }
+              function itemHead(x) {
+                return (
+                  '<div><span class="chip ' +
+                  (x.it.r === 'ng' ? 'open' : x.it.r) +
+                  '">' +
+                  typeName(x.it.r) +
+                  '</span>' +
+                  (x.it.pdi ? ' <span class="chip">برگشتی از PDI</span>' : '') +
+                  ' <b>' +
+                  esc(stationTitle(x.r.sheet)) +
+                  '</b> · ' +
+                  esc(itemLabel(x.r, x.id, x.it)) +
+                  '</div>'
+                );
+              }
+              function itemBody(x) {
+                return (
+                  (x.it.note ? '<p style="margin:4px 0">' + esc(x.it.note) + '</p>' : '') +
+                  (x.it.pdiBy ? '<div class="hint">بازرس PDI: ' + esc(x.it.pdiBy) + '</div>' : '') +
+                  (x.it.photo
+                    ? '<img src="' +
+                      x.it.photo +
+                      '" alt="عکس ایراد" style="max-width:100%;max-height:160px;border-radius:8px;margin:6px 0;display:block">'
+                    : '') +
+                  '<div class="hint">' +
+                  whoWhen(x.it.by, x.it.at, 'ثبت‌کننده') +
+                  '</div>'
+                );
+              }
+              /* token: بخش یکتای شناسه‌ی ورودی «اقدام انجام‌شده» (xcn_token) */
+              function openItemRow(x, token, can) {
+                return (
+                  '<div class="it">' +
+                  itemHead(x) +
+                  itemBody(x) +
+                  (can
+                    ? '<div class="row" style="margin-top:6px"><input class="in grow" id="xcn_' +
+                      token +
+                      '" placeholder="اقدام انجام‌شده" autocomplete="off"><button class="btn sm primary" data-act="xclose" data-doc="' +
+                      esc(x.r.id) +
+                      '" data-id="' +
+                      esc(x.id) +
+                      '" data-i="' +
+                      token +
+                      '">بستن</button></div>'
+                    : '') +
+                  '</div>'
+                );
+              }
+              function closedItemRow(x) {
+                return (
+                  '<div class="it">' +
+                  itemHead(x) +
+                  itemBody(x) +
+                  '<div class="hint">' +
+                  whoWhen(x.it.closedBy, x.it.closedAt, 'بسته‌کننده') +
+                  '</div>' +
+                  (x.it.closeNote
+                    ? '<div class="hint">اقدام انجام‌شده: ' + esc(x.it.closeNote) + '</div>'
+                    : '') +
+                  '</div>'
+                );
+              }
+              function allOpenCard(d) {
+                var L = openOnCar(d);
+                if (!L.length) return '';
+                var can = L.some(function (x) {
+                  return canCloseItem(x.it.r);
+                });
+                return (
+                  '<div class="card" style="border:2px solid #c0392b"><h2>ایرادها و کسری‌های باز این خودرو (' +
+                  fa(L.length) +
+                  ')</h2><p class="hint" style="margin-bottom:8px">از همه‌ی ایستگاه‌ها' +
+                  (can ? '. برای بستن هر مورد، اقدام انجام‌شده را بنویسید.' : '. فقط برای اطلاع است.') +
+                  '</p><div class="items">' +
+                  L.map(function (x, i) {
+                    return openItemRow(x, String(i), canCloseItem(x.it.r));
+                  }).join('') +
+                  '</div></div>'
+                );
+              }
+              /* نوار «سوابق خودرو» در صفحه‌ی شناسایی ایستگاه‌های ویزارد؛ با لمس، فهرست کامل باز می‌شود */
+              /* سوابق خودرو: صفحه‌ی جدا؛ به ترتیب ایستگاه‌های خط با نام تأییدکننده، ایراد/کسری/نمونه و حفاظت از مشتری. بستن موردها همان اختیار قبلی هر ایستگاه است */
+              function stageDone(r) {
+                var st = r && stat(r);
+                return !!r && st.signed === st.secs;
+              }
+              function histStageBody(r, H, tok) {
+                var sg = Object.keys(r.signs || {}).map(function (i) {
+                  return r.signs[i];
+                });
+                var h = sg.length
+                  ? sg
+                      .map(function (x) {
+                        return whoWhen(x.by, x.at, 'تأییدکننده');
+                      })
+                      .join('')
+                  : '<div class="hint">هنوز تأیید نشده</div>';
+                var mine = function (L) {
+                    return L.filter(function (x) {
+                      return x.r === r;
+                    });
+                  },
+                  o = mine(H.open),
+                  c = mine(H.closed);
+                if (!o.length && !c.length)
+                  return h + '<div class="hint">بدون ایراد، کسری یا نمونه</div>';
+                h += o
+                  .map(function (x) {
+                    return openItemRow(x, 'h' + tok.n++, canCloseItem(x.it.r));
+                  })
+                  .join('');
+                return (
+                  h +
+                  (c.length
+                    ? '<details class="histclosed"><summary>بسته‌شده‌ها (' +
+                      fa(c.length) +
+                      ')</summary>' +
+                      c.map(closedItemRow).join('') +
+                      '</details>'
+                    : '')
+                );
+              }
+              function histStageCard(k, r, H, tok, own) {
+                var nOpen = r
+                  ? H.open.filter(function (x) {
+                      return x.r === r;
+                    }).length
+                  : 0;
+                var state = !r ? 'ثبت نشده' : stageDone(r) ? 'تأیید شده' : 'در حال بازدید';
+                return (
+                  '<details class="card histstage"' +
+                  (own ? ' open' : '') +
+                  '><summary><b>' +
+                  esc(stationTitle(k)) +
+                  '</b> <span class="chip' +
+                  (nOpen ? ' open' : '') +
+                  '">' +
+                  state +
+                  (nOpen ? ' · ' + fa(nOpen) + ' مورد باز' : '') +
+                  '</span></summary>' +
+                  (r ? histStageBody(r, H, tok) : '<div class="hint">هنوز ثبت نشده</div>') +
+                  '</details>'
+                );
+              }
+              function histSummaryLine(c) {
+                var st = stagesFor(c.recs),
+                  done = 0,
+                  cur = '';
+                st.forEach(function (k) {
+                  var r = c.recs.filter(function (x) {
+                    return x.sheet === k;
+                  })[0];
+                  if (stageDone(r)) done++;
+                  else if (!cur) cur = stationTitle(k);
+                });
+                return (
+                  fa(done) +
+                  ' از ' +
+                  fa(st.length) +
+                  ' مرحله تمام شد' +
+                  (cur ? ' · الان در «' + esc(cur) + '»' : '')
+                );
+              }
+              function histPageView(d) {
+                var H = carHistoryItems(d),
+                  c = carRecords(d.key),
+                  tok = { n: 0 },
+                  cpf = cpfForCar(c, false);
+                var h =
+                  '<div class="card"><div class="row"><button class="btn sm" data-act="histback">▶ بازگشت</button><b class="grow">سوابق خودرو</b></div>' +
+                  carInfo(d) +
+                  '<p class="hint" style="margin:8px 0 0">' +
+                  histSummaryLine(c) +
+                  '</p></div>';
+                h += stagesFor(c.recs)
+                  .map(function (k) {
+                    return histStageCard(
+                      k,
+                      c.recs.filter(function (x) {
+                        return x.sheet === k;
+                      })[0],
+                      H,
+                      tok,
+                      k === d.sheet,
+                    );
+                  })
+                  .join('');
+                return (
+                  h +
+                  (cpf.length
+                    ? '<div class="card"><h2>فرم‌های حفاظت از مشتری (' +
+                      fa(cpf.length) +
+                      ')</h2>' +
+                      cpf.map(cpfBrief).join('') +
+                      '</div>'
+                    : '')
+                );
+              }
+              function carHistoryBlock(d) {
+                var H = memoFor('hist', d.id, function () {
+                    return carHistoryItems(d);
+                  }),
+                  no = H.open.length,
+                  nc = H.closed.length;
+                var nSh = H.open.filter(function (x) {
+                    return x.it.r === 'shortage';
+                  }).length,
+                  nNg = no - nSh;
+                var sum = no
+                  ? (nNg ? fa(nNg) + ' ایراد' : '') +
+                    (nNg && nSh ? ' و ' : '') +
+                    (nSh ? fa(nSh) + ' کسری' : '') +
+                    ' باز'
+                  : 'بدون مورد باز';
+                return (
+                  '<button type="button" class="histbar' +
+                  (no ? ' hot' : '') +
+                  '" data-act="histtoggle"><b>سوابق خودرو</b><span>' +
+                  sum +
+                  (nc ? ' — ' + fa(nc) + ' بسته‌شده' : '') +
+                  '</span><i>◂</i></button>'
+                );
+              }
+              var SHORTN = {
+                chassis: 'شاسی',
+                engine: 'موتور',
+                trim: 'تزیینات',
+                gas: 'گاز',
+                final1: 'نهایی بالا',
+                final2: 'نهایی پایین',
+                mech: 'مکانیکی',
+                roll: 'رول تست',
+                road: 'تست جاده',
+                mech2: 'مکانیکی ۲',
+                comm: 'تجاری',
+              };
+              /* v99 (فقط شاسی): آیکون‌های SVG یکدست به‌جای نمادهای متنی؛ همه‌ی جایگزینی‌ها فقط همین‌جاست */
+              var ICON_PATHS = {
+                '✓': 'M5 12.5l4.5 4.5L19 7',
+                '✗': 'M6 6l12 12M18 6L6 18',
+                '✕': 'M6 6l12 12M18 6L6 18',
+                '⚠': 'M12 4l9 16H3zM12 10v4.5M12 17.6v.1',
+                '◇': 'M12 3l8 9-8 9-8-9z',
+                '＋': 'M12 5v14M5 12h14',
+                '◀': 'M14.5 6l-6 6 6 6',
+                '▶': 'M9.5 6l6 6-6 6',
+                '⟲': 'M4 12a8 8 0 1 0 2.6-5.9M4 4.5V9h4.5',
+              };
+              function chIcons(html) {
+                return html.replace(/[✓✗✕⚠◇＋◀▶⟲]/g, function (g) {
+                  return (
+                    '<svg class="ic" viewBox="0 0 24 24" aria-hidden="true"><path d="' +
+                    ICON_PATHS[g] +
+                    '"/></svg>'
+                  );
+                });
+              }
+              /* v108: کسری رگلاتور / مخزن CNG / پالت مخزن، تست نشتی گاز را معوق می‌کند؛ قبل از مرحله‌ی نهایی باید انجام یا با دلیل عبور داده شود */
+              var GAS_FINAL_SHEET = 'comm';
+              function cngShortParts(d) {
+                var open = {},
+                  any = false;
+                carRecords(d.key).recs.forEach(function (r) {
+                  Object.keys(r.items || {}).forEach(function (id) {
+                    var it = r.items[id];
+                    if (!it || it.r !== 'shortage') return;
+                    var p = cngPartOf(it.part || it.note);
+                    if (!p) return;
+                    any = true;
+                    if (!it.closedAt) open[p] = 1;
+                  });
+                });
+                return { open: Object.keys(open), any: any };
+              }
+              function gasTestState(d) {
+                var recs = carRecords(d.key).recs,
+                  g = recs.filter(function (x) {
+                    return x.sheet === 'gas';
+                  })[0],
+                  c = cngShortParts(d);
+                return {
+                  blockers: c.open,
+                  supplied: c.any && !c.open.length,
+                  done: !!(g && g.final),
+                  waived: (
+                    recs.filter(function (x) {
+                      return x.sheet === GAS_FINAL_SHEET && x.gasWaive;
+                    })[0] || {}
+                  ).gasWaive,
+                };
+              }
+              function gasCard(d) {
+                if (fuelOf(d) === 'single') return '';
+                var g = gasTestState(d);
+                if (g.done && !g.blockers.length) return '';
+                var isFinal = d.sheet === GAS_FINAL_SHEET,
+                  h = '';
+                if (g.blockers.length)
+                  h =
+                    '<b>⏳ تست نشتی گاز انجام نشده (کسری قطعه)</b><p class="hint" style="margin:6px 0 0">منتظر تأمین: ' +
+                    g.blockers.map(esc).join('، ') +
+                    '</p>';
+                else if (!g.done && (g.supplied || isFinal))
+                  h =
+                    '<b>تست نشتی گاز ۱۰ و ۲۰۰ بار انجام نشده است</b><p class="hint" style="margin:6px 0 0">قطعه تأمین شده؛ برگه‌ی تست گاز باز است و باید تست ثبت شود.</p>';
+                else return '';
+                if (g.waived)
+                  h +=
+                    '<p class="hint" style="margin:8px 0 2px">عبور بدون تست ثبت شده — دلیل: ' +
+                    esc(g.waived.reason) +
+                    '</p>' +
+                    whoWhen(g.waived.by, g.waived.at);
+                return '<div class="card"><div class="err" style="margin:0">' + h + '</div></div>';
+              }
+              /* تحویل با کسری: کیفیت مونتاژ (تجاری) کد(های) تعریف‌شده توسط مدیر را روی کل خودرو ثبت می‌کند */
+              function releaseOf(d) {
+                var r = carRecords(d.key).recs.filter(function (x) {
+                  return (
+                    x.sheet === GAS_FINAL_SHEET && x.release && x.release.codes && x.release.codes.length
+                  );
+                })[0];
+                return r ? r.release : null;
+              }
+              function releaseForm() {
+                var L = listK('relCodes');
+                if (!L.length)
+                  return '<p class="hint" style="margin:8px 0 0">کدی تعریف نشده است؛ مدیر در «فهرست‌ها» کدهای تحویل با کسری را اضافه کند.</p>';
+                return (
+                  '<div class="chips" style="margin-top:8px">' +
+                  L.map(function (c, i) {
+                    return (
+                      '<label class="chip"><input type="checkbox" class="relcb" value="' +
+                      esc(c) +
+                      '"> ' +
+                      esc(c) +
+                      '</label>'
+                    );
+                  }).join('') +
+                  '</div>' +
+                  '<label class="f" style="margin-top:10px">توضیح (اختیاری)<input class="in" id="rel_note" autocomplete="off"></label><button type="button" class="btn sm" data-act="relsave" style="margin-top:8px">ثبت تحویل با کسری</button>'
+                );
+              }
+              function releaseCard(d) {
+                var r = releaseOf(d),
+                  can = d.sheet === GAS_FINAL_SHEET && canEdit(d.sheet, d.key);
+                if (r)
+                  return (
+                    '<div class="card"><div class="err" style="margin:0"><b>تحویل با کسری</b><p style="margin:6px 0 0">' +
+                    r.codes.map(esc).join('<br>') +
+                    '</p>' +
+                    (r.note ? '<p class="hint" style="margin:6px 0 0">' + esc(r.note) + '</p>' : '') +
+                    whoWhen(r.by, r.at) +
+                    (can
+                      ? '<button type="button" class="btn sm" data-act="relcancel" style="margin-top:8px">لغو تحویل با کسری</button>'
+                      : '') +
+                    '</div></div>'
+                  );
+                if (can && openOnCar(d).length)
+                  return (
+                    '<div class="card"><b>تحویل خودرو با کسری</b><p class="hint" style="margin:4px 0 0">کد(های) مربوط را انتخاب کنید؛ کسری‌ها باز می‌مانند و پیگیری می‌شوند.</p>' +
+                    releaseForm() +
+                    '</div>'
+                  );
+                return '';
+              }
+              /* v161: نوار «برگردان» داخل قاب بالای صفحه می‌آید؛ بیرون از قاب زیر نوار پایین می‌افتاد */
+              function undoBar(d) {
+                if (d.sheet !== 'chassis' || !S.undo || S.undo.id !== d.id || Date.now() >= S.undo.until)
+                  return '';
+                return (
+                  '<div class="undobar"><span>نوع سوخت «' +
+                  fuelTxt(S.undo.fuel) +
+                  '» ثبت شد.</span><button class="btn sm" data-act="undofuel">برگردان (اشتباه بود)</button></div>'
+                );
+              }
+              function inspWarns(d) {
+                var W = '';
+                if (ownsSheet(S.sheet) && blockedBy(S.sheet, S.key)) W += blockCard(S.sheet, S.key);
+                fuelWarns(d).forEach(function (m) {
+                  W +=
+                    '<div class="card"><p class="err" style="margin:0">هشدار: ' +
+                    esc(m) +
+                    ' نوع سوخت درست ثبت شده؟ در صورت اشتباه، از «اصلاح شماره‌ی اشتباه» درخواست اصلاح سوخت بدهید.</p></div>';
+                });
+                return W + gasCard(d) + releaseCard(d);
+              }
+              function inspView() {
+                var d = insp(S.sheet, S.key),
+                  strip = stepCard(d, canEdit(S.sheet, S.key));
+                if (!strip)
+                  return '<div class="card"><p class="hint" style="margin:0">برای این ایستگاه بخشی برای نمایش تعریف نشده است.</p></div>';
+                return chIcons(strip) + inspWarns(d);
+              }
+</script>
+
+<script type="text/x-mohr-section" data-mohr-section="features/archive/declarations-0" data-order="25">
+
+      // BEGIN SECTION: features/archive/declarations-0
+              /* ---------- بایگانی، ارجاع از PDI و بایگانی مجدد ---------- */
+
+              var ARCH_EVENT = {
+
+                archive: 'بایگانی',
+
+                reopen: 'بازگشایی — ایراد برگشتی از PDI',
+
+                rearchive: 'بایگانی مجدد',
+
+              };
+      // END SECTION: features/archive/declarations-0
+    
+</script>
+
+<script type="text/x-mohr-section" data-mohr-section="features/archive/declarations-1" data-order="25.041666666666668">
+
+      // BEGIN SECTION: features/archive/declarations-1
+
+
+              /* خودروی بایگانی‌شده: هیچ‌کس پرونده‌اش را حذف نمی‌کند (مرجع شکایت‌های بعدی). رکورد آزمایشی مستثناست */
+
+              var ARCH_IDS = { rows: null, set: null };
+      // END SECTION: features/archive/declarations-1
+    
+</script>
+
+<script type="text/x-mohr-section" data-mohr-section="features/archive/archIdSet" data-order="25.083333333333332">
+
+      // BEGIN SECTION: features/archive/archIdSet
+
+
+              function archIdSet() {
+
+                if (ARCH_IDS.rows !== S.data.arch) {
+
+                  var set = Object.create(null);
+
+                  S.data.arch.forEach(function (a) {
+
+                    [a.id, a.serial, a.chassis, a.engine, a.room].forEach(function (v) {
+
+                      if (v) set[v] = 1;
+
+                    });
+
+                  });
+
+                  ARCH_IDS = { rows: S.data.arch, set: set };
+
+                }
+
+                return ARCH_IDS.set;
+
+              }
+      // END SECTION: features/archive/archIdSet
+    
+</script>
+
+<script type="text/x-mohr-section" data-mohr-section="features/archive/carIdents" data-order="25.125">
+
+      // BEGIN SECTION: features/archive/carIdents
+
+
+              function carIdents(d) {
+
+                var c = carRecords(d.key),
+
+                  I = c.I;
+
+                return [d.key, c.key, I.serial, I.chassis, I.engine, I.room].filter(Boolean);
+
+              }
+      // END SECTION: features/archive/carIdents
+    
+</script>
+
+<script type="text/x-mohr-section" data-mohr-section="features/archive/isArchivedCar" data-order="25.166666666666668">
+
+      // BEGIN SECTION: features/archive/isArchivedCar
+
+
+              function isArchivedCar(d) {
+
+                if (d.test) return false;
+
+                var set = archIdSet();
+
+                return carIdents(d).some(function (v) {
+
+                  return set[v];
+
+                });
+
+              }
+      // END SECTION: features/archive/isArchivedCar
+    
+</script>
+
+<script type="text/x-mohr-section" data-mohr-section="features/archive/declarations-5" data-order="25.208333333333332">
+
+      // BEGIN SECTION: features/archive/declarations-5
+
+
+              var ARCH_LOCK_MSG = 'این خودرو بایگانی شده است و پرونده‌اش حذف نمی‌شود.';
+      // END SECTION: features/archive/declarations-5
+    
+</script>
+
+<script type="text/x-mohr-section" data-mohr-section="features/archive/assertNotArchived" data-order="25.25">
+
+      // BEGIN SECTION: features/archive/assertNotArchived
+
+
+              /* پیش از حذف یک برگه: اگر بایگانی خودرو هنوز بارگیری نشده، از سرور می‌پرسد؛ خطای اتصال یعنی حذف نشود */
+
+              function assertNotArchived(d) {
+
+                if (!d || d.test) return Promise.resolve();
+
+                if (isArchivedCar(d)) return Promise.reject(new Error(ARCH_LOCK_MSG));
+
+                if (!store.get) return Promise.resolve();
+
+                var ids = carIdents(d).filter(function (v, i, a) {
+
+                  return a.indexOf(v) === i;
+
+                });
+
+                return Promise.all(
+
+                  ids.map(function (k) {
+
+                    return store.get('archives', k);
+
+                  }),
+
+                ).then(function (rs) {
+
+                  if (rs.some(Boolean)) throw new Error(ARCH_LOCK_MSG);
+
+                });
+
+              }
+      // END SECTION: features/archive/assertNotArchived
+    
+</script>
+
+<script type="text/x-mohr-section" data-mohr-section="features/archive/archOf" data-order="25.291666666666668">
+
+      // BEGIN SECTION: features/archive/archOf
+
+
+              function archOf(key) {
+
+                return S.data.arch.filter(function (a) {
+
+                  return a.id === key;
+
+                })[0];
+
+              }
+      // END SECTION: features/archive/archOf
+    
+</script>
+
+<script type="text/x-mohr-section" data-mohr-section="features/archive/archHist" data-order="25.333333333333332">
+
+      // BEGIN SECTION: features/archive/archHist
+
+
+              /* پرونده‌های قدیمی تاریخچه ندارند؛ رویداد اول از خود بایگانی ساخته می‌شود */
+
+              function archHist(a) {
+
+                return (
+
+                  a.hist || [{ type: 'archive', by: a.by, byId: a.byId, at: a.at, code745: !!a.code745 }]
+
+                );
+
+              }
+      // END SECTION: features/archive/archHist
+    
+</script>
+
+<script type="text/x-mohr-section" data-mohr-section="features/archive/archiveCheck" data-order="25.375">
+
+      // BEGIN SECTION: features/archive/archiveCheck
+
+
+              function archiveCheck(c) {
+
+                var badOpen = 0,
+
+                  shortOpen = 0;
+
+                c.recs.forEach(function (r) {
+
+                  Object.keys(r.items || {}).forEach(function (i2) {
+
+                    var x = r.items[i2];
+
+                    if (x.closedAt) return;
+
+                    if (x.r === 'ng' || x.r === 'sample') badOpen++;
+
+                    else if (x.r === 'shortage') shortOpen++;
+
+                  });
+
+                });
+
+                var missA = stagesFor(c.recs).some(function (k) {
+
+                  var r = c.recs.filter(function (d) {
+
+                    return d.sheet === k;
+
+                  })[0];
+
+                  return !r || stat(r).signed < stat(r).secs;
+
+                });
+
+                return {
+
+                  badOpen: badOpen,
+
+                  shortOpen: shortOpen,
+
+                  err: badOpen
+
+                    ? 'خودرو ایراد یا نمونه‌ی باز دارد و بایگانی نمی‌شود.'
+
+                    : missA
+
+                      ? 'همه مراحل خودرو هنوز تأیید نشده است.'
+
+                      : '',
+
+                };
+
+              }
+      // END SECTION: features/archive/archiveCheck
+    
+</script>
+
+<script type="text/x-mohr-section" data-mohr-section="features/archive/archiveStages" data-order="25.416666666666668">
+
+      // BEGIN SECTION: features/archive/archiveStages
+
+
+              function archiveStages(c) {
+
+                return stagesFor(c.recs).map(function (k) {
+
+                  var r = c.recs.filter(function (d) {
+
+                    return d.sheet === k;
+
+                  })[0];
+
+                  var sg = r
+
+                    ? Object.keys(r.signs || {}).map(function (i) {
+
+                        return r.signs[i];
+
+                      })
+
+                    : [];
+
+                  return {
+
+                    sheet: k,
+
+                    name: SHEETS[k].name,
+
+                    by: sg
+
+                      .map(function (x) {
+
+                        return x.by;
+
+                      })
+
+                      .join('، '),
+
+                    at: sg.length ? sg[sg.length - 1].at : '',
+
+                  };
+
+                });
+
+              }
+      // END SECTION: features/archive/archiveStages
+    
+</script>
+
+<script type="text/x-mohr-section" data-mohr-section="features/archive/archiveEvent" data-order="25.458333333333332">
+
+      // BEGIN SECTION: features/archive/archiveEvent
+
+
+              function archiveEvent(type, extra) {
+
+                return Object.assign(
+
+                  { type: type, by: S.user.name, byId: S.user.id, at: nowIso() },
+
+                  extra || {},
+
+                );
+
+              }
+      // END SECTION: features/archive/archiveEvent
+    
+</script>
+
+<script type="text/x-mohr-section" data-mohr-section="features/archive/archiveCar" data-order="25.5">
+
+      // BEGIN SECTION: features/archive/archiveCar
+
+
+              function archiveCar(q) {
+
+                var c = carRecords(q),
+
+                  I = c.I,
+
+                  chk = archiveCheck(c);
+
+                if (chk.err) {
+
+                  toast(chk.err);
+
+                  return;
+
+                }
+
+                var ev = archiveEvent('archive', { code745: chk.shortOpen > 0 });
+
+                save(
+
+                  function () {
+
+                    return store.set('archives', c.key, {
+
+                      key: c.key,
+
+                      serial: I.serial || '',
+
+                      color: I.color || '',
+
+                      chassis: I.chassis || '',
+
+                      engine: I.engine || '',
+
+                      room: I.room || '',
+
+                      by: ev.by,
+
+                      byId: ev.byId,
+
+                      at: ev.at,
+
+                      formCode: FORM_CODE,
+
+                      stages: archiveStages(c),
+
+                      code745: chk.shortOpen > 0,
+
+                      shortAtArchive: chk.shortOpen,
+
+                      reopened: false,
+
+                      hist: [ev],
+
+                      test: c.recs.some(function (r) {
+
+                        return r.test;
+
+                      }),
+
+                    });
+
+                  },
+
+                  chk.shortOpen > 0 ? 'پرونده با کد ۷۴۵ بایگانی شد' : 'پرونده بایگانی شد',
+
+                );
+
+              }
+      // END SECTION: features/archive/archiveCar
+    
+</script>
+
+<script type="text/x-mohr-section" data-mohr-section="features/archive/rearchiveCar" data-order="25.541666666666668">
+
+      // BEGIN SECTION: features/archive/rearchiveCar
+
+
+              function rearchiveCar(q) {
+
+                var c = carRecords(q),
+
+                  a = archOf(c.key),
+
+                  chk = archiveCheck(c);
+
+                if (!a || !a.reopened) return;
+
+                if (chk.err) {
+
+                  toast(chk.err);
+
+                  return;
+
+                }
+
+                var ev = archiveEvent('rearchive', { code745: chk.shortOpen > 0 });
+
+                save(function () {
+
+                  return store.update('archives', a.id, {
+
+                    reopened: false,
+
+                    by: ev.by,
+
+                    byId: ev.byId,
+
+                    at: ev.at,
+
+                    stages: archiveStages(c),
+
+                    code745: chk.shortOpen > 0,
+
+                    shortAtArchive: chk.shortOpen,
+
+                    hist: archHist(a).concat([ev]),
+
+                  });
+
+                }, 'پرونده دوباره بایگانی شد');
+
+              }
+      // END SECTION: features/archive/rearchiveCar
+    
+</script>
+
+<script type="text/x-mohr-section" data-mohr-section="features/archive/pdiReturn" data-order="25.583333333333332">
+
+      // BEGIN SECTION: features/archive/pdiReturn
+
+
+              /* ایراد دیده‌شده در PDI شرکت: به برگه‌ی تجاری اضافه می‌شود و پرونده‌ی بایگانی‌شده بازگشایی می‌شود */
+
+              function pdiReturn(q) {
+
+                var c = carRecords(q),
+
+                  a = archOf(c.key),
+
+                  note = val('pdi_note'),
+
+                  pdiBy = val('pdi_by');
+
+                if (!a) return;
+
+                if (!note) {
+
+                  toast('ایرادی را که در PDI دیده شده بنویسید.');
+
+                  return;
+
+                }
+
+                var comm = c.recs.filter(function (r) {
+
+                  return r.sheet === 'comm';
+
+                })[0];
+
+                if (!comm) {
+
+                  toast('برگه‌ی تجاری این خودرو پیدا نشد.');
+
+                  return;
+
+                }
+
+                var ev = archiveEvent('reopen', { note: note, pdiBy: pdiBy }),
+
+                  items = {};
+
+                items['pdi_' + uid()] = {
+
+                  r: 'ng',
+
+                  custom: true,
+
+                  sec: 'comm',
+
+                  pdi: true,
+
+                  post: true,
+
+                  note: note,
+
+                  pdiBy: pdiBy,
+
+                  by: ev.by,
+
+                  byId: ev.byId,
+
+                  at: ev.at,
+
+                  closedAt: '',
+
+                  closedBy: '',
+
+                };
+
+                ['pdi_note', 'pdi_by'].forEach(function (k) {
+
+                  var e = document.getElementById(k);
+
+                  if (e) e.value = '';
+
+                });
+
+                save(function () {
+
+                  return Promise.all([
+
+                    store.update('inspections', comm.id, { items: items }),
+
+                    store.update('archives', a.id, {
+
+                      reopened: true,
+
+                      reopenAt: ev.at,
+
+                      reopenBy: ev.by,
+
+                      reopenById: ev.byId,
+
+                      hist: archHist(a).concat([ev]),
+
+                    }),
+
+                  ]);
+
+                }, 'ایراد PDI ثبت و پرونده بازگشایی شد');
+
+              }
+      // END SECTION: features/archive/pdiReturn
+    
+</script>
+
+<script type="text/x-mohr-section" data-mohr-section="features/archive/archivedBlock" data-order="25.625">
+
+      // BEGIN SECTION: features/archive/archivedBlock
+
+
+              function archivedBlock(c, a) {
+
+                var h =
+
+                  '<div class="signrow" style="border:0;margin:0;padding:0"><div class="stamp done"><b>بایگانی</b><span>' +
+
+                  esc(a.by) +
+
+                  '</span><small>' +
+
+                  esc(when(a.at)) +
+
+                  '</small></div><div><b>' +
+
+                  (a.reopened
+
+                    ? 'این پرونده بایگانی شده بود و برگشتی از PDI است.'
+
+                    : 'این پرونده بایگانی شده است.') +
+
+                  '</b></div></div>';
+
+                if (!a.reopened) return h;
+
+                var chk = archiveCheck(c);
+
+                h +=
+
+                  '<div class="nt ng" style="margin-top:10px"><b>برگشتی از PDI — در انتظار رفع</b><div class="m">' +
+
+                  whoWhen(a.reopenBy, a.reopenAt, 'بازگشایی‌کننده') +
+
+                  '</div></div>';
+
+                return (
+
+                  h +
+
+                  (chk.err
+
+                    ? '<p class="hint" style="margin-top:10px">بایگانی مجدد: ' + esc(chk.err) + '</p>'
+
+                    : '<p class="hint" style="margin:10px 0">' +
+
+                      (chk.shortOpen
+
+                        ? fa(chk.shortOpen) + ' کسری باز است و خودرو با کد ۷۴۵ دوباره بایگانی می‌شود.'
+
+                        : 'همه‌ی ایرادها رفع شده است.') +
+
+                      '</p><button class="btn primary" data-act="rearchive" data-q="' +
+
+                      esc(c.key) +
+
+                      '">بایگانی مجدد به نام من</button>')
+
+                );
+
+              }
+      // END SECTION: features/archive/archivedBlock
+    
+</script>
+
+<script type="text/x-mohr-section" data-mohr-section="features/archive/histRows" data-order="25.666666666666668">
+
+      // BEGIN SECTION: features/archive/histRows
+
+
+              function histRows(hist) {
+
+                return hist.map(function (e) {
+
+                  return [
+
+                    ARCH_EVENT[e.type] || e.type,
+
+                    e.by || '—',
+
+                    dateOnly(e.at) || '—',
+
+                    hm(e.at) || '—',
+
+                    (e.pdiBy ? 'بازرس PDI: ' + e.pdiBy + (e.note ? ' — ' : '') : '') +
+
+                      (e.note || '') +
+
+                      (e.code745 ? 'کد ۷۴۵' : ''),
+
+                  ];
+
+                });
+
+              }
+      // END SECTION: features/archive/histRows
+    
+</script>
+
+<script type="text/x-mohr-section" data-mohr-section="features/archive/pdiCard" data-order="25.708333333333332">
+
+      // BEGIN SECTION: features/archive/pdiCard
+
+
+              function pdiCard(c, a) {
+
+                var rows = archHist(a)
+
+                  .slice()
+
+                  .reverse()
+
+                  .map(function (e) {
+
+                    return (
+
+                      '<div class="it"><b>' +
+
+                      esc(ARCH_EVENT[e.type] || e.type) +
+
+                      '</b><div class="m">' +
+
+                      whoWhen(e.by, e.at) +
+
+                      '</div>' +
+
+                      (e.pdiBy ? '<div class="m">بازرس PDI: ' + esc(e.pdiBy) + '</div>' : '') +
+
+                      (e.note ? '<div class="m">توضیح: ' + esc(e.note) + '</div>' : '') +
+
+                      (e.code745 ? '<div class="m">کد ۷۴۵</div>' : '') +
+
+                      '</div>'
+
+                    );
+
+                  })
+
+                  .join('');
+
+                return (
+
+                  '<div class="card"><h2>ایراد برگشتی از PDI</h2><p class="hint" style="margin-bottom:8px">اگر در بازرسی PDI شرکت ایرادی دیده شد، اینجا ثبت کنید. پرونده بازگشایی می‌شود تا ایراد رفع و دوباره بایگانی شود.</p>' +
+
+                  '<label class="f">ایراد دیده‌شده در PDI (الزامی)<textarea class="in" id="pdi_note"></textarea></label><label class="f" style="margin-top:8px">نام بازرس PDI (اختیاری)<input class="in" id="pdi_by" autocomplete="off"></label>' +
+
+                  '<button class="btn primary" style="margin-top:10px" data-act="pdiadd" data-q="' +
+
+                  esc(c.key) +
+
+                  '">ثبت ایراد و بازگشایی پرونده</button></div>' +
+
+                  '<div class="card"><h2>تاریخچه‌ی بایگانی</h2><div class="items">' +
+
+                  rows +
+
+                  '</div></div>'
+
+                );
+
+              }
+      // END SECTION: features/archive/pdiCard
+    
+</script>
+
+<script type="text/x-mohr-section" data-mohr-section="features/archive/pdiPendingCard" data-order="25.75">
+
+      // BEGIN SECTION: features/archive/pdiPendingCard
+
+
+              function pdiPendingCard() {
+
+                var L = S.data.arch.filter(function (a) {
+
+                  return a.reopened;
+
+                });
+
+                if (!L.length) return '';
+
+                return (
+
+                  '<div class="card" style="border:2px solid #c0392b"><h2>ارجاعی از PDI — منتظر رفع (' +
+
+                  fa(L.length) +
+
+                  ')</h2>' +
+
+                  L.map(function (a) {
+
+                    return (
+
+                      '<div class="it"><div class="row"><b class="num grow">' +
+
+                      esc(a.serial || a.key) +
+
+                      '</b><button class="btn sm" data-act="opencar" data-q="' +
+
+                      esc(a.key) +
+
+                      '">پرونده</button></div><div class="m">' +
+
+                      whoWhen(a.reopenBy, a.reopenAt, 'بازگشایی‌کننده') +
+
+                      '</div></div>'
+
+                    );
+
+                  }).join('') +
+
+                  '</div>'
+
+                );
+
+              }
+      // END SECTION: features/archive/pdiPendingCard
+    
+</script>
+
+<script type="text/x-mohr-section" data-mohr-section="features/archive/carView" data-order="25.791666666666668">
+
+      // BEGIN SECTION: features/archive/carView
+
+
+              function carView() {
+
+                var q = S.carq,
+
+                  ro = carReadOnly(),
+
+                  h =
+
+                    '<div class="card"><h2>پرونده خودرو ' +
+
+                    (ro ? '(فقط مشاهده)' : '(واحد تجاری)') +
+
+                    '</h2><form data-form="carsearch" class="row"><label class="f grow">شماره سریال / شاسی / موتور / اتاق<input class="in num ltr" id="cq" inputmode="numeric" autocomplete="off" autofocus value="' +
+
+                    esc(q) +
+
+                    '"></label><button type="button" class="btn" data-act="livescan" data-scan="" style="align-self:flex-end">اسکن بارکد</button><button class="btn primary" type="submit" style="align-self:flex-end">نمایش پرونده</button></form></div>';
+
+                if (!q) return h + (ro ? '' : pdiPendingCard());
+
+                var c = carRecords(q);
+
+                if (!c.recs.length)
+
+                  return (
+
+                    h +
+
+                    '<div class="card"><p class="hint" style="margin:0">برای این شماره هیچ برگه‌ای ثبت نشده است.</p></div>'
+
+                  );
+
+                var I = c.I,
+
+                  arch = archOf(c.key);
+
+                h +=
+
+                  '<div class="card"><div class="kvs"><div class="kv"><small>شماره سریال</small><b class="num">' +
+
+                  esc(I.serial || '—') +
+
+                  '</b></div><div class="kv"><small>رنگ</small><b>' +
+
+                  esc(I.color || '—') +
+
+                  '</b></div><div class="kv"><small>شماره شاسی</small><b class="num">' +
+
+                  esc(I.chassis || '—') +
+
+                  '</b></div><div class="kv"><small>شماره موتور</small><b class="num">' +
+
+                  esc(I.engine || '—') +
+
+                  '</b></div><div class="kv"><small>شماره اتاق</small><b class="num">' +
+
+                  esc(I.room || '—') +
+
+                  '</b></div></div><div class="row" style="margin-top:12px"><button class="btn sm" data-act="xlsx" data-q="' +
+
+                  esc(c.key) +
+
+                  '">خروجی Excel</button><button class="btn sm" data-act="pdf" data-q="' +
+
+                  esc(c.key) +
+
+                  '">خروجی PDF</button></div></div>';
+
+                var miss = [],
+
+                  open = [];
+
+                h += '<div class="card"><h2>مراحل تولید</h2><div class="items">';
+
+                stagesFor(c.recs).forEach(function (k) {
+
+                  var r = c.recs.filter(function (d) {
+
+                      return d.sheet === k;
+
+                    })[0],
+
+                    st = r ? stat(r) : null,
+
+                    done = r && st.signed === st.secs;
+
+                  if (!done) miss.push(SHEETS[k].name);
+
+                  var who = '';
+
+                  if (r) {
+
+                    var sg = Object.keys(r.signs || {}).map(function (i) {
+
+                      return r.signs[i];
+
+                    });
+
+                    who = sg
+
+                      .map(function (x) {
+
+                        return x.by;
+
+                      })
+
+                      .filter(function (v, i, a) {
+
+                        return a.indexOf(v) === i;
+
+                      })
+
+                      .join('، ');
+
+                  }
+
+                  h +=
+
+                    '<div class="it ' +
+
+                    (done ? 'ok' : '') +
+
+                    '"><div class="top2"><span class="lb">' +
+
+                    esc(SHEETS[k].name) +
+
+                    '</span><span class="prog">' +
+
+                    (done ? 'تأیید شده · ' + esc(who) : r ? 'در حال بازدید' : 'ثبت نشده') +
+
+                    (st && st.open ? ' · ' + fa(st.open) + ' مورد باز' : '') +
+
+                    '</span></div></div>';
+
+                });
+
+                h += '</div></div>';
+
+                c.recs.forEach(function (r) {
+
+                  Object.keys(r.items || {}).forEach(function (id) {
+
+                    var it = r.items[id];
+
+                    if ((it.r === 'ng' || it.r === 'sample' || it.r === 'shortage') && !it.closedAt)
+
+                      open.push({ r: r, id: id, it: it });
+
+                  });
+
+                });
+
+                h +=
+
+                  '<div class="card"><h2>ایرادها، نمونه‌ها و کسری‌های باز (' + fa(open.length) + ')</h2>';
+
+                if (!open.length) h += '<p class="hint" style="margin:0">مورد بازی نیست.</p>';
+
+                open.forEach(function (o) {
+
+                  var aid = 'ca_' + o.r.id + '__' + o.id;
+
+                  h +=
+
+                    '<div class="it ng"><div class="nt ' +
+
+                    o.it.r +
+
+                    '"><div><span class="chip ' +
+
+                    (o.it.r === 'ng' ? 'open' : o.it.r) +
+
+                    '">' +
+
+                    (o.it.r === 'ng' ? 'ایراد' : o.it.r === 'shortage' ? 'کسری' : 'قطعه نمونه') +
+
+                    '</span> <b>' +
+
+                    esc(SHEETS[o.r.sheet].name) +
+
+                    '</b> · ' +
+
+                    esc(labelOf(o.r.sheet, o.id, o.r)) +
+
+                    '</div>' +
+
+                    (o.it.note ? '<p>' + esc(o.it.note) + '</p>' : '') +
+
+                    '<div class="m">' +
+
+                    whoWhen(o.it.by, o.it.at, 'ثبت‌کننده') +
+
+                    '</div>' +
+
+                    (ro || (arch && !arch.reopened && o.it.r !== 'shortage')
+
+                      ? ''
+
+                      : '<label class="f" style="margin-top:8px">اقدام انجام‌شده<textarea class="in" id="' +
+
+                        aid +
+
+                        '" placeholder="چه اقدامی برای رفع انجام شد؟"></textarea></label><div class="row"><button class="btn sm ok" data-act="cclose" data-doc="' +
+
+                        esc(o.r.id) +
+
+                        '" data-id="' +
+
+                        esc(o.id) +
+
+                        '">ثبت اقدام و بستن مورد</button></div>') +
+
+                    '</div></div>';
+
+                });
+
+                h += '</div>';
+
+                var closed = [];
+
+                c.recs.forEach(function (r) {
+
+                  Object.keys(r.items || {}).forEach(function (id) {
+
+                    var it = r.items[id];
+
+                    if ((it.r === 'ng' || it.r === 'sample' || it.r === 'shortage') && it.closedAt)
+
+                      closed.push({ r: r, id: id, it: it });
+
+                  });
+
+                });
+
+                if (closed.length) {
+
+                  h += '<div class="card"><h2>مورد‌های بسته‌شده (' + fa(closed.length) + ')</h2>';
+
+                  closed.forEach(function (o) {
+
+                    h +=
+
+                      '<div class="it"><b>' +
+
+                      esc(SHEETS[o.r.sheet].name) +
+
+                      '</b> · ' +
+
+                      esc(labelOf(o.r.sheet, o.id, o.r)) +
+
+                      noteBlock(o.r, o.id, o.it, false) +
+
+                      '</div>';
+
+                  });
+
+                  h += '</div>';
+
+                }
+
+                h += pshCarCard(c) + cpfCarCard(c);
+
+                h += '<div class="card"><h2>بایگانی پرونده</h2>';
+
+                if (ro)
+
+                  h +=
+
+                    '<p class="hint" style="margin:0">' +
+
+                    (arch ? 'این پرونده بایگانی شده است.' : 'هنوز بایگانی نشده است.') +
+
+                    '</p>';
+
+                else if (arch) h += archivedBlock(c, arch);
+
+                else {
+
+                  var openDef = open.filter(function (o) {
+
+                      return o.it.r !== 'shortage';
+
+                    }),
+
+                    openShort = open.filter(function (o) {
+
+                      return o.it.r === 'shortage';
+
+                    });
+
+                  if (miss.length || openDef.length)
+
+                    h +=
+
+                      '<p class="hint">بایگانی وقتی ممکن است که همه مراحل تأیید شده و ایراد یا نمونه‌ی بازی نمانده باشد. کسری باز مانع بایگانی نیست.' +
+
+                      (miss.length ? ' مرحله‌های ناقص: ' + esc(miss.join('، ')) + '.' : '') +
+
+                      (openDef.length ? ' ' + fa(openDef.length) + ' ایراد یا نمونه‌ی باز.' : '') +
+
+                      '</p>';
+
+                  else
+
+                    h +=
+
+                      '<p class="hint" style="margin-bottom:10px">' +
+
+                      (openShort.length
+
+                        ? fa(openShort.length) +
+
+                          ' کسری باز است. خودرو با کد ۷۴۵ بایگانی می‌شود و کسری‌ها باز می‌ماند تا برنامه‌ریزی یا چکمن همان واحد ببندد.'
+
+                        : 'همه مراحل تأیید شده و مورد بازی نیست.') +
+
+                      '</p><button class="btn primary" data-act="archive" data-q="' +
+
+                      esc(c.key) +
+
+                      '">' +
+
+                      (openShort.length ? 'بایگانی با کد ۷۴۵ به نام من' : 'بایگانی پرونده به نام من') +
+
+                      '</button>';
+
+                }
+
+                return h + '</div>' + (arch && !ro ? pdiCard(c, arch) : '');
+
+              }
+      // END SECTION: features/archive/carView
+    
+</script>
+
+<script type="text/x-mohr-section" data-mohr-section="features/archive/archiveView" data-order="25.833333333333332">
+
+      // BEGIN SECTION: features/archive/archiveView
+
+
+              function archiveView() {
+
+                var h = '<div class="card"><h2>بایگانی (' + fa(S.data.arch.length) + ')</h2>';
+
+                if (!S.data.arch.length)
+
+                  return (
+
+                    h + '<p class="hint" style="margin:0">هنوز پرونده‌ای بایگانی نشده است.</p></div>'
+
+                  );
+
+                h +=
+
+                  '<div class="tbl"><table><thead><tr><th>شماره شاسی</th><th>سریال</th><th>رنگ</th><th>بایگانی‌کننده</th><th>تاریخ و ساعت</th><th></th></tr></thead><tbody>';
+
+                S.data.arch
+
+                  .slice()
+
+                  .sort(function (a, b) {
+
+                    return (b.at || '') < (a.at || '') ? -1 : 1;
+
+                  })
+
+                  .forEach(function (a) {
+
+                    h +=
+
+                      '<tr><td><b class="num">' +
+
+                      esc(a.chassis || a.key) +
+
+                      '</b></td><td class="num">' +
+
+                      esc(a.serial || '') +
+
+                      '</td><td>' +
+
+                      esc(a.color || '') +
+
+                      (a.code745
+
+                        ? ' <span class="chip open">کد ۷۴۵' +
+
+                          (function () {
+
+                            var n = 0;
+
+                            carRecords(a.key).recs.forEach(function (r) {
+
+                              Object.keys(r.items || {}).forEach(function (i3) {
+
+                                var x = r.items[i3];
+
+                                if (x.r === 'shortage' && !x.closedAt) n++;
+
+                              });
+
+                            });
+
+                            return n ? ' · ' + fa(n) + ' کسری باز' : ' · کسری‌ها بسته شد';
+
+                          })() +
+
+                          '</span>'
+
+                        : '') +
+
+                      '</td><td>' +
+
+                      esc(a.by || '') +
+
+                      '</td><td>' +
+
+                      esc(when(a.at)) +
+
+                      '</td><td><button class="btn sm" data-act="opencar" data-q="' +
+
+                      esc(a.key) +
+
+                      '">مشاهده</button></td></tr>';
+
+                  });
+
+                return h + '</tbody></table></div></div>';
+
+              }
+      // END SECTION: features/archive/archiveView
+    
+</script>
+
+<script type="text/x-mohr-section" data-mohr-section="features/archive/listView" data-order="25.916666666666668">
+
+      // BEGIN SECTION: features/archive/listView
+
+
+              function listView() {
+
+                var ds = S.data.insp
+
+                  .filter(function (d) {
+
+                    return SHEETS[d.sheet];
+
+                  })
+
+                  .sort(function (a, b) {
+
+                    return stat(b).open - stat(a).open;
+
+                  });
+
+                var h = '<div class="card"><h2>همه بازدیدها</h2>';
+
+                if (!ds.length)
+
+                  return h + '<div class="empty-note">هنوز بازدیدی ثبت نشده است.</div></div>';
+
+                h +=
+
+                  '<div class="tbl"><table><thead><tr><th>برگه / کد فرم</th><th>شماره</th><th>شاسی: اتاق / موتور</th><th>بازدید شده</th><th>مورد باز</th><th>بخش تأییدشده</th><th>تاریخ و ساعت</th></tr></thead><tbody>';
+
+                ds.forEach(function (d) {
+
+                  var s = stat(d);
+
+                  h +=
+
+                    '<tr class="link" data-act="open" data-sheet="' +
+
+                    esc(d.sheet) +
+
+                    '" data-key="' +
+
+                    esc(d.key) +
+
+                    '"><td>' +
+
+                    esc(SHEETS[d.sheet].name) +
+
+                    (prodOf(d) === 'ex' ? ' <small>· اکستند</small>' : '') +
+
+                    (d.test ? ' <span class="tchip">TEST</span>' : '') +
+
+                    ' <small class="num">' +
+
+                    esc(d.formCode || FORM_CODE) +
+
+                    '</small></td><td><b class="num">' +
+
+                    esc(d.key) +
+
+                    '</b></td><td><span class="num">' +
+
+                    (d.sheet === 'chassis' ? esc(d.room || '—') + ' / ' + esc(d.engine || '—') : '—') +
+
+                    '</span></td><td>' +
+
+                    fa(s.ans) +
+
+                    ' از ' +
+
+                    fa(s.total) +
+
+                    '</td><td>' +
+
+                    (s.open ? '<span class="chip open">' + fa(s.open) + '</span>' : '0') +
+
+                    '</td><td>' +
+
+                    fa(s.signed) +
+
+                    ' از ' +
+
+                    fa(s.secs) +
+
+                    '</td><td>' +
+
+                    esc(when(d.createdAt)) +
+
+                    '</td></tr>';
+
+                });
+
+                return h + '</tbody></table></div></div>';
+
+              }
+      // END SECTION: features/archive/listView
+    
+</script>
+
+<script type="text/x-mohr-section" data-mohr-section="actions/clicks/owned-clickCommercial" data-order="41.38235294117647">
+
+              function clickCommercial(ev, el, a, id, d) {
+                if ((a === 'repcsv' || a === 'repmcsv') && isCom() && S.rd) {
+                  exportReportCsv(a);
+                  return true;
+                }
+                if (a === 'cclose' && isCom()) {
+                  var doc = el.getAttribute('data-doc'),
+                    note = val('ca_' + doc + '__' + id);
+                  if (!note) {
+                    toast('اقدام انجام‌شده را بنویسید.');
+                    return true;
+                  }
+                  var mm = {};
+                  mm[id] = {
+                    closedAt: nowIso(),
+                    closedBy: S.user.name,
+                    closedById: S.user.id,
+                    closeNote: note,
+                  };
+                  save(function () {
+                    return store.update('inspections', doc, { items: mm });
+                  }, 'مورد بسته شد');
+                  return true;
+                }
+                if (a === 'archive' && isCom()) {
+                  archiveCar(el.getAttribute('data-q'));
+                  return true;
+                }
+                if (a === 'rearchive' && isCom()) {
+                  rearchiveCar(el.getAttribute('data-q'));
+                  return true;
+                }
+                if (a === 'pdiadd' && isCom()) {
+                  pdiReturn(el.getAttribute('data-q'));
+                  return true;
+                }
+                if (a === 'opencar' && isCom()) {
+                  S.carq = el.getAttribute('data-q');
+                  S.tab = 'car';
+                  render();
+                  return true;
+                }
+                return false;
+              }
+              function clickCarOpen(ev, el, a, id, d) {
+                if (a === 'linkyes' && S.linkConfirm) {
+                  var L2 = S.linkConfirm,
+                    le = linkCheck(L2, val('lk_eng'), val('lk_fuel'));
+                  if (le) {
+                    S.linkErr = le;
+                    render();
+                    return true;
+                  }
+                  S.linkConfirm = null;
+                  S.linkErr = '';
+                  saveOnce(
+                    'open_' + docId(L2.sheet, L2.key),
+                    function () {
+                      return store.create('inspections', docId(L2.sheet, L2.key), L2.rec);
+                    },
+                    'برگه باز شد',
+                  );
+                  return true;
+                }
+                if (a === 'linkno') {
+                  S.linkConfirm = null;
+                  render();
+                  return true;
+                }
+                if (a === 'undofuel') {
+                  var ud = S.undo;
+                  S.undo = null;
+                  if (!ud || !d || d.id !== ud.id || Date.now() > ud.until + 500) {
+                    render();
+                    return true;
+                  }
+                  if (Object.keys(d.items || {}).length || Object.keys(d.signs || {}).length) {
+                    toast('برگه شروع شده است و برگرداندن ممکن نیست.');
+                    return true;
+                  }
+                  fuelRemember('');
+                  var ed = ud.eng ? insp('engine', String(ud.eng).replace(/^engine_/, '')) : null,
+                    delEng =
+                      ed && !Object.keys(ed.items || {}).length && !Object.keys(ed.signs || {}).length;
+                  save(function () {
+                    return Promise.resolve(store.del('inspections', ud.id)).then(function () {
+                      return delEng ? store.del('inspections', ed.id) : 0;
+                    });
+                  }, 'برگه برگردانده شد؛ نوع سوخت را دوباره انتخاب کنید.');
+
+                  return true;
+                }
+                if (a === 'fuelyes' && S.fuelConfirm) {
+                  var FC = S.fuelConfirm;
+                  S.fuelConfirm = null;
+                  saveOnce(
+                    'open_' + docId(FC.sheet, FC.key),
+                    function () {
+                      return store.create('inspections', docId(FC.sheet, FC.key), FC.rec);
+                    },
+                    'برگه باز شد',
+                  );
+                  return true;
+                }
+                if (a === 'fuelno') {
+                  S.fuelConfirm = null;
+                  render();
+                  return true;
+                }
+                return false;
+              }
+</script>
+
+<script type="text/x-mohr-section" data-mohr-section="runtime/registrations-03" data-order="41.83823529411765">
+MOHRRuntime.views.register("listView", listView, "mohr-part-03-vehicles-inspections.html");
+MOHRRuntime.views.register("carView", carView, "mohr-part-03-vehicles-inspections.html");
+MOHRRuntime.views.register("archiveView", archiveView, "mohr-part-03-vehicles-inspections.html");
+MOHRRuntime.actions.register("clickCommercial", clickCommercial, "mohr-part-03-vehicles-inspections.html");
+MOHRRuntime.actions.register("clickCarOpen", clickCarOpen, "mohr-part-03-vehicles-inspections.html");
+MOHRRuntime.forms.register("submitCarSearch", submitCarSearch, "mohr-part-03-vehicles-inspections.html");
+MOHRRuntime.forms.register("submitCreate", submitCreate, "mohr-part-03-vehicles-inspections.html");
+</script>
+
+<script type="text/x-mohr-section" data-mohr-section="actions/forms/owned-submitCarSearch" data-order="43.628571428571426">
+
+              function submitCarSearch() {
+                var cq0 = digits(val('cq'));
+                ensureCar([cq0]).then(function () {
+                  S.carq = cq0;
+                  render();
+                });
+              }
+</script>
+
+<script type="text/x-mohr-section" data-mohr-section="actions/forms/owned-createFormError" data-order="43.68571428571428">
+
+              /* اولین خطای شماره‌های فرم باز کردن برگه؛ اگر خطایی نبود رشته‌ی خالی */
+              function createFormError(rec, tmc) {
+                var vKey = tmc
+                  ? ''
+                  : withP(rec.product || '', function () {
+                      return numErr(SHEETS[S.sheet].keyKind, S.key);
+                    });
+                if (vKey) return vKey;
+                var vTyped = tmc
+                  ? ''
+                  : withP(rec.product || '', function () {
+                      return typedErr(S.sheet, rec);
+                    });
+                if (vTyped) return vTyped;
+                var vDup = conflictFor(S.sheet, S.key, rec);
+                return vDup ? vDup + ' اگر اشتباه ثبت شده، با کیفیت یا مدیر برنامه تماس بگیرید.' : '';
+              }
+              /* خودرویی که فقط با سریال باز می‌شود باید به شاسی و اتاق وصل باشد؛ اگر این مرحله کار را تمام کرد true برمی‌گرداند */
+              function serialLinkStep(rec, I3) {
+                var needC = !(rec.chassisNo || I3.chassis),
+                  needR = !(rec.room || I3.room);
+                if (needC || needR) {
+                  S.formErr =
+                    'این سریال هنوز به خودرو وصل نشده است. شماره شاسی و شماره اتاق را از روی برچسب شیشه وارد کنید تا به برگه‌های قبلی (شاسی، موتور، تزیینات) وصل شود.';
+                  render();
+                  return true;
+                }
+                var typed = !!(rec.chassisNo || rec.room);
+                if (typed) {
+                  var ch = rec.chassisNo || I3.chassis,
+                    rm = rec.room || I3.room,
+                    bad = '';
+                  S.data.insp.forEach(function (x) {
+                    var o = identOf(x);
+                    if (!o.serial || o.serial === S.key) return;
+                    if (ch && o.chassis === ch)
+                      bad = 'شاسی ' + ch + ' قبلاً به سریال ' + o.serial + ' وصل شده است.';
+                    if (rm && o.room === rm)
+                      bad = 'اتاق ' + rm + ' قبلاً به سریال ' + o.serial + ' وصل شده است.';
+                  });
+                  if (bad) {
+                    S.formErr = bad + ' اگر اشتباه ثبت شده، مدیر باید اصلاح کند.';
+                    render();
+                    return true;
+                  }
+                  var ce = insp('chassis', ch),
+                    w = [],
+                    te = insp('trim', rm);
+                  if (ce && te && prodOf(ce) !== prodOf(te)) {
+                    S.formErr =
+                      'محصول شاسی (' +
+                      PRODN[prodOf(ce)] +
+                      ') با محصول اتاق (' +
+                      PRODN[prodOf(te)] +
+                      ') یکی نیست. شماره‌ها را دوباره با برچسب شیشه مقایسه کنید.';
+                    render();
+                    return true;
+                  }
+                  rec.product = carProd(S.key, [ce, te]) || undefined;
+                  if (rec.product === undefined) delete rec.product;
+                  if (!ce) w.push('برگه شاسی ' + ch + ' هنوز ثبت نشده است.');
+                  if (!insp('trim', rm)) w.push('برگه تزیینات اتاق ' + rm + ' هنوز ثبت نشده است.');
+                  var LK = {
+                    sheet: S.sheet,
+                    key: S.key,
+                    rec: rec,
+                    chassis: ch,
+                    room: rm,
+                    engine: (ce && ce.engine) || rec.engine || I3.engine || '',
+                    engineVerified: !!(ce && ce.engine),
+                    fuel: (ce && ce.fuel) || '',
+                    warn: w,
+                  };
+                  var e3 = digits(val('c_lk_eng')),
+                    fu3 = val('c_lk_fuel');
+                  if (!w.length && (!LK.engineVerified || e3.length === 3) && (!LK.fuel || fu3)) {
+                    var le3 = linkCheck(LK, e3, fu3);
+                    if (le3) {
+                      S.formErr = le3;
+                      render();
+                      return true;
+                    }
+                    S.formErr = '';
+                    var lid = docId(S.sheet, S.key);
+                    saveOnce(
+                      'open_' + lid,
+                      function () {
+                        return store.create('inspections', lid, rec);
+                      },
+                      'برگه باز شد',
+                    );
+                    return true;
+                  }
+                  S.linkConfirm = LK;
+                  S.linkErr = '';
+                  S.formErr = '';
+                  render();
+                  return true;
+                }
+                return false;
+              }
+              /* برگه‌ی تازه را می‌سازد؛ بعد از بررسی شماره‌ها و اتصال سریال صدا زده می‌شود */
+              function openNewRecord(rec, tmc) {
+                if (PSHEETS.indexOf(S.sheet) < 0 && !rec.product) {
+                  var pp0 = carProd(S.key);
+                  if (pp0) rec.product = pp0;
+                }
+                S.formErr = '';
+                var isCh = S.sheet === 'chassis' && !tmc,
+                  uid3 = docId(S.sheet, S.key);
+                saveOnce(
+                  'open_' + uid3,
+                  function () {
+                    return store.create('inspections', uid3, rec);
+                  },
+                  isCh ? 'برگه باز شد · ' + fuelTxt(rec.fuel) : 'برگه باز شد',
+                ).then(function (ok) {
+                  if (!ok) return;
+                  if (isCh) fuelRemember(rec.fuel);
+                  if (!tmc && rec.product) productRemember(rec.product);
+                  var engId = S.sheet === 'chassis' ? createEngineSheet(rec) : '';
+                  if (isCh) {
+                    S.undo = { id: uid3, until: Date.now() + 6000, fuel: rec.fuel, eng: engId };
+                    setTimeout(render, 6200);
+                    render();
+                  }
+                });
+              }
+              /* v159: با باز شدن شاسی، برگه‌ی موتور همان خودرو هم باز می‌شود تا شماره‌ها یک بار وارد شوند؛ اگر از قبل هست دست نمی‌خورد. شناسه‌ی برگه‌ی ساخته‌شده را برمی‌گرداند */
+              function createEngineSheet(chassisRec) {
+                var k = chassisRec.engine;
+                if (!k || insp('engine', k) || !canEdit('engine', k)) return '';
+                var id = docId('engine', k),
+                  rec = {
+                    sheet: 'engine',
+                    key: k,
+                    createdBy: S.user.name,
+                    createdAt: nowIso(),
+                    formCode: FORM_CODE,
+                    formPage: SHEETS.engine.page,
+                    items: {},
+                    signs: {},
+                  };
+                if (chassisRec.product) rec.product = chassisRec.product;
+                if (chassisRec.test) rec.test = true;
+                saveOnce(
+                  'open_' + id,
+                  function () {
+                    return store.create('inspections', id, rec);
+                  },
+                  '',
+                  true,
+                );
+                return id;
+              }
+              function submitCreate() {
+                if (waitsForEwt1()) {
+                  S.formErr = 'این شاسی هنوز توسط چکمن EWT1 باز نشده است.';
+                  render();
+                  return;
+                }
+                var rec = Object.assign(idVals(S.sheet, 'c_'), {
+                  sheet: S.sheet,
+                  key: S.key,
+                  createdBy: S.user.name,
+                  createdAt: nowIso(),
+                  formCode: FORM_CODE,
+                  formPage: SHEETS[S.sheet].page,
+                  items: {},
+                  signs: {},
+                });
+                var tmc = TM();
+                if (tmc) rec.test = true;
+                ensureCar([S.key, rec.engine, rec.chassisNo, rec.room, rec.serial]).then(function () {
+                  var err = createFormError(rec, tmc);
+                  if (err) {
+                    S.formErr = err;
+                    render();
+                    return;
+                  }
+                  if (
+                    SHEETS[S.sheet].keyKind === 'serial' &&
+                    !tmc &&
+                    serialLinkStep(rec, identity(S.key))
+                  )
+                    return;
+                  openNewRecord(rec, tmc);
+                });
+              }
+</script>
+</body>
+</html>

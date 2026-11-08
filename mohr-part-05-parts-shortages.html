@@ -1,0 +1,940 @@
+<!doctype html>
+<html lang="fa" dir="rtl">
+<head><meta charset="utf-8" /><title>بخش 05 — کسری قطعات</title></head>
+<body>
+<!-- Structural source container only. Open index.html or the existing page URLs.
+     Original executable blocks are copied verbatim, not rewritten.
+     Cross-file execution remains controlled by each block's original data-order.
+     Empty script-section lists mean that the source is a station/page entry only;
+     the existing shared inspection engine remains in group 10. -->
+<script type="application/json" id="mohr-group-map">
+{
+  "group": "05",
+  "title": "کسری قطعات",
+  "sources": [
+    {
+      "file": "shortages.html",
+      "page": {
+        "tab": "short",
+        "label": "کسری‌های باز"
+      },
+      "scriptSections": [
+        "views/wizard/canShort",
+        "views/wizard/shortScope",
+        "views/wizard/shortGroups",
+        "views/wizard/shortOpenCount",
+        "views/wizard/shortView"
+      ],
+      "styleSections": []
+    },
+    {
+      "file": "planning-shortages.html",
+      "page": {
+        "tab": "psh",
+        "label": "کسری برنامه‌ریزی"
+      },
+      "scriptSections": [
+        "features/planning"
+      ],
+      "styleSections": []
+    }
+  ]
+}
+</script>
+<!-- Source: shortages.html; original block bodies and data-order are unchanged. -->
+
+
+
+
+
+
+
+
+
+
+
+<!-- Source: planning-shortages.html; original block bodies and data-order are unchanged. -->
+
+
+
+<script type="text/x-mohr-section" data-mohr-section="views/wizard/canShort" data-order="19.91549295774648">
+
+      // BEGIN SECTION: views/wizard/canShort
+
+
+              function canShort() {
+
+                return !!S.user;
+
+              }
+      // END SECTION: views/wizard/canShort
+    
+</script>
+
+<script type="text/x-mohr-section" data-mohr-section="views/wizard/shortScope" data-order="19.929577464788732">
+
+      // BEGIN SECTION: views/wizard/shortScope
+
+
+              function shortScope(d) {
+
+                if (!S.user) return false;
+
+                var st = S.user.station;
+
+                if (S.user.id === 'owner' || st === 'commercial' || st === 'planning') return true;
+
+                return SHEETS[d.sheet].station === st;
+
+              }
+      // END SECTION: views/wizard/shortScope
+    
+</script>
+
+<script type="text/x-mohr-section" data-mohr-section="views/wizard/shortGroups" data-order="19.943661971830984">
+
+      // BEGIN SECTION: views/wizard/shortGroups
+
+
+              function shortGroups() {
+
+                var g = {},
+
+                  qs = null;
+
+                if (S.shQ) {
+
+                  qs = {};
+
+                  carRecords(S.shQ).recs.forEach(function (r) {
+
+                    qs[r.id] = 1;
+
+                  });
+
+                }
+
+                S.data.insp.forEach(function (d) {
+
+                  if (!SHEETS[d.sheet] || !shortScope(d)) return;
+
+                  if (qs && !qs[d.id]) return;
+
+                  Object.keys(d.items || {}).forEach(function (id) {
+
+                    var it = d.items[id];
+
+                    if (it.r === 'shortage' && !it.closedAt) {
+
+                      var p = (it.part || it.note || '—').trim();
+
+                      (g[p] = g[p] || []).push({ d: d, id: id, it: it });
+
+                    }
+
+                  });
+
+                });
+
+                return Object.keys(g)
+
+                  .map(function (p) {
+
+                    return {
+
+                      p: p,
+
+                      list: g[p].sort(function (a, b) {
+
+                        return (a.it.at || '') < (b.it.at || '') ? -1 : 1;
+
+                      }),
+
+                    };
+
+                  })
+
+                  .sort(function (a, b) {
+
+                    return b.list.length - a.list.length;
+
+                  });
+
+              }
+      // END SECTION: views/wizard/shortGroups
+    
+</script>
+
+<script type="text/x-mohr-section" data-mohr-section="views/wizard/shortOpenCount" data-order="19.95774647887324">
+
+      // BEGIN SECTION: views/wizard/shortOpenCount
+
+
+              function shortOpenCount() {
+
+                return cachedByRows(
+
+                  'shortCount',
+
+                  (S.user ? S.user.id + '|' + S.user.station : '') + '|' + (S.shQ || ''),
+
+                  function () {
+
+                    return shortGroups().reduce(function (n, g) {
+
+                      return n + g.list.length;
+
+                    }, 0);
+
+                  },
+
+                );
+
+              }
+      // END SECTION: views/wizard/shortOpenCount
+    
+</script>
+
+<script type="text/x-mohr-section" data-mohr-section="views/wizard/shortView" data-order="19.971830985915492">
+
+      // BEGIN SECTION: views/wizard/shortView
+
+
+              function shortView() {
+
+                var gs = shortGroups(),
+
+                  chk = S.shChk || {},
+
+                  scopeTxt =
+
+                    S.user.id === 'owner' ||
+
+                    S.user.station === 'commercial' ||
+
+                    S.user.station === 'planning'
+
+                      ? 'همه‌ی خودروها'
+
+                      : 'فقط کسری‌های برگه‌های ایستگاه «' + STATION_NAME[S.user.station] + '»';
+
+                var h =
+
+                  '<div class="card"><h2>کسری‌های باز بر اساس قطعه</h2><p class="hint">نمایش: ' +
+
+                  esc(scopeTxt) +
+
+                  '. وقتی قطعه‌ای تأمین و نصب شد، خودروها را انتخاب کنید، اقدام انجام‌شده را بنویسید و یک‌جا ببندید.</p>' +
+
+                  '<form data-form="shsearch" class="row" style="margin-top:10px"><label class="f grow">پیدا کردن خودرو با سریال، شاسی، موتور یا اتاق<input class="in num ltr" id="sq" inputmode="numeric" autocomplete="off" value="' +
+
+                  esc(S.shQ || '') +
+
+                  '"></label><button type="button" class="btn" data-act="livescan" data-scan="" style="align-self:flex-end">اسکن بارکد</button><button class="btn primary" type="submit" style="align-self:flex-end">جست‌وجو</button>' +
+
+                  (S.shQ
+
+                    ? '<button type="button" class="btn" data-act="shqclear" style="align-self:flex-end">نمایش همه</button>'
+
+                    : '') +
+
+                  '</form></div>';
+
+                if (!gs.length)
+
+                  return (
+
+                    h +
+
+                    '<div class="card"><p class="hint" style="margin:0">' +
+
+                    (S.shQ ? 'برای این شماره کسری بازی پیدا نشد.' : 'کسری بازی نیست.') +
+
+                    '</p></div>'
+
+                  );
+
+                gs.forEach(function (g, i) {
+
+                  var nsel = g.list.filter(function (x) {
+
+                    return chk[x.d.id + '|' + x.id];
+
+                  }).length;
+
+                  h +=
+
+                    '<div class="card"><div class="row"><h2 class="grow" style="margin:0">' +
+
+                    esc(g.p) +
+
+                    ' <span class="chip open">' +
+
+                    fa(g.list.length) +
+
+                    ' خودرو</span></h2><button class="btn sm" data-act="shall" data-i="' +
+
+                    i +
+
+                    '">' +
+
+                    (nsel === g.list.length ? 'برداشتن انتخاب' : 'انتخاب همه') +
+
+                    '</button></div><div class="items" style="margin-top:10px">';
+
+                  g.list.forEach(function (x) {
+
+                    var k = x.d.id + '|' + x.id,
+
+                      ser = identOf(x.d).serial || x.d.key;
+
+                    h +=
+
+                      '<div class="it"><div class="row"><input type="checkbox" data-act="shchk" data-k="' +
+
+                      esc(k) +
+
+                      '" ' +
+
+                      (chk[k] ? 'checked' : '') +
+
+                      ' style="width:24px;height:24px" aria-label="انتخاب"><span class="grow"><b class="num">' +
+
+                      esc(ser) +
+
+                      '</b><small style="display:block">ایستگاه: ' +
+
+                      esc(stationTitle(x.d.sheet)) +
+
+                      '</small><span class="m">' +
+
+                      whoWhen(x.it.by, x.it.at, 'ثبت‌کننده') +
+
+                      '</span></span>' +
+
+                      (isCom()
+
+                        ? '<button type="button" class="btn sm" data-act="opencar" data-q="' +
+
+                          esc(ser) +
+
+                          '">پرونده</button>'
+
+                        : '') +
+
+                      '</div></div>';
+
+                  });
+
+                  h +=
+
+                    '</div><label class="f" style="margin-top:10px">اقدام انجام‌شده برای ' +
+
+                    fa(nsel) +
+
+                    ' خودروی انتخاب‌شده<textarea class="in" id="sgn_' +
+
+                    i +
+
+                    '" placeholder="مثلاً: قطعه تأمین و نصب شد"></textarea></label><div class="row" style="margin-top:8px"><button class="btn primary sm" data-act="shclose" data-i="' +
+
+                    i +
+
+                    '">ثبت اقدام و بستن انتخاب‌شده‌ها</button></div></div>';
+
+                });
+
+                return h;
+
+              }
+      // END SECTION: views/wizard/shortView
+    
+</script>
+
+<script type="text/x-mohr-section" data-mohr-section="features/planning/owned-openPsh" data-order="32.07692307692308">
+
+              function openPsh() {
+                return (S.pshorts || []).filter(function (x) {
+                  return !x.closedAt;
+                });
+              }
+              function pshTab() {
+                var n = openPsh().length;
+                return (
+                  '<button class="tab" role="tab" data-act="tab" data-t="psh" aria-selected="' +
+                  (S.tab === 'psh') +
+                  '">کسری برنامه‌ریزی' +
+                  (n ? '<span class="cnt">' + fa(n) + '</span>' : '') +
+                  '</button>'
+                );
+              }
+              var PSH_ST = {
+                'شاسی و موتور': 'chassis',
+                تزیینات: 'trim',
+                'نهایی بالا': 'st4',
+                'نهایی پایین': 'st5',
+              };
+              function pshStLabel(st) {
+                return (
+                  Object.keys(PSH_ST).filter(function (k) {
+                    return PSH_ST[k] === st;
+                  })[0] || ''
+                );
+              }
+              /* «کد — شرح — ایستگاه مسئول»؛ ایستگاه و کد اختیاری‌اند */
+              function pshSplit(item) {
+                var parts = item.split(' — '),
+                  st = '';
+                if (parts.length > 1 && PSH_ST[parts[parts.length - 1]]) {
+                  st = PSH_ST[parts.pop()];
+                }
+                return parts.length > 1
+                  ? { code: parts[0], text: parts.slice(1).join(' — '), st: st }
+                  : { code: '', text: parts[0], st: st };
+              }
+              function pshPicker() {
+                var sel = S.psSel || {},
+                  q = norm(S.psQ || '');
+                return listK('planShorts')
+                  .map(function (it) {
+                    var p = pshSplit(it),
+                      hide = q && norm(it).indexOf(q) < 0;
+                    return (
+                      '<label class="pshrow" data-q="' +
+                      esc(it) +
+                      '"' +
+                      (hide ? ' style="display:none"' : '') +
+                      '><input type="checkbox" data-act="pssel" data-v="' +
+                      esc(it) +
+                      '"' +
+                      (sel[it] ? ' checked' : '') +
+                      '><span class="num ltr">' +
+                      esc(p.code) +
+                      '</span><span class="grow">' +
+                      esc(p.text) +
+                      '<small class="hint" style="display:block">' +
+                      esc(pshStLabel(p.st) || 'ایستگاه مشخص نشده') +
+                      '</small></span></label>'
+                    );
+                  })
+                  .join('');
+              }
+              function pshFilterDom(v) {
+                var q = norm(v);
+                Array.prototype.forEach.call(document.querySelectorAll('#pshlist .pshrow'), function (e) {
+                  e.style.display = !q || norm(e.getAttribute('data-q')).indexOf(q) >= 0 ? '' : 'none';
+                });
+              }
+              function pshFindDom(v) {
+                var q = digits(v);
+                Array.prototype.forEach.call(
+                  document.querySelectorAll('#pshopen [data-k]'),
+                  function (e) {
+                    e.style.display = !q || e.getAttribute('data-k').indexOf(q) >= 0 ? '' : 'none';
+                  },
+                );
+              }
+              function pshSelCount() {
+                return Object.keys(S.psSel || {}).length;
+              }
+              function pshAddCard() {
+                return (
+                  '<div class="card"><h2>ثبت کسری برای یک خودرو</h2><form data-form="pshadd" class="mgform">' +
+                  '<div class="row"><label class="f grow">سریال، شاسی، موتور یا اتاق<input class="in num ltr" id="ps_key" inputmode="numeric" autocomplete="off"></label><button type="button" class="btn" data-act="livescan" data-scan="ps_key" style="align-self:flex-end">اسکن بارکد</button></div>' +
+                  '<label class="f">جستجو در فهرست (کد یا نام قطعه)<input class="in" id="psq" autocomplete="off" value="' +
+                  esc(S.psQ || '') +
+                  '"></label>' +
+                  '<div id="pshlist" class="pshlist">' +
+                  pshPicker() +
+                  '</div>' +
+                  '<button class="btn primary" type="submit">ثبت <span id="pshn">' +
+                  fa(pshSelCount()) +
+                  '</span> کسری</button></form></div>'
+                );
+              }
+              function pshAdd() {
+                var typed = digits(val('ps_key')),
+                  sel = Object.keys(S.psSel || {});
+                if (!typed) {
+                  toast('شماره‌ی خودرو را بنویسید');
+                  return;
+                }
+                if (!sel.length) {
+                  toast('حداقل یک کسری را انتخاب کنید');
+                  return;
+                }
+                var car = carRecords(typed).key,
+                  have = {};
+                openPsh().forEach(function (x) {
+                  if (x.car === car) have[x.code + '|' + x.text] = 1;
+                });
+                var now = nowIso(),
+                  docs = [];
+                sel.forEach(function (it) {
+                  var p = pshSplit(it);
+                  if (!have[p.code + '|' + p.text])
+                    docs.push({
+                      kind: 'pshort',
+                      key: typed,
+                      car: car,
+                      code: p.code,
+                      text: p.text,
+                      st: p.st,
+                      by: S.user.name,
+                      byId: S.user.id,
+                      at: now,
+                      closedAt: '',
+                      closedBy: '',
+                      closedById: '',
+                    });
+                });
+                if (!docs.length) {
+                  toast('این کسری‌ها برای این خودرو از قبل باز هستند');
+                  return;
+                }
+                S.psSel = {};
+                S.psQ = '';
+                var k = document.getElementById('ps_key');
+                if (k) k.value = '';
+                save(
+                  function () {
+                    return Promise.all(
+                      docs.map(function (d) {
+                        return store.set('users', 'psh_' + uid(), d);
+                      }),
+                    );
+                  },
+                  fa(docs.length) + ' کسری ثبت شد',
+                );
+              }
+              function pshClose(id) {
+                var x = (S.pshorts || []).filter(function (r) {
+                  return r.id === id;
+                })[0];
+                if (!x || x.closedAt) return;
+                save(function () {
+                  return store.update('users', id, {
+                    closedAt: nowIso(),
+                    closedBy: S.user.name,
+                    closedById: S.user.id,
+                  });
+                }, 'کسری رفع شد');
+              }
+              /* رفع: برنامه‌ریزی، تجاری، مدیر و چکمن ایستگاه مسئولِ همان کسری */
+              function pshCanClose(x) {
+                var u = S.user;
+                return (
+                  !!u &&
+                  !x.closedAt &&
+                  (u.id === 'owner' ||
+                    isPlanningUser(u) ||
+                    u.station === 'commercial' ||
+                    (!!x.st && u.station === x.st))
+                );
+              }
+              function pshRowActions(x) {
+                var del = canPlanShort() && S.psDel === x.id;
+                if (del)
+                  return (
+                    '<div class="row" style="margin-top:8px"><button class="btn sm" data-act="pshdelyes" data-id="' +
+                    esc(x.id) +
+                    '">تأیید حذف</button><button class="btn sm" data-act="pshdelno">انصراف</button></div>'
+                  );
+                if (!pshCanClose(x)) return '';
+                return (
+                  '<div class="row" style="margin-top:8px"><button class="btn sm primary" data-act="pshclose" data-id="' +
+                  esc(x.id) +
+                  '">رفع شد</button>' +
+                  (canPlanShort()
+                    ? '<button class="btn sm" data-act="pshdelask" data-id="' +
+                      esc(x.id) +
+                      '">حذف</button>'
+                    : '') +
+                  '</div>'
+                );
+              }
+              function pshRow(x) {
+                return (
+                  '<div class="it' +
+                  (x.closedAt ? '' : ' ng') +
+                  '"><div class="row"><b class="grow"><span class="num ltr">' +
+                  esc(x.code) +
+                  '</span> ' +
+                  esc(x.text) +
+                  '</b><span class="chip ' +
+                  (x.closedAt ? 'closed' : 'shortage') +
+                  '">' +
+                  (x.closedAt ? 'رفع شد' : 'کسری') +
+                  '</span></div>' +
+                  '<div class="m">ایستگاه مسئول: ' +
+                  esc(pshStLabel(x.st) || 'مشخص نشده') +
+                  '</div>' +
+                  '<div class="m">' +
+                  whoWhen(x.by, x.at, 'ثبت‌کننده') +
+                  '</div>' +
+                  (x.closedAt
+                    ? '<div class="m">' + whoWhen(x.closedBy, x.closedAt, 'رفع‌کننده') + '</div>'
+                    : '') +
+                  pshRowActions(x) +
+                  '</div>'
+                );
+              }
+              function pshByCar(list) {
+                var g = {},
+                  order = [];
+                list.forEach(function (x) {
+                  if (!g[x.car]) {
+                    g[x.car] = [];
+                    order.push(x.car);
+                  }
+                  g[x.car].push(x);
+                });
+                return order.map(function (k) {
+                  return {
+                    car: k,
+                    list: g[k].sort(function (a, b) {
+                      return (a.at || '') < (b.at || '') ? -1 : 1;
+                    }),
+                  };
+                });
+              }
+              function pshOpenCard() {
+                var open = openPsh(),
+                  gs = pshByCar(open).slice(0, 60);
+                var h = '<div class="card"><h2>کسری‌های باز برنامه‌ریزی (' + fa(open.length) + ')</h2>';
+                if (!open.length) return h + '<p class="hint" style="margin:0">کسری بازی نیست.</p></div>';
+                h +=
+                  '<label class="f">پیدا کردن خودرو<input class="in num ltr" id="psf" inputmode="numeric" autocomplete="off"></label><div id="pshopen">';
+                gs.forEach(function (g) {
+                  h +=
+                    '<div data-k="' +
+                    esc(g.car) +
+                    '"><h3 style="margin:14px 0 6px">خودرو <b class="num">' +
+                    esc(g.car) +
+                    '</b> <span class="chip open">' +
+                    fa(g.list.length) +
+                    ' کسری</span></h3>' +
+                    g.list.map(pshRow).join('') +
+                    '</div>';
+                });
+                return h + '</div></div>';
+              }
+              function pshDoneCard() {
+                var done = (S.pshorts || [])
+                  .filter(function (x) {
+                    return x.closedAt;
+                  })
+                  .sort(function (a, b) {
+                    return a.closedAt < b.closedAt ? 1 : -1;
+                  })
+                  .slice(0, 15);
+                if (!done.length) return '';
+                return (
+                  '<div class="card"><h2>آخرین کسری‌های رفع‌شده</h2>' +
+                  done
+                    .map(function (x) {
+                      return '<div class="m"><b class="num">' + esc(x.car) + '</b></div>' + pshRow(x);
+                    })
+                    .join('') +
+                  '</div>'
+                );
+              }
+              function pshView() {
+                return pshAddCard() + pshOpenCard() + pshDoneCard();
+              }
+              /* در پرونده‌ی خودرو: فقط نمایش */
+              function pshForCar(c) {
+                var ids = [c.key, c.I.serial, c.I.chassis, c.I.engine, c.I.room].filter(Boolean);
+                return (S.pshorts || [])
+                  .filter(function (x) {
+                    return ids.indexOf(x.car) >= 0 || ids.indexOf(x.key) >= 0;
+                  })
+                  .sort(function (a, b) {
+                    return (a.at || '') < (b.at || '') ? -1 : 1;
+                  });
+              }
+              /* نوار کسری‌های باز برنامه‌ریزی بالای ویزارد هر ایستگاه */
+              function pshWizBlock(d) {
+                var open = pshForCar(carRecords(d.key)).filter(function (x) {
+                  return !x.closedAt;
+                });
+                if (!open.length) return '';
+                var h =
+                  '<button type="button" class="histbar hot" data-act="pshtoggle" aria-expanded="' +
+                  !!S.pshWizOpen +
+                  '"><b>کسری برنامه‌ریزی</b><span>' +
+                  fa(open.length) +
+                  ' کسری باز</span><i>' +
+                  (S.pshWizOpen ? '▴' : '▾') +
+                  '</i></button>';
+                return (
+                  h +
+                  (S.pshWizOpen ? '<div class="histlist">' + open.map(pshRow).join('') + '</div>' : '')
+                );
+              }
+              function pshCarCard(c) {
+                var list = pshForCar(c);
+                if (!list.length) return '';
+                var n = list.filter(function (x) {
+                  return !x.closedAt;
+                }).length;
+                return (
+                  '<div class="card"><h2>کسری‌های برنامه‌ریزی (' +
+                  fa(n) +
+                  ' باز از ' +
+                  fa(list.length) +
+                  ')</h2>' +
+                  list
+                    .map(function (x) {
+                      return pshRow(x);
+                    })
+                    .join('') +
+                  '</div>'
+                );
+              }
+              function clickPlanShort(ev, el, a, id, d) {
+                if (a === 'pshtoggle') {
+                  S.pshWizOpen = !S.pshWizOpen;
+                  render();
+                  return true;
+                }
+                if (a === 'pssel') {
+                  var v = el.getAttribute('data-v');
+                  S.psSel = S.psSel || {};
+                  if (el.checked) S.psSel[v] = 1;
+                  else delete S.psSel[v];
+                  var n = document.getElementById('pshn');
+                  if (n) n.textContent = fa(pshSelCount());
+                  return true;
+                }
+                if (a === 'pshclose') {
+                  var px = (S.pshorts || []).filter(function (r) {
+                    return r.id === id;
+                  })[0];
+                  if (px && pshCanClose(px)) pshClose(id);
+                  return true;
+                }
+                if (!canPlanShort()) return false;
+                if (a === 'pshdelask') {
+                  S.psDel = id;
+                  render();
+                  return true;
+                }
+                if (a === 'pshdelno') {
+                  S.psDel = '';
+                  render();
+                  return true;
+                }
+                if (a === 'pshdelyes') {
+                  S.psDel = '';
+                  save(function () {
+                    return store.del('users', id);
+                  }, 'کسری حذف شد');
+                  return true;
+                }
+                return false;
+              }
+      // END SECTION: features/planning
+    
+</script>
+
+<script type="text/x-mohr-section" data-mohr-section="actions/helpers/owned-closeShortageGroup" data-order="40.53333333333333">
+
+              function closeShortageGroup(el) {
+                var ix = +el.getAttribute('data-i'),
+                  g2 = shortGroups()[ix];
+                if (!g2) return;
+                var note2 = val('sgn_' + ix);
+                if (!note2) {
+                  toast('اقدام انجام‌شده را بنویسید.');
+                  return;
+                }
+                var sl = g2.list.filter(function (x) {
+                  return (S.shChk || {})[x.d.id + '|' + x.id];
+                });
+                if (!sl.length) {
+                  toast('هیچ خودرویی انتخاب نشده است.');
+                  return;
+                }
+                var byDoc = {},
+                  t5 = nowIso();
+                sl.forEach(function (x) {
+                  (byDoc[x.d.id] = byDoc[x.d.id] || {})[x.id] = {
+                    closedAt: t5,
+                    closedBy: S.user.name,
+                    closedById: S.user.id,
+                    closeNote: note2,
+                  };
+                  delete S.shChk[x.d.id + '|' + x.id];
+                });
+                save(
+                  function () {
+                    return Promise.all(
+                      Object.keys(byDoc).map(function (doc) {
+                        return store.update('inspections', doc, { items: byDoc[doc] });
+                      }),
+                    );
+                  },
+                  fa(sl.length) + ' کسری بسته شد',
+                );
+                return;
+              }
+</script>
+
+<script type="text/x-mohr-section" data-mohr-section="actions/clicks/owned-clickShortageList" data-order="41.35294117647059">
+
+              function clickShortageList(ev, el, a, id, d) {
+                if (a === 'shtoggle') {
+                  S.shSel = S.shSel || {};
+                  var pp = el.getAttribute('data-p');
+                  if (S.shSel[pp]) delete S.shSel[pp];
+                  else S.shSel[pp] = 1;
+                  if (!chipPartial(el, 'sh')) render();
+                  return true;
+                }
+                if (a === 'shclear') {
+                  S.shSel = {};
+                  render();
+                  return true;
+                }
+                if (a === 'shprev') {
+                  var best = null;
+                  S.data.insp.forEach(function (x) {
+                    if (!SHEETS[x.sheet] || x.key === S.key || (isChs(S.sheet) && x.sheet !== S.sheet))
+                      return;
+                    Object.keys(x.items || {}).forEach(function (i2) {
+                      var it = x.items[i2];
+                      if (it.r === 'shortage' && (!best || (it.at || '') > (best.at || '')))
+                        best = { at: it.at, key: x.key };
+                    });
+                  });
+                  if (!best) {
+                    toast('کسری ثبت‌شده‌ای از خودروی دیگر پیدا نشد.');
+                    return true;
+                  }
+                  var sel = {};
+                  S.data.insp.forEach(function (x) {
+                    if (x.key !== best.key || (isChs(S.sheet) && x.sheet !== S.sheet)) return;
+                    Object.keys(x.items || {}).forEach(function (i2) {
+                      var it = x.items[i2];
+                      if (it.r === 'shortage') {
+                        var p2 = (it.part || it.note || '').trim();
+                        if (p2) sel[p2] = 1;
+                      }
+                    });
+                  });
+                  S.shSel = sel;
+                  render();
+                  toast('کسری‌های خودروی قبلی انتخاب شد؛ مواردی که تأمین شده را بردارید.');
+                  return true;
+                }
+                if (a === 'shchk') {
+                  S.shChk = S.shChk || {};
+                  var kk3 = el.getAttribute('data-k');
+                  if (el.checked) S.shChk[kk3] = 1;
+                  else delete S.shChk[kk3];
+                  render();
+                  return true;
+                }
+                if (a === 'shall' && canShort()) {
+                  var g1 = shortGroups()[+el.getAttribute('data-i')];
+                  if (!g1) return true;
+                  S.shChk = S.shChk || {};
+                  var allOn = g1.list.every(function (x) {
+                    return S.shChk[x.d.id + '|' + x.id];
+                  });
+                  g1.list.forEach(function (x) {
+                    var k4 = x.d.id + '|' + x.id;
+                    if (allOn) delete S.shChk[k4];
+                    else S.shChk[k4] = 1;
+                  });
+                  render();
+                  return true;
+                }
+                if (a === 'shclose' && canShort()) {
+                  closeShortageGroup(el);
+                  return true;
+                }
+                if (a === 'shqclear') {
+                  S.shQ = '';
+                  render();
+                  return true;
+                }
+                return false;
+              }
+</script>
+
+<script type="text/x-mohr-section" data-mohr-section="runtime/registrations-05" data-order="41.867647058823536">
+MOHRRuntime.views.register("pshView", pshView, "mohr-part-05-parts-shortages.html");
+MOHRRuntime.views.register("shortView", shortView, "mohr-part-05-parts-shortages.html");
+MOHRRuntime.views.register("pshOpenCard", pshOpenCard, "mohr-part-05-parts-shortages.html");
+MOHRRuntime.actions.register("clickPlanShort", clickPlanShort, "mohr-part-05-parts-shortages.html");
+MOHRRuntime.actions.register("clickShortageList", clickShortageList, "mohr-part-05-parts-shortages.html");
+MOHRRuntime.forms.register("pshAdd", pshAdd, "mohr-part-05-parts-shortages.html");
+MOHRRuntime.forms.register("submitShortSearch", submitShortSearch, "mohr-part-05-parts-shortages.html");
+MOHRRuntime.forms.register("submitShortages", submitShortages, "mohr-part-05-parts-shortages.html");
+</script>
+
+<script type="text/x-mohr-section" data-mohr-section="actions/forms/owned-submitShortSearch" data-order="43.6">
+
+              function submitShortSearch() {
+                var sq0 = digits(val('sq'));
+                ensureCar([sq0]).then(function () {
+                  S.shQ = sq0;
+                  render();
+                });
+              }
+</script>
+
+<script type="text/x-mohr-section" data-mohr-section="actions/forms/owned-submitShortages" data-order="43.91428571428571">
+
+              function submitShortages() {
+                var dd2 = insp(S.sheet, S.key),
+                  have2 = {};
+                Object.keys((dd2 && dd2.items) || {}).forEach(function (id) {
+                  var it = dd2.items[id];
+                  if (it.r === 'shortage' && !it.closedAt) have2[(it.part || it.note || '').trim()] = 1;
+                });
+                var parts = Object.keys(S.shSel || {});
+                val('sn')
+                  .split(/[,،\n]+/)
+                  .map(function (x) {
+                    return x.trim();
+                  })
+                  .filter(Boolean)
+                  .forEach(function (p) {
+                    if (parts.indexOf(p) < 0) parts.push(p);
+                  });
+                parts = parts.filter(function (p) {
+                  return !have2[p];
+                });
+                if (!parts.length) {
+                  S.formErr2 = 'دست‌کم یک قطعه انتخاب کنید یا بنویسید.';
+                  render();
+                  return;
+                }
+                S.formErr2 = '';
+                var m2 = {},
+                  t6 = nowIso();
+                parts.forEach(function (p, i3) {
+                  m2['x' + uid() + i3] = {
+                    r: 'shortage',
+                    custom: true,
+                    part: p,
+                    note: p,
+                    by: S.user.name,
+                    byId: S.user.id,
+                    at: t6,
+                    closedAt: '',
+                    closedBy: '',
+                  };
+                });
+                S.shSel = {};
+                writeItems(m2, fa(parts.length) + ' کسری ثبت شد').then(function () {
+                  var e = document.getElementById('sn');
+                  if (e) e.value = '';
+                });
+              }
+</script>
+</body>
+</html>

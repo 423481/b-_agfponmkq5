@@ -1,0 +1,2430 @@
+<!doctype html>
+<html lang="fa" dir="rtl">
+<head><meta charset="utf-8" /><title>بخش 09 — تنظیمات، امنیت، ابزارهای داده و چک‌لیست‌ها</title></head>
+<body>
+<!-- Structural source container only. Open index.html or the existing page URLs.
+     Original executable blocks are copied verbatim, not rewritten.
+     Cross-file execution remains controlled by each block's original data-order.
+     Empty script-section lists mean that the source is a station/page entry only;
+     the existing shared inspection engine remains in group 10. -->
+<script type="application/json" id="mohr-group-map">
+{
+  "group": "09",
+  "title": "تنظیمات، امنیت، ابزارهای داده و چک‌لیست‌ها",
+  "sources": [
+    {
+      "file": "settings.html",
+      "page": {
+        "tab": "admin",
+        "adm": "set",
+        "label": "تنظیمات"
+      },
+      "scriptSections": [
+        "views/admin/mgrList",
+        "views/admin/mgrTitles",
+        "views/admin/mgrUnits",
+        "views/admin/listOptions",
+        "views/admin/cfgCard",
+        "views/admin/markCard",
+        "views/admin/mgrChips",
+        "views/admin/mgrAddForm",
+        "views/admin/mgrCard",
+        "views/admin/mgrListSave",
+        "views/admin/mgrAdd",
+        "views/admin/mgrRemove",
+        "views/admin/settingsCards",
+        "dashboard/settings"
+      ],
+      "styleSections": []
+    },
+    {
+      "file": "security.html",
+      "page": {
+        "tab": "admin",
+        "adm": "sec",
+        "label": "امنیت"
+      },
+      "scriptSections": [
+        "views/admin/ownerCodeCard",
+        "views/admin/ownerPwCard",
+        "views/admin/securityCards",
+        "views/admin/isOwnerNow",
+        "views/admin/canReset",
+        "views/admin/pwCell",
+        "views/admin/pwCard"
+      ],
+      "styleSections": []
+    },
+    {
+      "file": "data.html",
+      "page": {
+        "tab": "admin",
+        "adm": "data",
+        "label": "داده‌ها"
+      },
+      "scriptSections": [
+        "views/admin/dataCards"
+      ],
+      "styleSections": []
+    },
+    {
+      "file": "checklists.html",
+      "page": {
+        "tab": "lists",
+        "label": "فهرست‌ها"
+      },
+      "scriptSections": [
+        "features/lists"
+      ],
+      "styleSections": []
+    }
+  ]
+}
+</script>
+<!-- Source: settings.html; original block bodies and data-order are unchanged. -->
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- Source: security.html; original block bodies and data-order are unchanged. -->
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<!-- Source: data.html; original block bodies and data-order are unchanged. -->
+
+
+
+<!-- Source: checklists.html; original block bodies and data-order are unchanged. -->
+
+
+
+<script type="text/x-mohr-section" data-mohr-section="features/lists/owned-CORR_REC" data-order="20">
+
+      // BEGIN SECTION: features/lists
+              /* ---------- اصلاح شماره‌ی اشتباه (درخواست چکمن، تأیید کیفیت یا مالک) ---------- */
+              var CORR_REC = { serial: 'serial', chassis: 'chassisNo', engine: 'engine', room: 'room' };
+              var CORR_FIELDS = ['chassis', 'engine', 'serial', 'room'];
+              var CORR_PICK = {
+                chassis: ['chassis', 'engine'],
+                engine: ['engine'],
+                trim: ['room'],
+                final1: ['serial', 'chassis', 'engine', 'room'],
+                final2: ['serial', 'chassis', 'engine', 'room'],
+                gas: ['chassis', 'engine'],
+                mech: ['serial', 'chassis', 'engine', 'room'],
+                mech2: ['serial', 'chassis', 'engine', 'room'],
+                roll: ['serial', 'chassis', 'engine', 'room'],
+                road: ['serial', 'chassis', 'engine', 'room'],
+                comm: ['serial', 'chassis', 'engine', 'room'],
+              };
+</script>
+
+<script type="text/x-mohr-section" data-mohr-section="features/lists/owned-corrAll" data-order="20.142857142857142">
+
+              function corrAll() {
+                return S.corr || [];
+              }
+              function corrPendingCount() {
+                return corrAll().filter(function (r) {
+                  return r.status === 'pending';
+                }).length;
+              }
+              function corrStatusTxt(r) {
+                return r.status === 'applied'
+                  ? 'اعمال شد'
+                  : r.status === 'rejected'
+                    ? 'رد شد'
+                    : 'در انتظار بررسی';
+              }
+              function corrLine(r) {
+                return (
+                  '<div class="it"><div class="row"><span class="grow"><b>' +
+                  esc(NUM_LABEL[r.field]) +
+                  ':</b> <span class="num">' +
+                  esc(r.field === 'fuel' ? fuelTxt(r.oldVal) : r.oldVal) +
+                  '</span> ← <b class="num">' +
+                  esc(r.field === 'fuel' ? fuelTxt(r.newVal) : r.newVal) +
+                  '</b> <span class="chip ' +
+                  (r.status === 'pending' ? 'open' : 'closed') +
+                  '">' +
+                  corrStatusTxt(r) +
+                  '</span></span></div>' +
+                  '<div class="m">دلیل: ' +
+                  esc(r.reason) +
+                  '</div><div class="m">' +
+                  whoWhen(r.by, r.at, 'درخواست‌کننده') +
+                  '</div>' +
+                  (r.decidedAt
+                    ? '<div class="m">' +
+                      whoWhen(
+                        r.decidedBy,
+                        r.decidedAt,
+                        r.status === 'applied' ? 'اعمال‌کننده' : 'ردکننده',
+                      ) +
+                      '</div>' +
+                      (r.decNote ? '<div class="m">توضیح: ' + esc(r.decNote) + '</div>' : '')
+                    : '') +
+                  '</div>'
+                );
+              }
+              function openOnItem(sheet, id, p) {
+                return S.data.insp.some(function (d) {
+                  if (p && prodOf(d) !== p) return false;
+                  var it = d.sheet === sheet && d.items && d.items[id];
+                  return (
+                    it && (it.r === 'ng' || it.r === 'sample' || it.r === 'shortage') && !it.closedAt
+                  );
+                });
+              }
+              function lsDa(sh, sec, i) {
+                return 'data-sh="' + esc(sh) + '" data-sec="' + esc(sec) + '" data-i="' + i + '"';
+              }
+              function lsPid(sh, sec, i) {
+                return 'lsl_' + (S.lsProd || 'padra') + '_' + sh + '_' + sec + '_' + i;
+              }
+              function closePermGroup(kind, title) {
+                var cm = closeMapOf(kind);
+                return (
+                  '<b>' +
+                  title +
+                  '</b><div class="mgchips">' +
+                  Object.keys(cm)
+                    .map(function (k) {
+                      return (
+                        '<button type="button" class="pick" data-act="lsperm" data-k="' +
+                        kind +
+                        '" data-st="' +
+                        k +
+                        '" aria-pressed="' +
+                        !!cm[k] +
+                        '">' +
+                        esc(STATION_NAME[k] || k) +
+                        '</button>'
+                      );
+                    })
+                    .join('') +
+                  '</div>'
+                );
+              }
+              function listsView() {
+                var sh = S.lsSheet && SHEETS[S.lsSheet] ? S.lsSheet : 'chassis',
+                  sd = { sections: secsOf(sh0(), lsP()) };
+                function sh0() {
+                  return S.lsSheet && SHEETS[S.lsSheet] ? S.lsSheet : 'chassis';
+                }
+                var h =
+                  '<div class="card"><h2>مدیریت فهرست‌ها</h2><p class="hint">فقط مدیر برنامه این بخش را می‌بیند. تغییر آیتم‌های برگه باید با نامه‌ی واحد مربوطه باشد؛ شماره نامه یا دلیل را بنویسید (برای فهرست کسری و ایراد رایج الزامی نیست). تغییر برای همه‌ی چکمن‌ها فوری اعمال و با نام و زمان ثبت می‌شود. سوابق قبلی خودروها پاک نمی‌شود؛ آیتم حذف‌شده فقط از برگه‌های بعدی برداشته می‌شود.</p><label class="f" style="margin-top:10px">شماره نامه / دلیل تغییر<input class="in" id="ls_letter" autocomplete="off" placeholder="مثلاً: نامه‌ی واحد تولید، شماره …"></label></div>';
+                h +=
+                  '<div class="card"><b>محصول</b><div class="mgchips">' +
+                  [
+                    ['padra', 'پادرا'],
+                    ['ex', 'اکستند'],
+                    ['both', 'هر دو'],
+                  ]
+                    .map(function (x) {
+                      return (
+                        '<button type="button" class="pick" data-act="lsprod" data-id="' +
+                        x[0] +
+                        '" aria-pressed="' +
+                        ((S.lsProd || 'padra') === x[0]) +
+                        '">' +
+                        x[1] +
+                        '</button>'
+                      );
+                    })
+                    .join('') +
+                  '</div><p class="hint" style="margin-top:8px">' +
+                  (S.lsProd === 'both'
+                    ? '«هر دو»: افزودن آیتم، تغییر نام و حذف روی هر دو فهرست اعمال می‌شود (آیتم‌های هم‌نام). جابه‌جایی و گزینه‌ها فقط روی پادرا.'
+                    : S.lsProd === 'ex'
+                      ? 'در حال ویرایش فهرست اکستند. پادرا تغییر نمی‌کند.'
+                      : 'در حال ویرایش فهرست پادرا. اکستند تغییر نمی‌کند.') +
+                  '</p></div><div class="card"><b>برگه</b><div class="mgchips">';
+                STAGES.forEach(function (k) {
+                  if (SHEETS[k])
+                    h +=
+                      '<button type="button" class="pick" data-act="lssheet" data-id="' +
+                      k +
+                      '" aria-pressed="' +
+                      (k === sh) +
+                      '">' +
+                      esc(SHEETS[k].name) +
+                      '</button>';
+                });
+                h += '</div></div>';
+                sd.sections.forEach(function (sec) {
+                  var open = S.lsSec === sec.id;
+                  h +=
+                    '<div class="card"><button type="button" class="lssech" data-act="lssec" data-id="' +
+                    esc(sec.id) +
+                    '" aria-expanded="' +
+                    open +
+                    '"><h2>بخش ' +
+                    esc(sec.name) +
+                    '</h2><span class="hint">' +
+                    (open ? 'بستن ▴' : 'باز کردن ▾') +
+                    '</span></button>';
+                  if (!open) {
+                    h += '</div>';
+                    return;
+                  }
+                  h += '<div class="items" style="margin-top:8px">';
+                  var ents = secEntries(sh, sec);
+                  ents.forEach(function (e, pos) {
+                    var pid = lsPid(sh, sec.id, e.i),
+                      da = lsDa(sh, sec.id, e.i),
+                      p = e.p,
+                      hidden = !!p.x;
+                    h +=
+                      '<div class="it" style="' +
+                      (hidden ? 'opacity:.55' : '') +
+                      '"><div class="row"><input class="in grow" id="' +
+                      pid +
+                      '" value="' +
+                      esc(entryLabel(e)) +
+                      '" style="min-width:200px"><button class="btn sm" data-act="lsrename" ' +
+                      da +
+                      '>ذخیره نام</button>' +
+                      '<button class="btn sm" data-act="lsmove" data-dir="-1" ' +
+                      da +
+                      (pos === 0 ? ' disabled' : '') +
+                      ' aria-label="بالا">▲</button><button class="btn sm" data-act="lsmove" data-dir="1" ' +
+                      da +
+                      (pos === ents.length - 1 ? ' disabled' : '') +
+                      ' aria-label="پایین">▼</button>' +
+                      '<button class="btn sm" data-act="lshide" ' +
+                      da +
+                      '>' +
+                      (hidden ? 'بازگرداندن به برگه' : 'حذف از برگه') +
+                      '</button></div>' +
+                      '<details style="margin-top:6px"><summary class="hint">گزینه‌ها: میکروفون، عکس، بارکد، اندازه' +
+                      (e.custom ? ' · آیتم افزوده‌شده' : '') +
+                      '</summary><div class="row" style="margin-top:8px;gap:14px">' +
+                      '<label><input type="checkbox" id="' +
+                      pid +
+                      '_mic" ' +
+                      (p.mic === 0 ? '' : 'checked') +
+                      '> میکروفون در توضیح</label>' +
+                      '<label><input type="checkbox" id="' +
+                      pid +
+                      '_ph" ' +
+                      (p.ph === 0 ? '' : 'checked') +
+                      '> عکس هنگام ثبت ایراد</label>' +
+                      '<label><input type="checkbox" id="' +
+                      pid +
+                      '_phr" ' +
+                      (p.phr ? 'checked' : '') +
+                      '> دکمه‌ی عکس روی همین ردیف</label>' +
+                      '<label><input type="checkbox" id="' +
+                      pid +
+                      '_bc" ' +
+                      (p.bc ? 'checked' : '') +
+                      '> اسکن بارکد روی همین ردیف</label></div>' +
+                      '<div class="row" style="margin-top:8px"><label class="f">اندازه‌ی متن<select class="in" id="' +
+                      pid +
+                      '_ts"><option value="">معمولی</option><option value="s"' +
+                      (p.ts === 's' ? ' selected' : '') +
+                      '>کوچک</option><option value="l"' +
+                      (p.ts === 'l' ? ' selected' : '') +
+                      '>بزرگ</option><option value="xl"' +
+                      (p.ts === 'xl' ? ' selected' : '') +
+                      '>خیلی بزرگ</option></select></label>' +
+                      '<label class="f">اندازه‌ی آیکون و دکمه‌ها<select class="in" id="' +
+                      pid +
+                      '_is"><option value="">معمولی</option><option value="s"' +
+                      (p.is === 's' ? ' selected' : '') +
+                      '>کوچک</option><option value="l"' +
+                      (p.is === 'l' ? ' selected' : '') +
+                      '>بزرگ</option><option value="xl"' +
+                      (p.is === 'xl' ? ' selected' : '') +
+                      '>خیلی بزرگ</option></select></label>' +
+                      '<button class="btn sm primary" data-act="lsflags" ' +
+                      da +
+                      ' style="align-self:flex-end">ذخیره‌ی گزینه‌ها</button></div></details></div>';
+                  });
+                  h +=
+                    '</div><div class="row" style="margin-top:10px"><input class="in grow" id="lsadd_' +
+                    sh +
+                    '_' +
+                    sec.id +
+                    '" placeholder="آیتم جدید در این بخش" autocomplete="off"><button class="btn sm primary" data-act="lsadd" data-sh="' +
+                    sh +
+                    '" data-sec="' +
+                    esc(sec.id) +
+                    '">افزودن آیتم</button></div></div>';
+                });
+                var g = shortGroup(sh),
+                  sl = shortList(sh);
+                h +=
+                  '<div class="card"><h2>فهرست قطعات کسری · ' +
+                  esc(g === 'chassis' ? 'شاسی و موتور' : SHEETS[g].name) +
+                  '</h2><p class="hint" style="margin-bottom:8px">چکمن این ایستگاه فقط این قطعه‌ها را در دکمه‌ها می‌بیند. قطعه‌ی دیگر را هم می‌تواند تایپ کند.</p><div class="chips">';
+                if (!sl.length) h += '<span class="hint">فهرستی تعریف نشده است.</span>';
+                sl.forEach(function (p, i) {
+                  h +=
+                    '<span class="chip">' +
+                    esc(p) +
+                    ' <button type="button" class="btn sm" data-act="lsshdel" data-sh="' +
+                    sh +
+                    '" data-i="' +
+                    i +
+                    '" aria-label="حذف ' +
+                    esc(p) +
+                    '">✕</button></span>';
+                });
+                h +=
+                  '</div><div class="row" style="margin-top:10px"><input class="in grow" id="lsshadd" placeholder="قطعه‌ی جدید (چند قطعه را با ویرگول جدا کنید)" autocomplete="off"><button class="btn sm primary" data-act="lsshadd" data-sh="' +
+                  sh +
+                  '">افزودن قطعه</button></div></div>';
+                var ng = ngPresets();
+                h += '<div class="card"><h2>نوع ایرادهای آماده</h2><div class="chips">';
+                ng.forEach(function (p, i) {
+                  h +=
+                    '<span class="chip">' +
+                    esc(p) +
+                    ' <button type="button" class="btn sm" data-act="lsngdel" data-i="' +
+                    i +
+                    '" aria-label="حذف ' +
+                    esc(p) +
+                    '">✕</button></span>';
+                });
+                h +=
+                  '</div><div class="row" style="margin-top:10px"><input class="in grow" id="lsngadd" placeholder="نوع ایراد جدید" autocomplete="off"><button class="btn sm primary" data-act="lsngadd">افزودن</button></div></div>';
+                h +=
+                  '<div class="card"><h2>دسترسی بستن در پرونده‌ی خودرو</h2><p class="hint" style="margin-bottom:8px">همه‌ی ایستگاه‌ها سوابق خودرو را می‌بینند. برای ایراد (و نمونه) و برای کسری جدا انتخاب کنید کدام ایستگاه‌ها می‌توانند ببندند. واحد تجاری در پرونده‌ی خودرو همیشه هر دو را می‌بندد.</p>' +
+                  closePermGroup('close', 'بستن ایراد و نمونه') +
+                  closePermGroup('closeSh', 'بستن کسری') +
+                  '</div>';
+                Object.keys(LISTK).forEach(function (k) {
+                  h += '<div class="card"><h2>' + esc(LISTK[k].title) + '</h2><div class="chips">';
+                  listK(k).forEach(function (p, i) {
+                    h +=
+                      '<span class="chip">' +
+                      esc(p) +
+                      ' <button type="button" class="btn sm" data-act="lsckdel" data-k="' +
+                      k +
+                      '" data-i="' +
+                      i +
+                      '" aria-label="حذف ' +
+                      esc(p) +
+                      '">✕</button></span>';
+                  });
+                  h +=
+                    '</div><div class="row" style="margin-top:10px"><input class="in grow" id="lsck_' +
+                    k +
+                    '" placeholder="مورد جدید" autocomplete="off"><button class="btn sm primary" data-act="lsckadd" data-k="' +
+                    k +
+                    '">افزودن</button></div></div>';
+                });
+                if (S.supa)
+                  h +=
+                    '<div class="card"><h2>بازه‌ی بارگذاری (برای سرعت)</h2><p class="hint" style="margin-bottom:8px">برنامه روی هر دستگاه فقط بازدیدهای این چند روز اخیر و همه‌ی تأیید نهایی‌نشده‌ها را می‌خواند. خودروی قدیمی‌تر با جستجوی شماره از سرور می‌آید.</p><div class="row"><label class="f">چکمن‌ها (روز)<input class="in num ltr" id="lsw_chk" value="' +
+                    +((S.lists && S.lists.win && S.lists.win.chk) || 2) +
+                    '" inputmode="numeric" style="max-width:100px"></label><label class="f">تجاری، کیفیت، برنامه‌ریزی، مدیر (روز)<input class="in num ltr" id="lsw_mgr" value="' +
+                    +((S.lists && S.lists.win && S.lists.win.mgr) || 7) +
+                    '" inputmode="numeric" style="max-width:100px"></label><button class="btn sm primary" data-act="lswin" style="align-self:flex-end">ذخیره</button></div></div>';
+                h += '<div class="card"><h2>تاریخچه‌ی تغییرها</h2>';
+                var lg = (S.lg || []).slice(0, 30);
+                if (!lg.length) h += '<p class="hint" style="margin:0">هنوز تغییری ثبت نشده است.</p>';
+                lg.forEach(function (x) {
+                  h +=
+                    '<div class="it"><b>' +
+                    esc(x.what || '') +
+                    '</b><div class="hint">' +
+                    whoWhen(x.by, x.at) +
+                    (x.letter ? '<div>نامه/دلیل: ' + esc(x.letter) + '</div>' : '') +
+                    '</div></div>';
+                });
+                return h + '</div>';
+              }
+              function lsP() {
+                return S.lsProd === 'ex' ? 'ex' : 'padra';
+              }
+              function IR(c, so) {
+                return so.p === 'ex' ? (c.itemsX = c.itemsX || {}) : c.items;
+              }
+              function lsMirror(c, sh, so, label, fn) {
+                if (S.lsProd !== 'both') return;
+                var xo = secsOf(sh, 'ex').filter(function (x) {
+                  return x.id === so.id;
+                })[0];
+                if (!xo) return;
+                var m = secEntries(sh, xo).filter(function (e) {
+                  return entryLabel(e) === label;
+                })[0];
+                if (m) fn(lsProp(c, sh, xo, m.i));
+              }
+              function lsClone() {
+                var c = JSON.parse(JSON.stringify(S.lists || {}));
+                delete c.id;
+                c.items = c.items || {};
+                c.short = c.short || {};
+                if (!c.ng) c.ng = null;
+                return c;
+              }
+              /* اگر بین باز کردن صفحه و ذخیره، دستگاه دیگری فهرست‌ها را عوض کرده باشد، روی تغییر او نمی‌نویسیم. آفلاین: ادامه می‌دهد و در صف می‌ماند */
+              function listsUnchanged(base) {
+                if (!store.get) return Promise.resolve();
+                return store.get('users', '__lists').then(
+                  function (cur) {
+                    if (cur && (cur.updatedAt || '') !== base) {
+                      if (store.kick) store.kick();
+                      throw new Error(
+                        'فهرست‌ها را دستگاه دیگری تازه تغییر داده است؛ صفحه تازه شد. دوباره انجام دهید.',
+                      );
+                    }
+                  },
+                  function () {},
+                );
+              }
+              function lsSave(mut, what, needLetter) {
+                if (!S.isOwner) return false;
+                var letter = val('ls_letter');
+                if (needLetter && !letter) {
+                  toast('شماره نامه یا دلیل تغییر را بنویسید.');
+                  return false;
+                }
+                var c = lsClone(),
+                  err = mut(c);
+                if (err) {
+                  toast(err);
+                  return false;
+                }
+                if (c.ng === null) delete c.ng;
+                c.updatedAt = nowIso();
+                c.updatedBy = S.user ? S.user.name : '';
+                var lid = 'lg_' + Date.now().toString(36) + Math.random().toString(36).slice(2, 5);
+                var base = S.lists ? S.lists.updatedAt || '' : '';
+                save(function () {
+                  return listsUnchanged(base)
+                    .then(function () {
+                      return store.set('users', '__lists', c);
+                    })
+                    .then(function () {
+                      return store.set('users', lid, {
+                        at: nowIso(),
+                        by: S.user ? S.user.name : '',
+                        byId: S.user ? S.user.id : '',
+                        letter: letter,
+                        what: what,
+                      });
+                    });
+                }, 'ذخیره شد');
+                return true;
+              }
+              function lsProp(c, sh, secObj, i) {
+                var R0 = IR(c, secObj),
+                  a = (R0[sh] = R0[sh] || {}),
+                  s = (a[secObj.id] = a[secObj.id] || {}),
+                  n = secObj.items.length;
+                if (i < n) {
+                  s.ov = s.ov || {};
+                  return (s.ov[i] = s.ov[i] || {});
+                }
+                s.add = s.add || [];
+                return (s.add[i - n] = s.add[i - n] || {});
+              }
+</script>
+
+<script type="text/x-mohr-section" data-mohr-section="features/lists/owned-lsAction" data-order="20.785714285714285">
+
+              /* ویرایش فهرست‌ها در «فهرست‌ها» (فقط مدیر)؛ هر گروه اگر عمل را رسیدگی کرد true برمی‌گرداند */
+              function lsAction(a, el) {
+                if (!S.isOwner) return false;
+                return (
+                  lsListEdit(a, el) || lsSettingEdit(a, el) || lsItemEdit(a, el) || lsShortageEdit(a, el)
+                );
+              }
+              function lsListEdit(a, el) {
+                var i = +el.getAttribute('data-i');
+                if (a === 'lsckadd' || a === 'lsckdel') {
+                  var ck = el.getAttribute('data-k');
+                  if (!LISTK[ck]) return true;
+                  if (a === 'lsckadd') {
+                    var cv = val('lsck_' + ck);
+                    if (!cv) {
+                      toast('مقدار را بنویسید.');
+                      return true;
+                    }
+                    lsSave(
+                      function (c) {
+                        var l = c[ck] && c[ck].length ? c[ck] : LISTK[ck].def.slice();
+                        if (l.indexOf(cv) < 0) l.push(cv);
+                        c[ck] = l;
+                      },
+                      'افزودن «' + cv + '» به «' + LISTK[ck].title + '»',
+                      false,
+                    );
+                    var ce = document.getElementById('lsck_' + ck);
+                    if (ce) ce.value = '';
+                    return true;
+                  }
+                  var ci = +el.getAttribute('data-i'),
+                    cl = listK(ck),
+                    cn = cl[ci];
+                  if (cn === undefined) return true;
+                  lsSave(
+                    function (c) {
+                      var l = listK(ck);
+                      l.splice(ci, 1);
+                      c[ck] = l;
+                    },
+                    'حذف «' + cn + '» از «' + LISTK[ck].title + '»',
+                    false,
+                  );
+                  return true;
+                }
+                if (a === 'lsngadd') {
+                  var nn = val('lsngadd');
+                  if (!nn) {
+                    toast('نوع ایراد را بنویسید.');
+                    return true;
+                  }
+                  lsSave(
+                    function (c) {
+                      var l = c.ng && c.ng.length ? c.ng : NG_PRESETS.slice();
+                      if (l.indexOf(nn) < 0) l.push(nn);
+                      c.ng = l;
+                    },
+                    'افزودن نوع ایراد «' + nn + '»',
+                    false,
+                  );
+                  var ne = document.getElementById('lsngadd');
+                  if (ne) ne.value = '';
+                  return true;
+                }
+                if (a === 'lsngdel') {
+                  var l3 = ngPresets(),
+                    nm3 = l3[i];
+                  if (nm3 === undefined) return true;
+                  lsSave(
+                    function (c) {
+                      var l = ngPresets();
+                      l.splice(i, 1);
+                      c.ng = l.length ? l : null;
+                    },
+                    'حذف نوع ایراد «' + nm3 + '»',
+                    false,
+                  );
+                  return true;
+                }
+                return false;
+              }
+              function lsSettingEdit(a, el) {
+                if (a === 'lsperm') {
+                  var pst = el.getAttribute('data-st');
+                  var pk = el.getAttribute('data-k') === 'closeSh' ? 'closeSh' : 'close';
+                  lsSave(
+                    function (c) {
+                      var m = closeMapOf(pk);
+                      m[pst] = !m[pst];
+                      c.perm = c.perm || {};
+                      c.perm[pk] = m;
+                    },
+                    'تغییر دسترسی ' +
+                      (pk === 'close' ? 'بستن ایراد' : 'بستن کسری') +
+                      ' · ' +
+                      STATION_NAME[pst],
+                    false,
+                  );
+                  return true;
+                }
+                if (a === 'lswin') {
+                  var w1 = +digits(val('lsw_chk')),
+                    w2 = +digits(val('lsw_mgr'));
+                  if (!(w1 >= 1 && w1 <= 60 && w2 >= 1 && w2 <= 60)) {
+                    toast('بازه باید بین ۱ تا ۶۰ روز باشد.');
+                    return true;
+                  }
+                  lsSave(
+                    function (c) {
+                      c.win = { chk: w1, mgr: w2 };
+                    },
+                    'تغییر بازه‌ی بارگذاری: چکمن ' + w1 + ' روز، مدیران ' + w2 + ' روز',
+                    false,
+                  );
+                  return true;
+                }
+                if (a === 'lssheet') {
+                  S.lsSheet = el.getAttribute('data-id');
+                  S.lsSec = '';
+                  render();
+                  return true;
+                }
+                if (a === 'lssec') {
+                  var lsi = el.getAttribute('data-id');
+                  S.lsSec = S.lsSec === lsi ? '' : lsi;
+                  render();
+                  return true;
+                }
+                if (a === 'lsprod') {
+                  S.lsProd = el.getAttribute('data-id');
+                  render();
+                  return true;
+                }
+                return false;
+              }
+              function lsItemEdit(a, el) {
+                var sh = el.getAttribute('data-sh'),
+                  secId = el.getAttribute('data-sec'),
+                  i = +el.getAttribute('data-i');
+                var secObj =
+                  sh && secId && SHEETS[sh]
+                    ? secsOf(sh, lsP()).filter(function (x) {
+                        return x.id === secId;
+                      })[0]
+                    : null;
+                var shn = sh && SHEETS[sh] ? SHEETS[sh].name : '';
+                if (a === 'lsrename' && secObj) {
+                  var nv = val(lsPid(sh, secId, i));
+                  if (!nv) {
+                    toast('نام آیتم خالی است.');
+                    return true;
+                  }
+                  var e0 = secEntries(sh, secObj).filter(function (x) {
+                      return x.i === i;
+                    })[0],
+                    old = entryLabel(e0);
+                  if (nv === old) {
+                    toast('تغییری نکرده است.');
+                    return true;
+                  }
+                  lsSave(
+                    function (c) {
+                      var p = lsProp(c, sh, secObj, i);
+                      if (e0.orig && nv === e0.orig) delete p.t;
+                      else p.t = nv;
+                      lsMirror(c, sh, secObj, old, function (q) {
+                        q.t = nv;
+                      });
+                    },
+                    'تغییر نام آیتم «' + old + '» به «' + nv + '» · برگه ' + shn,
+                    true,
+                  );
+                  return true;
+                }
+                if (a === 'lsmove' && secObj) {
+                  var dir = +el.getAttribute('data-dir'),
+                    ord = secEntries(sh, secObj).map(function (x) {
+                      return x.i;
+                    }),
+                    pos = ord.indexOf(i),
+                    q = pos + dir;
+                  if (pos < 0 || q < 0 || q >= ord.length) return true;
+                  var lbm = entryLabel(secEntries(sh, secObj)[pos]);
+                  lsSave(
+                    function (c) {
+                      var t = ord[pos];
+                      ord[pos] = ord[q];
+                      ord[q] = t;
+                      var R2 = IR(c, secObj),
+                        a2 = (R2[sh] = R2[sh] || {}),
+                        s2 = (a2[secId] = a2[secId] || {});
+                      s2.ord = ord;
+                    },
+                    'جابه‌جایی آیتم «' + lbm + '» · برگه ' + shn,
+                    true,
+                  );
+                  return true;
+                }
+                if (a === 'lshide' && secObj) {
+                  var e1 = secEntries(sh, secObj).filter(function (x) {
+                      return x.i === i;
+                    })[0],
+                    hidNow = !!e1.p.x,
+                    lb1 = entryLabel(e1);
+                  if (
+                    !hidNow &&
+                    openOnItem(sh, secItemId(secObj, i), secObj.p === 'ex' ? 'ex' : 'padra')
+                  ) {
+                    toast('این آیتم ایراد، نمونه یا کسری باز دارد؛ ابتدا آن را ببندید.');
+                    return true;
+                  }
+                  lsSave(
+                    function (c) {
+                      var p = lsProp(c, sh, secObj, i);
+                      if (hidNow) delete p.x;
+                      else p.x = 1;
+                      lsMirror(c, sh, secObj, lb1, function (q) {
+                        if (hidNow) delete q.x;
+                        else q.x = 1;
+                      });
+                    },
+                    (hidNow ? 'بازگرداندن آیتم «' : 'حذف آیتم «') + lb1 + '» · برگه ' + shn,
+                    true,
+                  );
+                  return true;
+                }
+                if (a === 'lsflags' && secObj) {
+                  var pid = lsPid(sh, secId, i),
+                    chk = function (k) {
+                      var x = document.getElementById(pid + '_' + k);
+                      return x && x.checked;
+                    };
+                  var vts = val(pid + '_ts'),
+                    vis = val(pid + '_is'),
+                    e2 = secEntries(sh, secObj).filter(function (x) {
+                      return x.i === i;
+                    })[0];
+                  lsSave(
+                    function (c) {
+                      var p = lsProp(c, sh, secObj, i);
+                      if (chk('mic')) delete p.mic;
+                      else p.mic = 0;
+                      if (chk('ph')) delete p.ph;
+                      else p.ph = 0;
+                      if (chk('phr')) p.phr = 1;
+                      else delete p.phr;
+                      if (chk('bc')) p.bc = 1;
+                      else delete p.bc;
+                      if (vts) p.ts = vts;
+                      else delete p.ts;
+                      if (vis) p.is = vis;
+                      else delete p.is;
+                    },
+                    'تغییر گزینه‌های آیتم «' + entryLabel(e2) + '» · برگه ' + shn,
+                    true,
+                  );
+                  return true;
+                }
+                if (a === 'lsadd' && secObj) {
+                  var an = val('lsadd_' + sh + '_' + secId);
+                  if (!an) {
+                    toast('نام آیتم جدید را بنویسید.');
+                    return true;
+                  }
+                  lsSave(
+                    function (c) {
+                      var R3 = IR(c, secObj),
+                        a3 = (R3[sh] = R3[sh] || {}),
+                        s3 = (a3[secId] = a3[secId] || {});
+                      s3.add = s3.add || [];
+                      s3.add.push({ t: an });
+                      if (S.lsProd === 'both') {
+                        var xo = secsOf(sh, 'ex').filter(function (x) {
+                          return x.id === secId;
+                        })[0];
+                        if (xo) {
+                          var R4 = IR(c, xo),
+                            a5 = (R4[sh] = R4[sh] || {}),
+                            s5 = (a5[secId] = a5[secId] || {});
+                          s5.add = s5.add || [];
+                          s5.add.push({ t: an });
+                        }
+                      }
+                    },
+                    'افزودن آیتم «' + an + '» · برگه ' + shn + ' · بخش ' + secObj.name,
+                    true,
+                  );
+                  var ie = document.getElementById('lsadd_' + sh + '_' + secId);
+                  if (ie) ie.value = '';
+                  return true;
+                }
+                return false;
+              }
+              function lsShortageEdit(a, el) {
+                var sh = el.getAttribute('data-sh'),
+                  i = +el.getAttribute('data-i');
+                if (a === 'lsshadd') {
+                  var parts = val('lsshadd')
+                    .split(/[,،\n]/)
+                    .map(function (x) {
+                      return x.trim();
+                    })
+                    .filter(Boolean);
+                  if (!parts.length) {
+                    toast('نام قطعه را بنویسید.');
+                    return true;
+                  }
+                  var g = shortGroup(sh);
+                  lsSave(
+                    function (c) {
+                      var l = shortList(sh);
+                      parts.forEach(function (p) {
+                        if (l.indexOf(p) < 0) l.push(p);
+                      });
+                      c.short[g] = l;
+                    },
+                    'افزودن قطعه‌ی کسری «' +
+                      parts.join('، ') +
+                      '» · ' +
+                      (g === 'chassis' ? 'شاسی و موتور' : SHEETS[g].name),
+                    false,
+                  );
+                  var se = document.getElementById('lsshadd');
+                  if (se) se.value = '';
+                  return true;
+                }
+                if (a === 'lsshdel') {
+                  var g2 = shortGroup(sh),
+                    l2 = shortList(sh),
+                    pn = l2[i];
+                  if (pn === undefined) return true;
+                  lsSave(
+                    function (c) {
+                      var l = shortList(sh);
+                      l.splice(i, 1);
+                      c.short[g2] = l;
+                    },
+                    'حذف قطعه‌ی کسری «' +
+                      pn +
+                      '» · ' +
+                      (g2 === 'chassis' ? 'شاسی و موتور' : SHEETS[g2].name),
+                    false,
+                  );
+                  return true;
+                }
+                return false;
+              }
+      // END SECTION: features/lists
+    
+</script>
+
+<script type="text/x-mohr-section" data-mohr-section="views/admin/mgrList" data-order="27.175">
+
+      // BEGIN SECTION: views/admin/mgrList
+
+
+              function mgrList(key, def) {
+
+                var l = S.lists && S.lists[key];
+
+                return Array.isArray(l) ? l : def;
+
+              }
+      // END SECTION: views/admin/mgrList
+    
+</script>
+
+<script type="text/x-mohr-section" data-mohr-section="views/admin/mgrTitles" data-order="27.2">
+
+      // BEGIN SECTION: views/admin/mgrTitles
+
+
+              function mgrTitles() {
+
+                return mgrList('mgrTitles', MGR_TITLES_DEF);
+
+              }
+      // END SECTION: views/admin/mgrTitles
+    
+</script>
+
+<script type="text/x-mohr-section" data-mohr-section="views/admin/mgrUnits" data-order="27.225">
+
+      // BEGIN SECTION: views/admin/mgrUnits
+
+
+              function mgrUnits() {
+
+                return mgrList('mgrUnits', MGR_UNITS_DEF);
+
+              }
+      // END SECTION: views/admin/mgrUnits
+    
+</script>
+
+<script type="text/x-mohr-section" data-mohr-section="views/admin/listOptions" data-order="27.275">
+
+      // BEGIN SECTION: views/admin/listOptions
+
+
+              function listOptions(list) {
+
+                return list
+
+                  .map(function (v) {
+
+                    return '<option value="' + esc(v) + '">' + esc(v) + '</option>';
+
+                  })
+
+                  .join('');
+
+              }
+      // END SECTION: views/admin/listOptions
+    
+</script>
+
+<script type="text/x-mohr-section" data-mohr-section="views/admin/cfgCard" data-order="27.45">
+
+      // BEGIN SECTION: views/admin/cfgCard
+
+
+              function cfgCard() {
+
+                var body = '<form data-form="cfglen" class="mgform">';
+
+                [
+
+                  ['padra', 'پادرا', 'cl_'],
+
+                  ['ex', 'اکستند', 'cx_'],
+
+                ].forEach(function (g) {
+
+                  body +=
+
+                    '<div class="mgprod"><span class="mgpill">' +
+
+                    g[1] +
+
+                    '</span></div><div class="mglen">';
+
+                  ['serial', 'chassis', 'engine', 'room'].forEach(function (k) {
+
+                    var r = withP(g[0], function () {
+
+                      return lenOf(k);
+
+                    });
+
+                    body +=
+
+                      '<div class="mglrow"><b>' +
+
+                      NUM_LABEL[k] +
+
+                      '</b><label>حداقل<input class="in num ltr" id="' +
+
+                      g[2] +
+
+                      k +
+
+                      '_a" inputmode="numeric" value="' +
+
+                      r[0] +
+
+                      '"></label><label>حداکثر<input class="in num ltr" id="' +
+
+                      g[2] +
+
+                      k +
+
+                      '_b" inputmode="numeric" value="' +
+
+                      r[1] +
+
+                      '"></label></div>';
+
+                  });
+
+                  body += '</div>';
+
+                });
+
+                return mgCard(
+
+                  'hash',
+
+                  'طول مجاز شماره‌ها',
+
+                  'شماره فقط رقم و در همین بازه پذیرفته می‌شود. برای اکستند بازهٔ جدا قابل تنظیم است؛ اگر مثل پادرا است همان مقدار را بنویسید.',
+
+                  body + '<button class="btn primary" type="submit">ذخیره بازه‌ها</button></form>',
+
+                );
+
+              }
+      // END SECTION: views/admin/cfgCard
+    
+</script>
+
+<script type="text/x-mohr-section" data-mohr-section="views/admin/markCard" data-order="27.475">
+
+      // BEGIN SECTION: views/admin/markCard
+
+
+              function markCard() {
+
+                if (!S.supa) return '';
+
+                return mgCard(
+
+                  'bolt',
+
+                  'نشانهٔ کسری باز (بارگذاری سبک)',
+
+                  'یک بار بعد از به‌روزرسانی برنامه بزنید تا رکوردهای قدیمی که کسری باز دارند همیشه در «کسری‌های باز» بمانند. از این به بعد خودکار انجام می‌شود.',
+
+                  '<button class="btn" data-act="markall">نشانه‌گذاری رکوردها</button>',
+
+                );
+
+              }
+      // END SECTION: views/admin/markCard
+    
+</script>
+
+<script type="text/x-mohr-section" data-mohr-section="views/admin/ownerCodeCard" data-order="27.55">
+
+      // BEGIN SECTION: views/admin/ownerCodeCard
+
+
+              function ownerCodeCard() {
+
+                if (!S.supa || !S.ownerRec) return '';
+
+                var c = S.ownerRec.code;
+
+                return mgCard(
+
+                  'key',
+
+                  'کد پرسنلی مدیر',
+
+                  'با این کد و رمز مدیر از همان فرم ورود عادی وارد می‌شوید.' +
+
+                    (c ? ' کد فعلی: <b class="num">' + esc(c) + '</b>' : ' هنوز تعیین نشده است.'),
+
+                  '<form data-form="ownercode" class="mgform"><label class="f">کد پرسنلی (حرف لاتین و عدد)<input class="in num ltr" id="oc" inputmode="numeric" autocomplete="off"></label><button class="btn primary" type="submit">ذخیره</button>' +
+
+                    (S.formErr ? '<p class="err">' + esc(S.formErr) + '</p>' : '') +
+
+                    '</form>',
+
+                );
+
+              }
+      // END SECTION: views/admin/ownerCodeCard
+    
+</script>
+
+<script type="text/x-mohr-section" data-mohr-section="views/admin/ownerPwCard" data-order="27.575">
+
+      // BEGIN SECTION: views/admin/ownerPwCard
+
+
+              function ownerPwCard() {
+
+                if (!S.supa || !S.ownerRec) return '';
+
+                return mgCard(
+
+                  'shield',
+
+                  'تغییر رمز مدیر',
+
+                  '',
+
+                  '<form data-form="ownerchg" class="mgform"><label class="f">رمز فعلی<input class="in" id="ocp0" type="password" autocomplete="current-password"></label><label class="f">رمز تازه (حداقل ۶ نویسه)<input class="in" id="ocp1" type="password" autocomplete="new-password"></label><label class="f">تکرار رمز تازه<input class="in" id="ocp2" type="password" autocomplete="new-password"></label><button class="btn primary" type="submit">تغییر رمز</button>' +
+
+                    (S.opwErr ? '<p class="err">' + esc(S.opwErr) + '</p>' : '') +
+
+                    '</form>',
+
+                );
+
+              }
+      // END SECTION: views/admin/ownerPwCard
+    
+</script>
+
+<script type="text/x-mohr-section" data-mohr-section="views/admin/securityCards" data-order="27.625">
+
+      // BEGIN SECTION: views/admin/securityCards
+
+
+              function securityCards() {
+
+                return (
+
+                  ownerCodeCard() + ownerPwCard() ||
+
+                  '<div class="card"><h2>امنیت</h2><p class="hint">کد پرسنلی و رمز مدیر فقط در نسخهٔ متصل به سرور (Supabase) تنظیم می‌شود.</p></div>'
+
+                );
+
+              }
+      // END SECTION: views/admin/securityCards
+    
+</script>
+
+<script type="text/x-mohr-section" data-mohr-section="views/admin/mgrChips" data-order="27.65">
+
+      // BEGIN SECTION: views/admin/mgrChips
+
+
+              function mgrChips(key, list) {
+
+                return (
+
+                  list
+
+                    .map(function (v) {
+
+                      return (
+
+                        '<span class="mgpill">' +
+
+                        esc(v) +
+
+                        ' <button type="button" class="btn sm" data-act="mgrdel" data-k="' +
+
+                        key +
+
+                        '" data-v="' +
+
+                        esc(v) +
+
+                        '" aria-label="حذف ' +
+
+                        esc(v) +
+
+                        '">✕</button></span>'
+
+                      );
+
+                    })
+
+                    .join(' ') || '<span class="hint">خالی</span>'
+
+                );
+
+              }
+      // END SECTION: views/admin/mgrChips
+    
+</script>
+
+<script type="text/x-mohr-section" data-mohr-section="views/admin/mgrAddForm" data-order="27.675">
+
+      // BEGIN SECTION: views/admin/mgrAddForm
+
+
+              function mgrAddForm(formName, inputId, label) {
+
+                return (
+
+                  '<form data-form="' +
+
+                  formName +
+
+                  '" class="row" style="margin-top:8px"><label class="f grow">' +
+
+                  label +
+
+                  '<input class="in" id="' +
+
+                  inputId +
+
+                  '" autocomplete="off" maxlength="30"></label><button class="btn" type="submit">افزودن</button></form>'
+
+                );
+
+              }
+      // END SECTION: views/admin/mgrAddForm
+    
+</script>
+
+<script type="text/x-mohr-section" data-mohr-section="views/admin/mgrCard" data-order="27.7">
+
+      // BEGIN SECTION: views/admin/mgrCard
+
+
+              function mgrCard() {
+
+                var body =
+
+                  '<h3 style="margin:0 0 6px;font-size:15px">سمت‌ها</h3><div class="mgchips">' +
+
+                  mgrChips('mgrTitles', mgrTitles()) +
+
+                  '</div>' +
+
+                  mgrAddForm('mgraddt', 'mgt_in', 'سمت تازه (مثلاً مدیرعامل)') +
+
+                  '<h3 style="margin:16px 0 6px;font-size:15px">بخش‌ها</h3><div class="mgchips">' +
+
+                  mgrChips('mgrUnits', mgrUnits()) +
+
+                  '</div>' +
+
+                  mgrAddForm('mgraddu', 'mgu_in', 'بخش تازه');
+
+                return mgCard(
+
+                  'users',
+
+                  'سمت‌ها و بخش‌های مدیریتی',
+
+                  'این فهرست‌ها در فرم «افزودن کاربر ← مدیریتی» دیده می‌شود. حذف یک مورد فقط از انتخاب‌های بعدی برمی‌دارد و حساب‌های ساخته‌شده را عوض نمی‌کند. دست‌کم یک سمت بماند.',
+
+                  body,
+
+                );
+
+              }
+      // END SECTION: views/admin/mgrCard
+    
+</script>
+
+<script type="text/x-mohr-section" data-mohr-section="views/admin/mgrListSave" data-order="27.725">
+
+      // BEGIN SECTION: views/admin/mgrListSave
+
+
+              /* افزودن/حذف یک مورد از فهرست سمت‌ها یا بخش‌ها (ذخیره در سند فهرست‌ها) */
+
+              function mgrListSave(key, def, mut, what) {
+
+                var next = mut(mgrList(key, def).slice());
+
+                if (typeof next === 'string') {
+
+                  toast(next);
+
+                  return false;
+
+                }
+
+                return lsSave(
+
+                  function (c) {
+
+                    c[key] = next;
+
+                  },
+
+                  what,
+
+                  false,
+
+                );
+
+              }
+      // END SECTION: views/admin/mgrListSave
+    
+</script>
+
+<script type="text/x-mohr-section" data-mohr-section="views/admin/mgrAdd" data-order="27.75">
+
+      // BEGIN SECTION: views/admin/mgrAdd
+
+
+              function mgrAdd(key, def, inputId) {
+
+                var v = val(inputId);
+
+                if (!v) {
+
+                  toast('نام را بنویسید.');
+
+                  return;
+
+                }
+
+                mgrListSave(
+
+                  key,
+
+                  def,
+
+                  function (l) {
+
+                    if (l.indexOf(v) >= 0) return 'این مورد قبلاً هست.';
+
+                    l.push(v);
+
+                    return l;
+
+                  },
+
+                  'افزودن ' + v,
+
+                );
+
+              }
+      // END SECTION: views/admin/mgrAdd
+    
+</script>
+
+<script type="text/x-mohr-section" data-mohr-section="views/admin/mgrRemove" data-order="27.775">
+
+      // BEGIN SECTION: views/admin/mgrRemove
+
+
+              function mgrRemove(key, def, v) {
+
+                mgrListSave(
+
+                  key,
+
+                  def,
+
+                  function (l) {
+
+                    if (key === 'mgrTitles' && l.length <= 1) return 'دست‌کم یک سمت باید بماند.';
+
+                    return l.filter(function (x) {
+
+                      return x !== v;
+
+                    });
+
+                  },
+
+                  'حذف ' + v,
+
+                );
+
+              }
+      // END SECTION: views/admin/mgrRemove
+    
+</script>
+
+<script type="text/x-mohr-section" data-mohr-section="views/admin/settingsCards" data-order="27.8">
+
+      // BEGIN SECTION: views/admin/settingsCards
+
+
+              function settingsCards() {
+
+                return cfgCard() + shiftCard() + targetCard() + mgrCard() + markCard();
+
+              }
+      // END SECTION: views/admin/settingsCards
+    
+</script>
+
+<script type="text/x-mohr-section" data-mohr-section="views/admin/dataCards" data-order="27.825">
+
+      // BEGIN SECTION: views/admin/dataCards
+
+
+              function dataCards() {
+
+                var ds = S.data.insp
+
+                  .filter(function (d) {
+
+                    return SHEETS[d.sheet];
+
+                  })
+
+                  .sort(function (a, b) {
+
+                    return (b.createdAt || '') < (a.createdAt || '') ? -1 : 1;
+
+                  });
+
+                var wipe = S.confirmWipe
+
+                  ? '<p class="err">' +
+
+                    fa(wipeTargets().insp.length) +
+
+                    ' بازدید پاک می‌شود. برگه‌ها و پرونده‌ی خودروهای بایگانی‌شده پاک نمی‌شوند. قبل از پاک‌شدن یک نسخه‌ی پشتیبان دانلود می‌شود. کاربران می‌مانند.</p><label class="f">برای ادامه عبارت «پاک شود» را بنویسید<input class="in" id="wipe_word" autocomplete="off"></label><div class="row"><button class="btn sm danger" data-act="wipeyes">تأیید پاک‌کردن همه</button><button class="btn sm" data-act="wipeno">انصراف</button></div>'
+
+                  : '<button class="btn danger" data-act="wipeask">پاک‌کردن همه پرونده‌ها (شروع تازه)</button>';
+
+                var h = mgCard(
+
+                  'alert',
+
+                  'منطقهٔ خطر',
+
+                  'حذف برگشت‌پذیر نیست و برای پاک‌کردن ثبت‌های آزمایشی است.',
+
+                  wipe,
+
+                  'mgdanger',
+
+                );
+
+                if (!ds.length)
+
+                  return (
+
+                    h +
+
+                    mgCard(
+
+                      'database',
+
+                      'بازدیدهای ثبت‌شده',
+
+                      '',
+
+                      '<div class="empty-note">بازدیدی ثبت نشده است.</div>',
+
+                    )
+
+                  );
+
+                var t =
+
+                  '<div class="tbl"><table><thead><tr><th>برگه</th><th>شماره</th><th>ثبت‌کننده</th><th>تاریخ و ساعت</th><th></th></tr></thead><tbody>';
+
+                ds.forEach(function (d) {
+
+                  t +=
+
+                    '<tr><td>' +
+
+                    esc(SHEETS[d.sheet].name) +
+
+                    '</td><td><b class="num">' +
+
+                    esc(d.key) +
+
+                    '</b></td><td>' +
+
+                    esc(d.createdBy || '') +
+
+                    '</td><td>' +
+
+                    esc(when(d.createdAt)) +
+
+                    '</td><td>' +
+
+                    (isArchivedCar(d)
+
+                      ? '<span class="hint">بایگانی‌شده؛ حذف نمی‌شود</span>'
+
+                      : S.confirmDel === d.id
+
+                        ? '<button class="btn sm" data-act="delyes" data-id="' +
+
+                          esc(d.id) +
+
+                          '">تأیید حذف</button> <button class="btn sm" data-act="delno">انصراف</button>'
+
+                        : '<button class="btn sm" data-act="delask" data-id="' +
+
+                          esc(d.id) +
+
+                          '">حذف</button>') +
+
+                    '</td></tr>';
+
+                });
+
+                return (
+
+                  h +
+
+                  mgCard(
+
+                    'database',
+
+                    'بازدیدهای ثبت‌شده (' + fa(ds.length) + ')',
+
+                    '',
+
+                    t + '</tbody></table></div>',
+
+                  )
+
+                );
+
+              }
+      // END SECTION: views/admin/dataCards
+    
+</script>
+
+<script type="text/x-mohr-section" data-mohr-section="views/admin/isOwnerNow" data-order="27.85">
+
+      // BEGIN SECTION: views/admin/isOwnerNow
+
+
+              function isOwnerNow() {
+
+                return !!S.isOwner && !!S.user && S.user.id === 'owner';
+
+              }
+      // END SECTION: views/admin/isOwnerNow
+    
+</script>
+
+<script type="text/x-mohr-section" data-mohr-section="views/admin/canReset" data-order="27.875">
+
+      // BEGIN SECTION: views/admin/canReset
+
+
+              function canReset(u) {
+
+                if (!u) return false;
+
+                if (isOwnerNow()) return true;
+
+                return false;
+
+              }
+      // END SECTION: views/admin/canReset
+    
+</script>
+
+<script type="text/x-mohr-section" data-mohr-section="views/admin/pwCell" data-order="27.9">
+
+      // BEGIN SECTION: views/admin/pwCell
+
+
+              function pwCell(u) {
+
+                if (!canReset(u)) return '';
+
+                var h =
+
+                  '<div class="row" style="gap:6px"><button class="btn sm" data-act="rcgen" data-id="' +
+
+                  esc(u.id) +
+
+                  '">کد بازیابی</button><button class="btn sm" data-act="pwnew" data-id="' +
+
+                  esc(u.id) +
+
+                  '">رمز تازه</button></div>';
+
+                if (S.rcShown && S.rcShown.id === u.id && Date.now() < S.rcShown.until)
+
+                  h +=
+
+                    '<div class="rcbox">کد بازیابی: <b class="num">' +
+
+                    esc(S.rcShown.code) +
+
+                    '</b><br><small>به ' +
+
+                    esc(u.name) +
+
+                    ' بگویید. ۳۰ دقیقه و یک‌بار مصرف. این کد فقط همین‌جا دیده می‌شود.</small></div>';
+
+                if (S.pwFor === u.id)
+
+                  h +=
+
+                    '<form data-form="pwnewsave" data-id="' +
+
+                    esc(u.id) +
+
+                    '" class="row" style="margin-top:8px"><input class="in num ltr" id="pwn" type="text" autocomplete="off" placeholder="رمز تازه (دست‌کم ۴ کاراکتر)" style="flex:1;min-width:140px"><button class="btn primary sm" type="submit">ذخیره</button><button class="btn sm" type="button" data-act="pwcancel">انصراف</button></form>' +
+
+                    (S.pwForErr ? '<p class="err">' + esc(S.pwForErr) + '</p>' : '');
+
+                return h;
+
+              }
+      // END SECTION: views/admin/pwCell
+    
+</script>
+
+<script type="text/x-mohr-section" data-mohr-section="views/admin/pwCard" data-order="27.925">
+
+      // BEGIN SECTION: views/admin/pwCard
+
+
+              function pwCard() {
+
+                return (
+
+                  '<div class="card"><h2>تغییر رمز من</h2><form data-form="chpw" style="display:flex;flex-direction:column;gap:10px"><label class="f">رمز فعلی<input class="in num ltr" id="pw0" type="password" autocomplete="current-password"></label><label class="f">رمز جدید (دست‌کم ۴ کاراکتر)<input class="in num ltr" id="pw1" type="password" autocomplete="new-password"></label><label class="f">تکرار رمز جدید<input class="in num ltr" id="pw2" type="password" autocomplete="new-password"></label>' +
+
+                  (S.pwErr ? '<p class="err">' + esc(S.pwErr) + '</p>' : '') +
+
+                  '<div class="row"><button class="btn primary" type="submit">ذخیره‌ی رمز جدید</button><button class="btn" type="button" data-act="pwclose">انصراف</button></div><p class="hint">اگر رمزتان را فراموش کردید، مدیر برنامه برایتان رمز تازه می‌گذارد.</p></form></div>'
+
+                );
+
+              }
+      // END SECTION: views/admin/pwCard
+    
+</script>
+
+<script type="text/x-mohr-section" data-mohr-section="dashboard/settings" data-order="35">
+
+      // BEGIN SECTION: dashboard/settings
+              /* ---------- تنظیم ساعت شیفت‌ها (فقط مدیر) ---------- */
+              function shiftCard() {
+                var c = (S.lists && S.lists.shift) || {};
+                var body =
+                  '<form data-form="cfgshift" class="mgform"><div class="mgrow"><label class="f">شروع شیفت ۱ (صبح)<input class="in num ltr" id="sh1" inputmode="numeric" autocomplete="off" placeholder="0700" value="' +
+                  esc(c.s1 || '') +
+                  '"></label>' +
+                  '<label class="f">شروع شیفت ۲ (بعدازظهر)<input class="in num ltr" id="sh2" inputmode="numeric" autocomplete="off" placeholder="1530" value="' +
+                  esc(c.s2 || '') +
+                  '"></label>' +
+                  '<label class="f">پایان شیفت ۲ (برای راندمان)<input class="in num ltr" id="sh3" inputmode="numeric" autocomplete="off" placeholder="2330" value="' +
+                  esc(c.s3 || '') +
+                  '"></label></div>' +
+                  '<button class="btn primary" type="submit">ذخیره ساعت شیفت‌ها</button></form>';
+                return mgCard(
+                  'sliders',
+                  'ساعت شیفت‌ها',
+                  'برای فیلتر و مقایسه‌ی شیفت و حساب راندمان در داشبورد. ساعت را فقط با عدد بنویسید، مثلاً ۰۷۰۰ (دو نقطه لازم نیست). «پایان شیفت ۲» را بنویسید تا راندمان محاسبه شود؛ تا وارد نشود، راندمان «تنظیم نشده» است.',
+                  body,
+                );
+              }
+              function targetCard() {
+                var t = (S.lists && S.lists.target) || {};
+                var body =
+                  '<form data-form="cfgtarget" class="mgform"><div class="mgrow"><label class="f">پادرا (خودرو در روز)<input class="in num ltr" id="tg_padra" inputmode="numeric" autocomplete="off" value="' +
+                  esc(t.padra || '') +
+                  '"></label>' +
+                  '<label class="f">اکستند (خودرو در روز)<input class="in num ltr" id="tg_ex" inputmode="numeric" autocomplete="off" value="' +
+                  esc(t.ex || '') +
+                  '"></label></div>' +
+                  '<button class="btn primary" type="submit">ذخیره هدف روزانه</button></form>';
+                return mgCard(
+                  'sliders',
+                  'هدف تولید روزانه',
+                  'برای حلقه‌ی «پیشرفت تولید» در داشبورد. هر محصولی که خالی بماند در هدف حساب نمی‌شود.',
+                  body,
+                );
+              }
+      // END SECTION: dashboard/settings
+    
+</script>
+
+<script type="text/x-mohr-section" data-mohr-section="actions/helpers/owned-makeRecoveryCode" data-order="40.333333333333336">
+
+              function makeRecoveryCode(id) {
+                var cu = S.data.users.filter(function (x) {
+                  return x.id === id;
+                })[0];
+                if (!canReset(cu)) return;
+                var arr = new Uint32Array(1);
+                (window.crypto || window.msCrypto).getRandomValues(arr);
+                var code = String(100000 + (arr[0] % 900000)),
+                  rs = uid();
+                if (srvAdmin()) {
+                  adminCall('rc_create', { id: id }).then(
+                    function (j) {
+                      S.rcShown = { id: id, code: j.code, until: j.until };
+                      S.pwFor = '';
+                      beep();
+                      toast('کد بازیابی ساخته شد');
+                      render();
+                    },
+                    function (e) {
+                      toast('ساخته نشد. ' + e.message);
+                    },
+                  );
+                  return;
+                }
+                sha(rs + code).then(function (hh) {
+                  return save(function () {
+                    return store.update('users', id, {
+                      rc: { salt: rs, h: hh, until: Date.now() + 1800000, by: S.user.name, tries: 0 },
+                    });
+                  }, 'کد بازیابی ساخته شد').then(function (ok) {
+                    if (ok) {
+                      S.rcShown = { id: id, code: code, until: Date.now() + 1800000 };
+                      S.pwFor = '';
+                      render();
+                    }
+                  });
+                });
+                return;
+              }
+              function templateAction(el, a) {
+                if (!isOwnerU() || !S.isOwner) return;
+                if (a === 'tmtoggle') {
+                  S.tm = !S.tm;
+                  S.tcDel = false;
+                  if (S.tm && !S.tcar) S.tcar = newTestCar();
+                  render();
+                  return;
+                }
+                if (!TM() && a !== 'tcdelask' && a !== 'tcdelyes' && a !== 'tcdelno') return;
+                if (a === 'tcnew') {
+                  S.tcar = Object.assign(newTestCar(), {
+                    fuel: (S.tcar || {}).fuel || 'dual',
+                    product: (S.tcar || {}).product || 'padra',
+                  });
+                  S.key = '';
+                  render();
+                  return;
+                }
+                if (a === 'tcfuel') {
+                  S.tcar.fuel = el.getAttribute('data-v');
+                  render();
+                  return;
+                }
+                if (a === 'tcprod') {
+                  S.tcar.product = el.getAttribute('data-v');
+                  render();
+                  return;
+                }
+                if (a === 'tcfill') {
+                  tcFillAll();
+                  return;
+                }
+                if (a === 'tccar') {
+                  S.carq = S.tcar.serial;
+                  S.tab = 'car';
+                  render();
+                  return;
+                }
+                if (a === 'tcopen') {
+                  var sh0 = S.sheet;
+                  if (!SHEETS[sh0] || !mySheets().length) return;
+                  var c0 = S.tcar,
+                    tk = SHEETS[sh0].keyKind,
+                    k0 =
+                      tk === 'serial'
+                        ? c0.serial
+                        : tk === 'chassis'
+                          ? c0.chassis
+                          : tk === 'engine'
+                            ? c0.engine
+                            : c0.room;
+                  var rs = [];
+                  if (!insp(sh0, k0) && !(sh0 === 'gas' && c0.fuel === 'single')) rs.push(tcRec(sh0));
+                  if (sh0 === 'chassis' && !insp('engine', c0.engine)) rs.push(tcRec('engine'));
+                  if (c0.fuel === 'single' && sh0 !== 'chassis' && !insp('chassis', c0.chassis))
+                    rs.push(tcRec('chassis'));
+                  save(function () {
+                    return Promise.all(
+                      rs.map(function (r) {
+                        return store.set('inspections', docId(r.sheet, r.key), r);
+                      }),
+                    );
+                  }).then(function (ok) {
+                    if (ok) open_(sh0, k0);
+                  });
+                  return;
+                }
+                if (a === 'tcdelask') {
+                  S.tcDel = true;
+                  render();
+                  return;
+                }
+                if (a === 'tcdelno') {
+                  S.tcDel = false;
+                  render();
+                  return;
+                }
+                if (a === 'tcdelyes') {
+                  S.tcDel = false;
+                  var dl2 = S.data.insp
+                    .filter(function (x) {
+                      return x.test;
+                    })
+                    .map(function (x) {
+                      return function () {
+                        return store.del('inspections', x.id);
+                      };
+                    })
+                    .concat(
+                      S.data.arch
+                        .filter(function (x) {
+                          return x.test;
+                        })
+                        .map(function (x) {
+                          return function () {
+                            return store.del('archives', x.id);
+                          };
+                        }),
+                    );
+                  S.key = '';
+                  save(function () {
+                    return Promise.all(
+                      dl2.map(function (f) {
+                        return f();
+                      }),
+                    );
+                  }, 'همه‌ی داده‌های آزمایشی پاک شد');
+                  return;
+                }
+                return;
+              }
+              function markAllRecords() {
+                toast('در حال بررسی همه‌ی رکوردها…');
+                var pr = store && store.fetchSince ? store.fetchSince(3650) : Promise.resolve();
+                pr.then(function () {
+                  var ops = [];
+                  S.data.insp.forEach(function (x) {
+                    var op = 0;
+                    Object.keys(x.items || {}).forEach(function (k) {
+                      var it = x.items[k];
+                      if (it && it.r === 'shortage' && !it.closedAt) op = 1;
+                    });
+                    if ((x.openS ? 1 : 0) !== op) ops.push({ id: x.id, f: op });
+                  });
+                  if (!ops.length) {
+                    toast('همه‌ی رکوردها از قبل درست نشانه‌گذاری شده‌اند.');
+                    return;
+                  }
+                  save(
+                    function () {
+                      return Promise.all(
+                        ops.map(function (o) {
+                          return store.update('inspections', o.id, { openS: o.f });
+                        }),
+                      );
+                    },
+                    fa(ops.length) + ' رکورد نشانه‌گذاری شد',
+                  );
+                });
+                return;
+              }
+</script>
+
+<script type="text/x-mohr-section" data-mohr-section="actions/clicks/owned-clickListsEditor" data-order="41">
+
+      // BEGIN SECTION: actions/clicks
+              function clickListsEditor(ev, el, a, id, d) {
+                if (a.indexOf('ls') === 0 && lsAction(a, el)) return true;
+                return false;
+              }
+</script>
+
+<script type="text/x-mohr-section" data-mohr-section="actions/clicks/owned-clickPassword" data-order="41.11764705882353">
+
+              function clickPassword(ev, el, a, id, d) {
+                if (a === 'pweye') {
+                  var pi = document.getElementById('upw');
+                  if (pi) {
+                    var sh = pi.type === 'password';
+                    pi.type = sh ? 'text' : 'password';
+                    el.textContent = sh ? 'پنهان' : 'نمایش';
+                  }
+                  return true;
+                }
+                if (a === 'forgot') {
+                  S.forgot = true;
+                  S.loginErr = '';
+                  render();
+                  return true;
+                }
+                if (a === 'forgotback') {
+                  S.forgot = false;
+                  S.loginErr = '';
+                  render();
+                  return true;
+                }
+                if (a === 'urole' && isOwnerNow()) {
+                  var ru = el.getAttribute('data-u'),
+                    rv = el.getAttribute('data-v') || '';
+                  save(function () {
+                    return srvAdmin()
+                      ? adminCall('setuser', { id: ru, role: rv }).then(function () {
+                          return store.update('users', ru, { role: rv });
+                        })
+                      : store.update('users', ru, { role: rv });
+                  }, 'نقش کاربر تغییر کرد');
+                  return true;
+                }
+                if (a === 'pwnew') {
+                  var tu = S.data.users.filter(function (x) {
+                    return x.id === id;
+                  })[0];
+                  if (!canReset(tu)) return true;
+                  S.pwFor = id;
+                  S.pwForErr = '';
+                  render();
+                  return true;
+                }
+                if (a === 'pwcancel') {
+                  S.pwFor = '';
+                  S.pwForErr = '';
+                  render();
+                  return true;
+                }
+                if (a === 'rcgen') {
+                  makeRecoveryCode(id);
+                  return true;
+                }
+                return false;
+              }
+</script>
+
+<script type="text/x-mohr-section" data-mohr-section="actions/clicks/owned-clickTemplates" data-order="41.26470588235294">
+
+              function clickTemplates(ev, el, a, id, d) {
+                if (a.indexOf('tm') === 0 || a.indexOf('tc') === 0) {
+                  templateAction(el, a);
+                  return true;
+                }
+                return false;
+              }
+</script>
+
+<script type="text/x-mohr-section" data-mohr-section="actions/clicks/owned-wipeTargets" data-order="41.470588235294116">
+
+              function wipeTargets() {
+                return {
+                  insp: S.data.insp.filter(function (d) {
+                    return !isArchivedCar(d);
+                  }),
+                  arch: S.data.arch.filter(function (a) {
+                    return a.test;
+                  }),
+                };
+              }
+              function wipeBackup(insp, arch) {
+                var blob = new Blob(
+                  [JSON.stringify({ at: nowIso(), by: S.user.name, inspections: insp, archives: arch })],
+                  { type: 'application/json' },
+                );
+                return saveFile('backup-before-wipe-' + nowIso().slice(0, 10) + '.json', blob);
+              }
+              function wipeAll() {
+                if (val('wipe_word') !== WIPE_WORD) {
+                  toast('برای پاک‌کردن، عبارت «' + WIPE_WORD + '» را دقیق بنویسید.');
+                  return;
+                }
+                S.confirmWipe = false;
+                toast('در حال گرفتن پشتیبان از همه‌ی رکوردها…');
+                var load =
+                  store && store.fetchAll
+                    ? store.fetchAll()
+                    : store && store.fetchSince
+                      ? store.fetchSince(3650)
+                      : Promise.resolve();
+                load.then(function () {
+                  var t = wipeTargets(),
+                    kept = S.data.insp.length - t.insp.length;
+                  return wipeBackup(t.insp, t.arch).then(function () {
+                    var dels = t.insp
+                      .map(function (x) {
+                        return store.del('inspections', x.id);
+                      })
+                      .concat(
+                        t.arch.map(function (x) {
+                          return store.del('archives', x.id);
+                        }),
+                      );
+                    return save(
+                      function () {
+                        return Promise.all(dels);
+                      },
+                      'پاک شد' +
+                        (kept ? '؛ ' + fa(kept) + ' برگه‌ی خودروهای بایگانی‌شده نگه داشته شد' : ''),
+                    );
+                  });
+                });
+              }
+</script>
+
+<script type="text/x-mohr-section" data-mohr-section="runtime/registrations-09" data-order="41.9264705882353">
+MOHRRuntime.views.register("listsView", listsView, "mohr-part-09-settings-security-tools.html");
+MOHRRuntime.actions.register("clickListsEditor", clickListsEditor, "mohr-part-09-settings-security-tools.html");
+MOHRRuntime.actions.register("clickPassword", clickPassword, "mohr-part-09-settings-security-tools.html");
+MOHRRuntime.actions.register("clickTemplates", clickTemplates, "mohr-part-09-settings-security-tools.html");
+MOHRRuntime.forms.register("submitOwnerCode", submitOwnerCode, "mohr-part-09-settings-security-tools.html");
+MOHRRuntime.forms.register("submitOwnerChange", submitOwnerChange, "mohr-part-09-settings-security-tools.html");
+MOHRRuntime.forms.register("submitOwnerPassword", submitOwnerPassword, "mohr-part-09-settings-security-tools.html");
+MOHRRuntime.forms.register("submitNewPassword", submitNewPassword, "mohr-part-09-settings-security-tools.html");
+MOHRRuntime.forms.register("submitForgot", submitForgot, "mohr-part-09-settings-security-tools.html");
+MOHRRuntime.forms.register("submitChangePassword", submitChangePassword, "mohr-part-09-settings-security-tools.html");
+MOHRRuntime.forms.register("submitMgrTitle", submitMgrTitle, "mohr-part-09-settings-security-tools.html");
+MOHRRuntime.forms.register("submitMgrUnit", submitMgrUnit, "mohr-part-09-settings-security-tools.html");
+MOHRRuntime.forms.register("submitShiftHours", submitShiftHours, "mohr-part-09-settings-security-tools.html");
+MOHRRuntime.forms.register("submitDailyTarget", submitDailyTarget, "mohr-part-09-settings-security-tools.html");
+MOHRRuntime.forms.register("submitNumberLengths", submitNumberLengths, "mohr-part-09-settings-security-tools.html");
+</script>
+
+<script type="text/x-mohr-section" data-mohr-section="actions/forms/owned-submitOwnerCode" data-order="43">
+
+      // BEGIN SECTION: actions/forms
+              function submitOwnerCode() {
+                var oc2 = digits(val('oc'));
+                if (!/^[A-Za-z0-9]+$/.test(oc2)) {
+                  S.formErr = 'کد پرسنلی را (فقط حرف لاتین و عدد) وارد کنید.';
+                  render();
+                  return;
+                }
+                if (
+                  S.data.users.some(function (x) {
+                    return x.id === oc2;
+                  })
+                ) {
+                  S.formErr = 'این کد برای یک کاربر دیگر ثبت شده است.';
+                  render();
+                  return;
+                }
+                S.formErr = '';
+                save(function () {
+                  return srvAdmin()
+                    ? adminCall('owner_code', { code: oc2 })
+                    : store.update('users', '__owner', { code: oc2 });
+                }, 'کد پرسنلی مدیر ذخیره شد');
+                return;
+              }
+              function submitOwnerChange() {
+                var cur = val('ocp0'),
+                  n1 = val('ocp1'),
+                  n2 = val('ocp2');
+                var fail = function (m) {
+                  S.opwErr = m;
+                  render();
+                };
+                if (n1.length < 6) return fail('رمز تازه باید حداقل ۶ نویسه باشد.');
+                if (n1 !== n2) return fail('تکرار رمز با رمز تازه یکی نیست.');
+                if (srvAdmin()) {
+                  adminCall('owner_chpw', { old: cur, new: n1 }).then(
+                    function () {
+                      S.opwErr = '';
+                      toast('رمز مدیر تغییر کرد');
+                      render();
+                    },
+                    function (e) {
+                      fail(e.msg === 'bad_old' ? 'رمز فعلی درست نیست.' : 'ذخیره نشد. ' + e.message);
+                    },
+                  );
+                  return;
+                }
+                ownerPwOk(cur).then(function (ok) {
+                  if (!ok) return fail('رمز فعلی درست نیست.');
+                  var ns = uid();
+                  return sha(ns + fnum(n1))
+                    .then(function (hh) {
+                      return save(function () {
+                        return store.update('users', '__owner', {
+                          salt: ns,
+                          hash: hh,
+                          pwChangedAt: nowIso(),
+                        });
+                      }, 'رمز مدیر تغییر کرد');
+                    })
+                    .then(function (saved) {
+                      if (saved) {
+                        S.opwErr = '';
+                        render();
+                      }
+                    });
+                });
+                return;
+              }
+</script>
+
+<script type="text/x-mohr-section" data-mohr-section="actions/forms/owned-submitOwnerPassword" data-order="43.08571428571429">
+
+              function submitOwnerPassword() {
+                var op = (document.getElementById('opw') || {}).value || '';
+                if (!ownerSetupOpen()) return;
+                if (op.length < 6) {
+                  S.ownerErr = 'رمز باید حداقل ۶ نویسه باشد.';
+                  render();
+                  return;
+                }
+                if (srvAdmin()) {
+                  adminCall('owner_setup', { password: op }).then(
+                    function (j) {
+                      authSet(j.token, j.exp);
+                      enterOwner();
+                    },
+                    function (e) {
+                      S.ownerErr =
+                        e.msg === 'exists' ? 'مدیر قبلاً تعریف شده است.' : 'ذخیره نشد. ' + e.message;
+                      render();
+                    },
+                  );
+                  return;
+                }
+                var sl = uid();
+                sha(sl + fnum(op))
+                  .then(function (hh) {
+                    return store.set('users', '__owner', {
+                      name: 'owner',
+                      salt: sl,
+                      hash: hh,
+                      createdAt: nowIso(),
+                    });
+                  })
+                  .then(enterOwner, function (e) {
+                    S.ownerErr = 'ذخیره نشد. ' + ((e && e.message) || '');
+                    render();
+                  });
+                return;
+              }
+              function submitNewPassword(ev) {
+                var tid = ev.target.getAttribute('data-id'),
+                  tu2 = S.data.users.filter(function (x) {
+                    return x.id === tid;
+                  })[0],
+                  np = digits(val('pwn'));
+                if (!canReset(tu2)) return;
+                if (np.length < 4) {
+                  S.pwForErr = 'رمز دست‌کم ۴ کاراکتر باشد.';
+                  render();
+                  return;
+                }
+                if (srvAdmin()) {
+                  adminCall('setpw', { id: tid, password: np }).then(
+                    function () {
+                      S.pwFor = '';
+                      S.pwForErr = '';
+                      S.rcShown = null;
+                      toast('رمز تازه ذخیره شد');
+                      render();
+                    },
+                    function (e) {
+                      S.pwForErr = 'ذخیره نشد. ' + e.message;
+                      render();
+                    },
+                  );
+                  return;
+                }
+                var ns2 = uid();
+                sha(ns2 + np).then(function (h1) {
+                  return save(function () {
+                    return store.update('users', tid, {
+                      salt: ns2,
+                      hash: h1,
+                      pwChangedAt: nowIso(),
+                      rc: null,
+                    });
+                  }, 'رمز تازه ذخیره شد').then(function (ok) {
+                    if (ok) {
+                      S.pwFor = '';
+                      S.pwForErr = '';
+                      S.rcShown = null;
+                      render();
+                    }
+                  });
+                });
+                return;
+              }
+              function submitForgot() {
+                var fc = digits(val('fc')),
+                  fr = digits(val('fr')),
+                  f1 = digits(val('fp1')),
+                  f2 = digits(val('fp2')),
+                  fu = S.data.users.filter(function (x) {
+                    return x.id === fc;
+                  })[0],
+                  bad = 'کد پرسنلی یا کد بازیابی درست نیست یا منقضی شده است.';
+                if (f1.length < 4) {
+                  S.loginErr = 'رمز جدید دست‌کم ۴ کاراکتر باشد.';
+                  render();
+                  return;
+                }
+                if (f1 !== f2) {
+                  S.loginErr = 'تکرار رمز با رمز جدید یکی نیست.';
+                  render();
+                  return;
+                }
+                if (srvAdmin()) {
+                  adminCall('rc_use', { id: fc, code: fr, password: f1 }).then(
+                    function () {
+                      S.forgot = false;
+                      S.loginErr = '';
+                      toast('رمز جدید ذخیره شد؛ با آن وارد شوید.');
+                      render();
+                    },
+                    function (e) {
+                      S.loginErr =
+                        e.msg === 'bad_code' || e.status === 401 ? bad : 'ذخیره نشد. ' + e.message;
+                      render();
+                    },
+                  );
+                  return;
+                }
+                if (!fu || !fu.rc || !fu.rc.h || Date.now() > fu.rc.until || (fu.rc.tries || 0) >= 5) {
+                  S.loginErr = bad;
+                  render();
+                  return;
+                }
+                sha(fu.rc.salt + fr).then(function (hr) {
+                  if (hr !== fu.rc.h) {
+                    S.loginErr = bad;
+                    store.update('users', fu.id, { rc: { tries: (fu.rc.tries || 0) + 1 } });
+                    render();
+                    return;
+                  }
+                  var ns3 = uid();
+                  return sha(ns3 + f1)
+                    .then(function (h3) {
+                      return store.update('users', fu.id, {
+                        salt: ns3,
+                        hash: h3,
+                        pwChangedAt: nowIso(),
+                        rc: null,
+                      });
+                    })
+                    .then(function () {
+                      S.forgot = false;
+                      S.loginErr = '';
+                      toast('رمز جدید ذخیره شد؛ با آن وارد شوید.');
+                      render();
+                    });
+                });
+                return;
+              }
+              function submitChangePassword() {
+                if (!S.user || S.user.id === 'owner') return;
+                var p0 = digits(val('pw0')),
+                  p1 = digits(val('pw1')),
+                  p2 = digits(val('pw2')),
+                  uu = S.data.users.filter(function (x) {
+                    return x.id === S.user.id;
+                  })[0];
+                if (!uu) {
+                  S.pwErr = 'کاربر پیدا نشد.';
+                  render();
+                  return;
+                }
+                if (p1.length < 4) {
+                  S.pwErr = 'رمز جدید دست‌کم ۴ کاراکتر باشد.';
+                  render();
+                  return;
+                }
+                if (p1 !== p2) {
+                  S.pwErr = 'تکرار رمز با رمز جدید یکی نیست.';
+                  render();
+                  return;
+                }
+                if (p1 === p0) {
+                  S.pwErr = 'رمز جدید باید با رمز فعلی فرق کند.';
+                  render();
+                  return;
+                }
+                if (srvAdmin()) {
+                  adminCall('chpw', { old: p0, new: p1 }).then(
+                    function () {
+                      S.pwOpen = false;
+                      S.pwErr = '';
+                      toast('رمز شما تغییر کرد');
+                      render();
+                    },
+                    function (e) {
+                      S.pwErr =
+                        e.msg === 'bad_old'
+                          ? 'رمز فعلی درست نیست.'
+                          : e.status === 401
+                            ? 'برای تغییر رمز دوباره با اینترنت وارد شوید.'
+                            : 'ذخیره نشد. ' + e.message;
+                      render();
+                    },
+                  );
+                  return;
+                }
+                sha(uu.salt + p0).then(function (h0) {
+                  if (h0 !== uu.hash) {
+                    S.pwErr = 'رمز فعلی درست نیست.';
+                    render();
+                    return;
+                  }
+                  var ns = uid();
+                  return sha(ns + p1).then(function (h1) {
+                    return save(function () {
+                      return store.update('users', uu.id, { salt: ns, hash: h1, pwChangedAt: nowIso() });
+                    }, 'رمز شما تغییر کرد').then(function (ok) {
+                      if (ok) {
+                        S.pwOpen = false;
+                        S.pwErr = '';
+                        render();
+                      }
+                    });
+                  });
+                });
+                return;
+              }
+</script>
+
+<script type="text/x-mohr-section" data-mohr-section="actions/forms/owned-submitMgrTitle" data-order="43.4">
+
+              function submitMgrTitle() {
+                mgrAdd('mgrTitles', MGR_TITLES_DEF, 'mgt_in');
+              }
+              function submitMgrUnit() {
+                mgrAdd('mgrUnits', MGR_UNITS_DEF, 'mgu_in');
+              }
+              function submitShiftHours() {
+                var sh1 = parseHm(val('sh1')),
+                  sh2 = parseHm(val('sh2')),
+                  sh3 = val('sh3') ? parseHm(val('sh3')) : null;
+                if (sh1 == null || sh2 == null || sh1 >= sh2) {
+                  toast(
+                    'ساعت‌ها را فقط با عدد بنویسید (مثلاً ۰۷۰۰ و ۱۵۳۰) و شروع شیفت ۱ را زودتر از شیفت ۲ بگذارید.',
+                  );
+                  return;
+                }
+                if (val('sh3') && (sh3 == null || sh3 <= sh2)) {
+                  toast('پایان شیفت ۲ را با عدد و بعد از شروع شیفت ۲ بنویسید (مثلاً ۲۳۳۰).');
+                  return;
+                }
+                lsSave(
+                  function (c) {
+                    c.shift = { s1: fmtHm(sh1), s2: fmtHm(sh2), s3: sh3 != null ? fmtHm(sh3) : '' };
+                  },
+                  'ساعت شیفت‌ها',
+                  false,
+                );
+              }
+              function submitDailyTarget() {
+                var tgP = digits(val('tg_padra')),
+                  tgX = digits(val('tg_ex'));
+                lsSave(
+                  function (c) {
+                    c.target = { padra: tgP, ex: tgX };
+                  },
+                  'هدف تولید روزانه',
+                  false,
+                );
+              }
+</script>
+
+<script type="text/x-mohr-section" data-mohr-section="actions/forms/owned-submitNumberLengths" data-order="43.57142857142857">
+
+              function submitNumberLengths() {
+                var lenObj = {},
+                  lenX = {},
+                  bad3 = '';
+                ['serial', 'chassis', 'engine', 'room'].forEach(function (k) {
+                  var a = parseInt(digits(val('cl_' + k + '_a')), 10),
+                    b2 = parseInt(digits(val('cl_' + k + '_b')), 10);
+                  if (!(a >= 1 && b2 >= a && b2 <= 20)) bad3 = NUM_LABEL[k];
+                  lenObj[k] = [a, b2];
+                  var a4 = parseInt(digits(val('cx_' + k + '_a')), 10),
+                    b4 = parseInt(digits(val('cx_' + k + '_b')), 10);
+                  if (!(a4 >= 1 && b4 >= a4 && b4 <= 20)) bad3 = NUM_LABEL[k] + ' (اکستند)';
+                  lenX[k] = [a4, b4];
+                });
+                if (bad3) {
+                  toast(
+                    'بازه‌ی ' + bad3 + ' درست نیست (حداقل ۱ و حداکثر ۲۰، و حداکثر کمتر از حداقل نباشد).',
+                  );
+                  return;
+                }
+                save(function () {
+                  return store.set('users', '__cfg', {
+                    len: lenObj,
+                    lenX: lenX,
+                    updatedAt: nowIso(),
+                    by: S.user.name,
+                  });
+                }, 'بازه‌ها ذخیره شد');
+              }
+</script>
+</body>
+</html>

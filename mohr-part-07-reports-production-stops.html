@@ -1,0 +1,3344 @@
+<!doctype html>
+<html lang="fa" dir="rtl">
+<head><meta charset="utf-8" /><title>بخش 07 — گزارش‌ها، داشبورد و توقفات تولید</title></head>
+<body>
+<!-- Structural source container only. Open index.html or the existing page URLs.
+     Original executable blocks are copied verbatim, not rewritten.
+     Cross-file execution remains controlled by each block's original data-order.
+     Empty script-section lists mean that the source is a station/page entry only;
+     the existing shared inspection engine remains in group 10. -->
+<script type="application/json" id="mohr-group-map">
+{
+  "group": "07",
+  "title": "گزارش‌ها، داشبورد و توقفات تولید",
+  "sources": [
+    {
+      "file": "reports.html",
+      "page": {
+        "tab": "report",
+        "label": "گزارش"
+      },
+      "scriptSections": [
+        "features/exports",
+        "features/reports"
+      ],
+      "styleSections": []
+    },
+    {
+      "file": "dashboard.html",
+      "page": {
+        "tab": "dash",
+        "label": "داشبورد"
+      },
+      "scriptSections": [
+        "dashboard/quality",
+        "dashboard/production",
+        "dashboard/export"
+      ],
+      "styleSections": []
+    },
+    {
+      "file": "production-stops.html",
+      "page": {
+        "tab": "stop",
+        "label": "توقف خط"
+      },
+      "scriptSections": [
+        "features/stops"
+      ],
+      "styleSections": []
+    }
+  ]
+}
+</script>
+<!-- Source: reports.html; original block bodies and data-order are unchanged. -->
+
+
+
+
+
+<!-- Source: dashboard.html; original block bodies and data-order are unchanged. -->
+
+
+
+
+
+
+
+<!-- Source: production-stops.html; original block bodies and data-order are unchanged. -->
+
+
+
+<script type="text/x-mohr-section" data-mohr-section="features/exports/owned-reportData" data-order="23">
+
+      // BEGIN SECTION: features/exports
+              /* ---------- export (Excel / PDF), no external libraries ---------- */
+              function reportData(q, sheet) {
+                var c = carRecords(q),
+                  I = c.I,
+                  stages = [],
+                  rows = [];
+                var arch = archOf(c.key);
+                (sheet ? [sheet] : stagesFor(c.recs)).forEach(function (k) {
+                  var sh = SHEETS[k],
+                    r = c.recs.filter(function (d) {
+                      return d.sheet === k;
+                    })[0],
+                    st = r ? stat(r) : null;
+                  var sg = r
+                    ? sh.sections
+                        .map(function (sec) {
+                          return r.signs && r.signs[sec.id];
+                        })
+                        .filter(Boolean)
+                    : [];
+                  stages.push({
+                    k: k,
+                    name: stationTitle(k),
+                    page: sh.page,
+                    rec: r,
+                    signs: r
+                      ? sh.sections
+                          .map(function (sec) {
+                            return { name: sec.name, s: r.signs && r.signs[sec.id] };
+                          })
+                          .filter(function (x) {
+                            return x.s;
+                          })
+                      : [],
+                    status: !r ? 'ثبت نشده' : st.signed === st.secs ? 'تأیید شده' : 'در حال بازدید',
+                    by: sg
+                      .map(function (x) {
+                        return x.by;
+                      })
+                      .filter(function (v, i, a) {
+                        return a.indexOf(v) === i;
+                      })
+                      .join('، '),
+                    at: sg.length ? when(sg[sg.length - 1].at) : '',
+                    atIso: sg.length ? sg[sg.length - 1].at : '',
+                    open: st ? st.open : 0,
+                  });
+                  if (!r) return;
+                  var known = {};
+                  secsOf(r.sheet, prodOf(r)).forEach(function (sec) {
+                    visItems(r, sec).forEach(function (x) {
+                      var l = x.l,
+                        id = secItemId(sec, x.i),
+                        it = (r.items && r.items[id]) || {};
+                      known[id] = 1;
+                      var s =
+                        it.r === 'ng'
+                          ? 'ایراد'
+                          : it.r === 'sample'
+                            ? 'قطعه نمونه'
+                            : it.r === 'shortage'
+                              ? 'کسری'
+                              : it.r === 'done'
+                                ? 'انجام شد'
+                                : sec.choice
+                                  ? r.signs && r.signs[sec.id]
+                                    ? 'انجام نشده'
+                                    : 'بازدید نشده'
+                                  : it.r === 'ok' || (r.signs && r.signs[sec.id])
+                                    ? 'سالم'
+                                    : 'بازدید نشده';
+                      rows.push({
+                        stage: stationTitle(k),
+                        item: l,
+                        r: it.r || '',
+                        status:
+                          s +
+                          (it.r === 'ng' || it.r === 'sample' || it.r === 'shortage'
+                            ? it.closedAt
+                              ? ' (بسته شد)'
+                              : ' (باز)'
+                            : ''),
+                        note: (it.note || '') + (it.bc ? (it.note ? ' — ' : '') + 'بارکد: ' + it.bc : ''),
+                        by: it.by || '',
+                        at: it.at ? when(it.at) : '',
+                        atIso: it.at || '',
+                        closedBy: it.closedBy || '',
+                        closedAt: it.closedAt ? when(it.closedAt) : '',
+                        closedIso: it.closedAt || '',
+                        closeNote: it.closeNote || '',
+                      });
+                    });
+                  });
+                  Object.keys(r.items || {}).forEach(function (id) {
+                    if (known[id]) return;
+                    var it = r.items[id];
+                    if (it.r !== 'ng' && it.r !== 'sample' && it.r !== 'shortage') return;
+                    rows.push({
+                      stage: stationTitle(k),
+                      item: 'توضیح دستی',
+                      r: it.r,
+                      status:
+                        (it.r === 'ng' ? 'ایراد' : it.r === 'shortage' ? 'کسری' : 'قطعه نمونه') +
+                        (it.closedAt ? ' (بسته شد)' : ' (باز)'),
+                      note: it.note || '',
+                      by: it.by || '',
+                      at: it.at ? when(it.at) : '',
+                      atIso: it.at || '',
+                      closedBy: it.closedBy || '',
+                      closedAt: it.closedAt ? when(it.closedAt) : '',
+                      closedIso: it.closedAt || '',
+                      closeNote: it.closeNote || '',
+                    });
+                  });
+                });
+                var defects = rows.filter(function (x) {
+                  return x.r === 'ng' || x.r === 'sample' || x.r === 'shortage';
+                });
+                return {
+                  key: c.key,
+                  prod: carProd(c.key) || 'padra',
+                  I: I,
+                  stages: stages,
+                  rows: rows,
+                  defects: defects,
+                  arch: arch,
+                  archHist: arch ? archHist(arch) : [],
+                  at: when(nowIso()),
+                  atIso: nowIso(),
+                  by: S.user ? S.user.name : '',
+                  sheet: sheet || '',
+                  recKey: sheet && stages[0] && stages[0].rec ? stages[0].rec.key : c.key,
+                };
+              }
+</script>
+
+<script type="text/x-mohr-section" data-mohr-section="features/exports/owned-CRC_T" data-order="23.076923076923077">
+
+              /* --- minimal xlsx writer --- */
+              var CRC_T = (function () {
+                var t = [],
+                  c,
+                  n,
+                  k;
+                for (n = 0; n < 256; n++) {
+                  c = n;
+                  for (k = 0; k < 8; k++) c = c & 1 ? 0xedb88320 ^ (c >>> 1) : c >>> 1;
+                  t[n] = c >>> 0;
+                }
+                return t;
+              })();
+              function crc32(u8) {
+                var c = 0xffffffff;
+                for (var i = 0; i < u8.length; i++) c = CRC_T[(c ^ u8[i]) & 255] ^ (c >>> 8);
+                return (c ^ 0xffffffff) >>> 0;
+              }
+              function zipStore(files) {
+                var enc = new TextEncoder(),
+                  parts = [],
+                  cd = [],
+                  off = 0;
+                files.forEach(function (f) {
+                  var nm = enc.encode(f.name),
+                    data = enc.encode(f.data),
+                    crc = crc32(data);
+                  var h = new DataView(new ArrayBuffer(30));
+                  h.setUint32(0, 0x04034b50, true);
+                  h.setUint16(4, 20, true);
+                  h.setUint16(6, 0x0800, true);
+                  h.setUint16(8, 0, true);
+                  h.setUint16(10, 0, true);
+                  h.setUint16(12, 0x21, true);
+                  h.setUint32(14, crc, true);
+                  h.setUint32(18, data.length, true);
+                  h.setUint32(22, data.length, true);
+                  h.setUint16(26, nm.length, true);
+                  h.setUint16(28, 0, true);
+                  parts.push(new Uint8Array(h.buffer), nm, data);
+                  var c = new DataView(new ArrayBuffer(46));
+                  c.setUint32(0, 0x02014b50, true);
+                  c.setUint16(4, 20, true);
+                  c.setUint16(6, 20, true);
+                  c.setUint16(8, 0x0800, true);
+                  c.setUint16(10, 0, true);
+                  c.setUint16(12, 0, true);
+                  c.setUint16(14, 0x21, true);
+                  c.setUint32(16, crc, true);
+                  c.setUint32(20, data.length, true);
+                  c.setUint32(24, data.length, true);
+                  c.setUint16(28, nm.length, true);
+                  c.setUint32(42, off, true);
+                  cd.push(new Uint8Array(c.buffer), nm);
+                  off += 30 + nm.length + data.length;
+                });
+                var cdLen = 0;
+                cd.forEach(function (x) {
+                  cdLen += x.length;
+                });
+                var e = new DataView(new ArrayBuffer(22));
+                e.setUint32(0, 0x06054b50, true);
+                e.setUint16(8, files.length, true);
+                e.setUint16(10, files.length, true);
+                e.setUint32(12, cdLen, true);
+                e.setUint32(16, off, true);
+                return new Blob(parts.concat(cd, [new Uint8Array(e.buffer)]), {
+                  type: 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+                });
+              }
+              function xe(s) {
+                return String(s == null ? '' : s)
+                  .replace(/[&<>"]/g, function (ch) {
+                    return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[ch];
+                  })
+                  .replace(/[\u0000-\u0008\u000B\u000C\u000E-\u001F]/g, '');
+              }
+              function colL(i) {
+                var s = '';
+                i++;
+                while (i > 0) {
+                  var m = (i - 1) % 26;
+                  s = String.fromCharCode(65 + m) + s;
+                  i = Math.floor((i - 1) / 26);
+                }
+                return s;
+              }
+              function sheetXml(rows, widths, headRows, tone) {
+                var x =
+                  '<?xml version="1.0" encoding="UTF-8" standalone="yes"?><worksheet xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main"><sheetViews><sheetView rightToLeft="1" workbookViewId="0"/></sheetViews><cols>';
+                widths.forEach(function (w, i) {
+                  x +=
+                    '<col min="' +
+                    (i + 1) +
+                    '" max="' +
+                    (i + 1) +
+                    '" width="' +
+                    w +
+                    '" customWidth="1"/>';
+                });
+                x += '</cols><sheetData>';
+                rows.forEach(function (r, ri) {
+                  x += '<row r="' + (ri + 1) + '">';
+                  r.forEach(function (v, ci) {
+                    x +=
+                      '<c r="' +
+                      colL(ci) +
+                      (ri + 1) +
+                      '" t="inlineStr" s="' +
+                      (headRows.indexOf(ri) >= 0 ? 1 : (tone && tone(r)) || 0) +
+                      '"><is><t xml:space="preserve">' +
+                      xe(v) +
+                      '</t></is></c>';
+                  });
+                  x += '</row>';
+                });
+                return x + '</sheetData></worksheet>';
+              }
+              /* عنوان، ردیف‌های مشخصات و متن «نام/تاریخ/ساعت» مشترک بین PDF و Excel */
+              var STATION_TITLE = { final1: 'نهایی بالا (EWT1)', final2: 'نهایی پایین (EWT2)' };
+              function stationTitle(sheet) {
+                return STATION_TITLE[sheet] || SHEETS[sheet].name;
+              }
+              /* سربرگ: خط اصلی (نام ایستگاه یا پرونده کامل) و خط شماره */
+              function reportHead(rep) {
+                if (rep.sheet)
+                  return {
+                    main: 'ایستگاه ' + stationTitle(rep.sheet),
+                    num: SHEETS[rep.sheet].keyLabel + ' ' + rep.recKey,
+                  };
+                return { main: 'پرونده کامل خودرو', num: 'شماره شاسی ' + (rep.I.chassis || rep.key) };
+              }
+              function reportTitle(rep) {
+                var h = reportHead(rep);
+                return h.main + ' · ' + h.num;
+              }
+              /* شماره‌های مرتبط با هر ایستگاه در مشخصات خروجی */
+              var REPORT_IDS = {
+                chassis: ['chassis', 'engine'],
+                engine: ['engine'],
+                trim: ['room'],
+                final1: ['serial', 'chassis', 'engine', 'room'],
+                final2: ['serial', 'chassis', 'engine', 'room'],
+                gas: ['serial', 'chassis', 'engine'],
+                mech: ['serial', 'chassis', 'engine', 'room'],
+                mech2: ['serial', 'chassis', 'engine', 'room'],
+                roll: ['serial', 'chassis', 'engine', 'room'],
+                road: ['serial', 'chassis', 'engine', 'room'],
+                comm: ['serial', 'chassis', 'engine', 'room'],
+              };
+              var ID_LABEL = {
+                serial: 'شماره سریال',
+                chassis: 'شماره شاسی',
+                engine: 'شماره موتور',
+                room: 'شماره اتاق',
+              };
+              var OWN_ID = { chassis: 'chassis', engine: 'engine', trim: 'room' };
+              function stationIdRows(rep) {
+                var I = rep.I,
+                  own = OWN_ID[rep.sheet] || 'serial';
+                return (REPORT_IDS[rep.sheet] || ['serial', 'chassis']).map(function (f) {
+                  return [ID_LABEL[f], I[f] || (f === own ? rep.recKey : '—')];
+                });
+              }
+              function reportInfoRows(rep) {
+                var I = rep.I,
+                  a = rep.arch,
+                  s0 = rep.stages[0],
+                  R;
+                if (rep.sheet) {
+                  R = stationIdRows(rep).concat([
+                    ['محصول', PRODF[rep.prod || 'padra']],
+                    ['کد فرم', FORM_CODE],
+                  ]);
+                  if (s0) {
+                    if (s0.rec) R.push(['سوخت', fuelTxt(fuelOf(s0.rec))]);
+                    R.push(
+                      ['وضعیت ایستگاه', s0.status],
+                      ['تأییدکننده', s0.by || '—'],
+                      ['تاریخ تأیید', dateOnly(s0.atIso) || '—'],
+                      ['ساعت تأیید', hm(s0.atIso) || '—'],
+                    );
+                  }
+                } else {
+                  R = [
+                    ['کد فرم', FORM_CODE],
+                    ['محصول', PRODF[rep.prod || 'padra']],
+                    ['شماره سریال', I.serial || '—'],
+                    ['رنگ', I.color || '—'],
+                    ['شماره شاسی', I.chassis || rep.key],
+                    ['شماره موتور', I.engine || '—'],
+                    ['شماره اتاق', I.room || '—'],
+                    [
+                      'وضعیت پرونده',
+                      a ? (a.reopened ? 'بازگشایی‌شده (برگشتی از PDI)' : 'بایگانی شده') : 'بایگانی نشده',
+                    ],
+                  ];
+                  if (a)
+                    R.push(
+                      ['بایگانی‌کننده', a.by],
+                      ['تاریخ بایگانی', dateOnly(a.at)],
+                      ['ساعت بایگانی', hm(a.at)],
+                    );
+                }
+                R.push(
+                  ['تهیه‌کننده', rep.by],
+                  ['تاریخ تهیه', dateOnly(rep.atIso)],
+                  ['ساعت تهیه', hm(rep.atIso)],
+                );
+                return R;
+              }
+              /* تأیید بخش‌های یک مرحله: ردیف‌های [بخش، نام، تاریخ، ساعت] */
+              function signRows(stage) {
+                return stage.signs.map(function (x) {
+                  return [x.name, x.s.by || '—', dateOnly(x.s.at) || '—', hm(x.s.at) || '—'];
+                });
+              }
+              function closeLines(d) {
+                if (!d.closedAt) return '';
+                return (
+                  '\nبسته شد' +
+                  (d.closeNote ? '\nاقدام: ' + d.closeNote : '') +
+                  '\nبسته‌کننده: ' +
+                  (d.closedBy || '—') +
+                  '\nتاریخ بستن: ' +
+                  dateOnly(d.closedIso) +
+                  '\nساعت بستن: ' +
+                  hm(d.closedIso)
+                );
+              }
+              function defectRow(d, whole) {
+                return (whole ? [d.stage] : []).concat([
+                  d.item,
+                  d.status,
+                  (d.note || '—') + closeLines(d),
+                  d.by || '—',
+                  dateOnly(d.atIso) || '—',
+                  hm(d.atIso) || '—',
+                ]);
+              }
+              function isProblem(d) {
+                return d.r === 'ng' || d.r === 'sample' || d.r === 'shortage';
+              }
+              function buildXlsx(rep) {
+                var head = reportHead(rep),
+                  A = [[head.main, head.num]].concat(reportInfoRows(rep)),
+                  heads = [0];
+                A.push(['', '']);
+                heads.push(A.length);
+                A.push(['بخش تأییدشده', 'نام', 'تاریخ تأیید', 'ساعت تأیید']);
+                rep.stages.forEach(function (st) {
+                  signRows(st).forEach(function (r) {
+                    A.push(rep.sheet ? r : [st.name + ' — ' + r[0], r[1], r[2], r[3]]);
+                  });
+                });
+                if (!rep.sheet && rep.archHist.length) {
+                  A.push(['', '']);
+                  heads.push(A.length);
+                  A.push(['رویداد بایگانی', 'نام', 'تاریخ', 'ساعت', 'توضیح']);
+                  histRows(rep.archHist).forEach(function (r) {
+                    A.push(r);
+                  });
+                }
+                if (!rep.sheet) {
+                  A.push(['', '']);
+                  heads.push(A.length);
+                  A.push([
+                    'مرحله',
+                    'صفحه فرم',
+                    'وضعیت',
+                    'تأییدکننده',
+                    'تاریخ تأیید',
+                    'ساعت تأیید',
+                    'موارد باز',
+                  ]);
+                  rep.stages.forEach(function (s) {
+                    A.push([
+                      s.name,
+                      s.page ? fa(s.page) + ' از ' + fa(PAGES) : '',
+                      s.status,
+                      s.by,
+                      dateOnly(s.atIso),
+                      hm(s.atIso),
+                      String(s.open || 0),
+                    ]);
+                  });
+                }
+                var B = [
+                  [reportTitle(rep) + ' — ایرادها، نمونه‌ها و کسری‌ها (' + fa(rep.defects.length) + ')'],
+                  [
+                    'مرحله',
+                    'مورد',
+                    'نوع',
+                    'وضعیت',
+                    'شرح',
+                    'ثبت‌کننده',
+                    'تاریخ ثبت',
+                    'ساعت ثبت',
+                    'بسته‌کننده',
+                    'تاریخ بستن',
+                    'ساعت بستن',
+                    'اقدام انجام‌شده',
+                  ],
+                ];
+                rep.defects.forEach(function (d) {
+                  B.push([
+                    d.stage,
+                    d.item,
+                    d.r === 'ng' ? 'ایراد' : d.r === 'shortage' ? 'کسری' : 'قطعه نمونه',
+                    d.status,
+                    d.note,
+                    d.by,
+                    dateOnly(d.atIso),
+                    hm(d.atIso),
+                    d.closedBy,
+                    dateOnly(d.closedIso),
+                    hm(d.closedIso),
+                    d.closeNote,
+                  ]);
+                });
+                var C = [['مرحله', 'مورد', 'وضعیت', 'شرح', 'ثبت‌کننده', 'تاریخ ثبت', 'ساعت ثبت']];
+                rep.rows
+                  .slice()
+                  .sort(function (x, y) {
+                    return isProblem(y) - isProblem(x);
+                  })
+                  .forEach(function (d) {
+                    var p = isProblem(d);
+                    C.push([
+                      d.stage,
+                      d.item,
+                      d.status,
+                      d.note,
+                      p ? d.by : '',
+                      p ? dateOnly(d.atIso) : '',
+                      p ? hm(d.atIso) : '',
+                    ]);
+                  });
+                /* رنگ ردیف: ۲ قرمز (باز)، ۳ کهربایی (کسری باز)، ۴ سبز (بسته) */
+                var rowTone = function (statusIdx, typeIdx) {
+                  return function (r) {
+                    var st = r[statusIdx] || '';
+                    if (/بسته/.test(st)) return 4;
+                    if (!/باز/.test(st)) return 0;
+                    return r[typeIdx] === 'کسری' || /^کسری/.test(st) ? 3 : 2;
+                  };
+                };
+                return packXlsx([
+                  {
+                    n: 'ایرادها نمونه‌ها و کسری',
+                    r: B,
+                    w: [26, 34, 14, 16, 40, 18, 14, 10, 18, 14, 10, 36],
+                    h: [0, 1],
+                    tone: rowTone(3, 2),
+                  },
+                  { n: 'خلاصه', r: A, w: [28, 34, 16, 28, 16, 12, 12], h: heads },
+                  { n: 'همه موارد', r: C, w: [26, 40, 18, 40, 18, 14, 10], h: [0], tone: rowTone(2, -1) },
+                ]);
+              }
+              /* --- PDF: pages drawn on canvas (browser shapes Persian), packed as JPEG into a minimal PDF --- */
+              /* بوم و ابزار مشترک ساخت PDF (فرم ایستگاه و فرم نمونه‌زنی): صفحه، سرتیتر، جدول و شماره‌ی صفحه */
+              var PDF_FONT = 'Vazirmatn, Tahoma, Arial, sans-serif';
+              function pdfPainter(o) {
+                var P = { PW: 1240, PH: 1754, M: 64, pages: [], ctx: null, y: 0 };
+                P.font = function (sz, b) {
+                  P.ctx.font = (b ? '700 ' : '400 ') + sz + 'px ' + PDF_FONT;
+                };
+                P.newPage = function () {
+                  var cv = document.createElement('canvas'),
+                    c;
+                  cv.width = P.PW;
+                  cv.height = P.PH;
+                  c = P.ctx = cv.getContext('2d');
+                  c.fillStyle = '#fff';
+                  c.fillRect(0, 0, P.PW, P.PH);
+                  c.direction = 'rtl';
+                  c.textBaseline = 'top';
+                  c.textAlign = 'right';
+                  P.y = o.header(P);
+                  P.pages.push(cv);
+                };
+                function wrapLine(t, mw) {
+                  var lines = [],
+                    cur = '';
+                  String(t || '')
+                    .split(/\s+/)
+                    .forEach(function (w) {
+                      var test = cur ? cur + ' ' + w : w;
+                      if (P.ctx.measureText(test).width > mw && cur) {
+                        lines.push(cur);
+                        cur = w;
+                      } else cur = test;
+                    });
+                  lines.push(cur);
+                  return lines;
+                }
+                function wrap(t, mw) {
+                  if (!o.keepLines) return wrapLine(t, mw);
+                  var out = [];
+                  String(t || '')
+                    .split('\n')
+                    .forEach(function (p) {
+                      out = out.concat(wrapLine(p, mw));
+                    });
+                  return out;
+                }
+                P.ensure = function (h) {
+                  if (P.y + h > P.PH - P.M - 40) P.newPage();
+                };
+                P.heading = function (t) {
+                  P.ensure(230);
+                  P.y += 18;
+                  P.font(28, 1);
+                  P.ctx.fillStyle = '#14213d';
+                  P.ctx.textAlign = 'right';
+                  P.ctx.fillText(t, P.PW - P.M, P.y);
+                  P.y += 46;
+                };
+                P.table = function (cols, rows, tint) {
+                  var c = function () {
+                      return P.ctx;
+                    },
+                    M = P.M,
+                    total = cols.reduce(function (a, x) {
+                      return a + x.w;
+                    }, 0),
+                    W = P.PW - 2 * M,
+                    pad = 10,
+                    LH = o.lh;
+                  var X = [],
+                    x0 = P.PW - M;
+                  cols.forEach(function (k) {
+                    var w = (W * k.w) / total;
+                    X.push({ r: x0, w: w });
+                    x0 -= w;
+                  });
+                  function head() {
+                    P.font(o.fs, 1);
+                    var h = LH + pad * 2;
+                    P.ensure(h + LH * 2);
+                    c().fillStyle = '#dce3f0';
+                    c().fillRect(M, P.y, W, h);
+                    c().fillStyle = '#14213d';
+                    c().textAlign = 'right';
+                    cols.forEach(function (k, i) {
+                      c().fillText(k.t, X[i].r - pad, P.y + pad);
+                    });
+                    c().strokeStyle = '#9aa5b8';
+                    c().lineWidth = 1;
+                    c().strokeRect(M, P.y, W, h);
+                    P.y += h;
+                  }
+                  head();
+                  rows.forEach(function (r) {
+                    P.font(o.fs, 0);
+                    var lines = r.map(function (v, i) {
+                        return wrap(v, X[i].w - pad * 2);
+                      }),
+                      n = Math.max.apply(
+                        null,
+                        lines.map(function (l) {
+                          return l.length;
+                        }),
+                      ),
+                      h = n * LH + pad * 2;
+                    if (P.y + h > P.PH - M - 40) {
+                      P.newPage();
+                      head();
+                      P.font(o.fs, 0);
+                    }
+                    var bg = tint && tint(r);
+                    if (bg) {
+                      c().fillStyle = bg;
+                      c().fillRect(M, P.y, W, h);
+                    }
+                    c().fillStyle = '#1b1b1b';
+                    c().textAlign = 'right';
+                    P.font(o.fs, 0);
+                    lines.forEach(function (l, i) {
+                      l.forEach(function (t, k) {
+                        c().fillText(t, X[i].r - pad, P.y + pad + k * LH);
+                      });
+                    });
+                    c().strokeStyle = '#c4ccda';
+                    c().strokeRect(M, P.y, W, h);
+                    X.forEach(function (k) {
+                      c().beginPath();
+                      c().moveTo(k.r - k.w, P.y);
+                      c().lineTo(k.r - k.w, P.y + h);
+                      c().stroke();
+                    });
+                    P.y += h;
+                  });
+                  P.y += 10;
+                };
+                P.finish = function (label) {
+                  P.pages.forEach(function (p, i) {
+                    var c = p.getContext('2d');
+                    c.direction = 'ltr';
+                    c.textBaseline = 'top';
+                    c.fillStyle = '#555';
+                    c.font = '400 20px ' + PDF_FONT;
+                    c.textAlign = 'center';
+                    c.fillText(label + '  ·  ' + (i + 1) + ' / ' + P.pages.length, P.PW / 2, P.PH - P.M);
+                  });
+                  return packPdf(P.pages, P.PW, P.PH);
+                };
+                return P;
+              }
+              function buildPdf(rep) {
+                var head = reportHead(rep),
+                  P = pdfPainter({
+                    fs: 24,
+                    lh: 36,
+                    keepLines: true,
+                    header: function (p) {
+                      var c = p.ctx,
+                        M = p.M,
+                        PW = p.PW;
+                      p.font(24, 0);
+                      c.fillStyle = '#555';
+                      c.fillText('فرم ثبت سوابق خودکنترلی', PW - M, M);
+                      p.font(36, 1);
+                      c.fillStyle = '#14213d';
+                      c.fillText(head.main, PW - M, M + 36);
+                      p.font(28, 1);
+                      c.fillStyle = '#1f5fa8';
+                      c.fillText(head.num, PW - M, M + 86);
+                      c.strokeStyle = '#14213d';
+                      c.lineWidth = 2;
+                      c.beginPath();
+                      c.moveTo(M, M + 130);
+                      c.lineTo(PW - M, M + 130);
+                      c.stroke();
+                      return M + 150;
+                    },
+                  }),
+                  font = P.font,
+                  ensure = P.ensure,
+                  heading = P.heading,
+                  table = P.table,
+                  PW = P.PW,
+                  M = P.M;
+                var whole = !rep.sheet,
+                  toneAt = function (k) {
+                    return function (r) {
+                      var st = r[k] || '';
+                      return /بسته/.test(st)
+                        ? '#e8f5ec'
+                        : !/باز/.test(st)
+                          ? null
+                          : /کسری/.test(st)
+                            ? '#fff4d6'
+                            : '#fdeceb';
+                    };
+                  };
+                P.newPage();
+                font(24, 0);
+                var info = reportInfoRows(rep),
+                  pairs = [];
+                for (var k = 0; k < info.length; k += 2)
+                  pairs.push(info[k].concat(info[k + 1] || ['', '']));
+                table(
+                  [
+                    { t: 'عنوان', w: 2 },
+                    { t: 'مقدار', w: 3 },
+                    { t: 'عنوان', w: 2 },
+                    { t: 'مقدار', w: 3 },
+                  ],
+                  pairs,
+                );
+                heading('ایرادها، نمونه‌ها و کسری‌ها (' + fa(rep.defects.length) + ')');
+                if (!rep.defects.length) {
+                  ensure(50);
+                  font(24, 0);
+                  P.ctx.fillStyle = '#555';
+                  P.ctx.textAlign = 'right';
+                  P.ctx.fillText('موردی ثبت نشده است.', PW - M, P.y);
+                  P.y += 40;
+                } else
+                  table(
+                    (whole ? [{ t: 'مرحله', w: 2 }] : []).concat([
+                      { t: 'مورد', w: 3.4 },
+                      { t: 'وضعیت', w: 1.7 },
+                      { t: 'شرح', w: 3.4 },
+                      { t: 'ثبت‌کننده', w: 2 },
+                      { t: 'تاریخ', w: 1.9 },
+                      { t: 'ساعت', w: 1.1 },
+                    ]),
+                    rep.defects.map(function (d) {
+                      return defectRow(d, whole);
+                    }),
+                    toneAt(whole ? 2 : 1),
+                  );
+                if (whole) {
+                  heading('مراحل تولید');
+                  table(
+                    [
+                      { t: 'مرحله', w: 5 },
+                      { t: 'صفحه', w: 1.4 },
+                      { t: 'وضعیت', w: 2 },
+                      { t: 'تأییدکننده', w: 3 },
+                      { t: 'تاریخ تأیید', w: 2.4 },
+                      { t: 'ساعت', w: 1.4 },
+                      { t: 'باز', w: 1 },
+                    ],
+                    rep.stages.map(function (s) {
+                      return [
+                        s.name,
+                        s.page ? fa(s.page) + ' از ' + fa(PAGES) : '',
+                        s.status,
+                        s.by,
+                        dateOnly(s.atIso),
+                        hm(s.atIso),
+                        String(s.open || 0),
+                      ];
+                    }),
+                    function (r) {
+                      return r[2] === 'تأیید شده' ? null : '#fff4d6';
+                    },
+                  );
+                }
+                if (whole && rep.archHist.length) {
+                  heading('تاریخچه‌ی بایگانی');
+                  table(
+                    [
+                      { t: 'رویداد', w: 3.4 },
+                      { t: 'نام', w: 2.6 },
+                      { t: 'تاریخ', w: 2 },
+                      { t: 'ساعت', w: 1.4 },
+                      { t: 'توضیح', w: 4.6 },
+                    ],
+                    histRows(rep.archHist),
+                  );
+                }
+                heading('جزئیات همه موارد');
+                var groups = {};
+                rep.rows.forEach(function (d) {
+                  (groups[d.stage] = groups[d.stage] || []).push(d);
+                });
+                Object.keys(groups).forEach(function (g) {
+                  var list = groups[g].slice().sort(function (x, y) {
+                      return isProblem(y) - isProblem(x);
+                    }),
+                    stage = rep.stages.filter(function (x) {
+                      return x.name === g;
+                    })[0];
+                  ensure(160);
+                  font(26, 1);
+                  P.ctx.fillStyle = '#14213d';
+                  P.ctx.textAlign = 'right';
+                  P.ctx.fillText(g, PW - M, P.y);
+                  P.y += 42;
+                  table(
+                    [
+                      { t: 'مورد', w: 5 },
+                      { t: 'وضعیت', w: 2.4 },
+                      { t: 'شرح', w: 4 },
+                    ],
+                    list.map(function (d) {
+                      return [d.item, d.status, d.note];
+                    }),
+                    toneAt(1),
+                  );
+                  if (stage && stage.signs.length)
+                    table(
+                      [
+                        { t: 'تأیید بخش', w: 4 },
+                        { t: 'نام', w: 3 },
+                        { t: 'تاریخ', w: 2 },
+                        { t: 'ساعت', w: 1.4 },
+                      ],
+                      signRows(stage),
+                    );
+                });
+                return P.finish(FORM_CODE);
+              }
+      // END SECTION: features/exports
+    
+</script>
+
+<script type="text/x-mohr-section" data-mohr-section="features/reports" data-order="26">
+
+      // BEGIN SECTION: features/reports
+              var JM = [
+                'فروردین',
+                'اردیبهشت',
+                'خرداد',
+                'تیر',
+                'مرداد',
+                'شهریور',
+                'مهر',
+                'آبان',
+                'آذر',
+                'دی',
+                'بهمن',
+                'اسفند',
+              ];
+              var jf = new Intl.DateTimeFormat('en-US-u-ca-persian-nu-latn', {
+                timeZone: 'Asia/Tehran',
+                year: 'numeric',
+                month: 'numeric',
+                day: 'numeric',
+              });
+              function jal(iso) {
+                if (!iso) return null;
+                try {
+                  var p = {};
+                  jf.formatToParts(new Date(iso)).forEach(function (x) {
+                    p[x.type] = x.value;
+                  });
+                  var y = parseInt(p.year, 10);
+                  return isNaN(y) ? null : { y: y, m: +p.month, d: +p.day };
+                } catch (e) {
+                  return null;
+                }
+              }
+              function timeOnly(i) { return hm(i); }
+              function repData(y, m, d) {
+                var cars = [],
+                  defs = [],
+                  month = {},
+                  open = 0;
+                S.data.insp.forEach(function (r) {
+                  if (ASSEMBLY.indexOf(r.sheet) < 0 || !SHEETS[r.sheet] || r.test) return;
+                  if (S.rprod && prodOf(r) !== S.rprod) return;
+                  if (r.sheet === 'final1') {
+                    var j = jal(r.createdAt);
+                    if (j && j.y === y && j.m === m) {
+                      month[j.d] = month[j.d] || { c: 0, x: 0 };
+                      month[j.d].c++;
+                      if (j.d === d) cars.push(r);
+                    }
+                  }
+                  Object.keys(r.items || {}).forEach(function (id) {
+                    var it = r.items[id];
+                    if (it.r !== 'ng' && it.r !== 'sample' && it.r !== 'shortage') return;
+                    if (!it.closedAt) open++;
+                    var j = jal(it.at);
+                    if (j && j.y === y && j.m === m) {
+                      month[j.d] = month[j.d] || { c: 0, x: 0 };
+                      month[j.d].x++;
+                      if (j.d === d) defs.push({ r: r, id: id, it: it });
+                    }
+                  });
+                });
+                defs.sort(function (a, b) {
+                  return (a.it.at || '') < (b.it.at || '') ? -1 : 1;
+                });
+                cars.sort(function (a, b) {
+                  return (a.createdAt || '') < (b.createdAt || '') ? -1 : 1;
+                });
+                return { cars: cars, defs: defs, month: month, open: open };
+              }
+              function typeName(r) {
+                return r === 'ng' ? 'ایراد' : r === 'shortage' ? 'کسری' : 'قطعه نمونه';
+              }
+              function chartSvg(R, y, m) {
+                var nd = m <= 6 ? 31 : m <= 11 ? 30 : 29,
+                  W = 760,
+                  H = 240,
+                  L = 36,
+                  B = 26,
+                  T = 14,
+                  bw = (W - L - 8) / nd,
+                  mx = 1;
+                for (var k = 1; k <= nd; k++) {
+                  var v = R.month[k];
+                  if (v) mx = Math.max(mx, v.c, v.x);
+                }
+                var sy = (H - B - T) / mx,
+                  o =
+                    '<svg class="bars" viewBox="0 0 ' +
+                    W +
+                    ' ' +
+                    H +
+                    '" role="img" aria-label="نمودار ماهانه">';
+                for (var g = 0; g <= mx && g <= 8; g += Math.max(1, Math.ceil(mx / 4))) {
+                  var yy = H - B - g * sy;
+                  o +=
+                    '<line x1="' +
+                    L +
+                    '" x2="' +
+                    W +
+                    '" y1="' +
+                    yy +
+                    '" y2="' +
+                    yy +
+                    '" stroke="#8884" stroke-width="1"/><text x="' +
+                    (L - 6) +
+                    '" y="' +
+                    (yy + 4) +
+                    '" font-size="11" text-anchor="end" fill="currentColor">' +
+                    fa(g) +
+                    '</text>';
+                }
+                for (var d = 1; d <= nd; d++) {
+                  var mv = R.month[d] || { c: 0, x: 0 },
+                    x0 = L + (d - 1) * bw + bw * 0.12,
+                    w = bw * 0.38;
+                  if (mv.c)
+                    o +=
+                      '<rect x="' +
+                      x0 +
+                      '" y="' +
+                      (H - B - mv.c * sy) +
+                      '" width="' +
+                      w +
+                      '" height="' +
+                      mv.c * sy +
+                      '" fill="#2a5db0"/>';
+                  if (mv.x)
+                    o +=
+                      '<rect x="' +
+                      (x0 + w) +
+                      '" y="' +
+                      (H - B - mv.x * sy) +
+                      '" width="' +
+                      w +
+                      '" height="' +
+                      mv.x * sy +
+                      '" fill="#c0392b"/>';
+                  if (d % 2 === 1 || nd <= 16)
+                    o +=
+                      '<text x="' +
+                      (L + (d - 0.5) * bw) +
+                      '" y="' +
+                      (H - 8) +
+                      '" font-size="10" text-anchor="middle" fill="currentColor">' +
+                      fa(d) +
+                      '</text>';
+                }
+                return o + '</svg>';
+              }
+              function qualityCard(y, m) {
+                var prod = {},
+                  ngKey = {},
+                  perSt = {},
+                  par = {},
+                  ngTotal = 0,
+                  gr = {};
+                ASSEMBLY.forEach(function (k) {
+                  perSt[k] = 0;
+                });
+                S.data.insp.forEach(function (r) {
+                  if (ASSEMBLY.indexOf(r.sheet) < 0 || !SHEETS[r.sheet] || r.test) return;
+                  if (S.rprod && prodOf(r) !== S.rprod) return;
+                  if (r.sheet === 'final1') {
+                    var j = jal(r.createdAt);
+                    if (j && j.y === y && j.m === m) prod[r.key] = 1;
+                  }
+                  Object.keys(r.items || {}).forEach(function (id) {
+                    var it = r.items[id];
+                    if (it.r !== 'ng') return;
+                    ngKey[r.key] = 1;
+                    var j = jal(it.at);
+                    if (!(j && j.y === y && j.m === m)) return;
+                    ngTotal++;
+                    perSt[r.sheet]++;
+                    var gg = gradeOf(r, id) || 'بدون گرید';
+                    gr[gg] = (gr[gg] || 0) + 1;
+                    var lb = it.custom
+                      ? it.part || it.free || it.note || 'توضیح دستی'
+                      : labelOf(r.sheet, id, r);
+                    var k = SHEETS[r.sheet].name + ' - ' + lb;
+                    par[k] = (par[k] || 0) + 1;
+                  });
+                });
+                var cars = Object.keys(prod).length,
+                  bad = Object.keys(prod).filter(function (k) {
+                    return ngKey[k];
+                  }).length;
+                var h =
+                  '<div class="card"><h2>شاخص‌های کیفیت ماه ' +
+                  JM[m - 1] +
+                  ' ' +
+                  fa(y).replace(/٬/g, '') +
+                  '</h2>';
+                if (!cars && !ngTotal)
+                  return (
+                    h + '<p class="hint" style="margin:0">داده‌ای برای این ماه ثبت نشده است.</p></div>'
+                  );
+                var dpu = cars ? ngTotal / cars : 0,
+                  ftq = cars ? Math.round(((cars - bad) * 1000) / cars) / 10 : 0;
+                h +=
+                  '<div class="kvs"><div class="kv"><small>DPU (ایراد به ازای هر خودرو)</small><b>' +
+                  fa(Math.round(dpu * 100) / 100) +
+                  '</b></div><div class="kv"><small>FTQ (بدون ایراد در بار اول)</small><b>' +
+                  fa(ftq) +
+                  '٪</b></div><div class="kv"><small>خودروی تولیدشده</small><b>' +
+                  fa(cars) +
+                  '</b></div><div class="kv"><small>کل ایرادها</small><b>' +
+                  fa(ngTotal) +
+                  '</b></div></div>';
+                h +=
+                  '<p class="hint" style="margin:8px 0">فقط «ایراد» شمرده می‌شود (کسری و قطعه نمونه نه). FTQ یعنی خودروهایی که در هیچ ایستگاهی ایراد نگرفته‌اند.</p>';
+                h +=
+                  '<div class="tbl"><table><thead><tr><th>ایستگاه</th><th>ایراد</th><th>DPU</th></tr></thead><tbody>';
+                ASSEMBLY.forEach(function (k) {
+                  h +=
+                    '<tr><td>' +
+                    esc(SHEETS[k].name) +
+                    '</td><td>' +
+                    fa(perSt[k]) +
+                    '</td><td>' +
+                    fa(cars ? Math.round((perSt[k] * 100) / cars) / 100 : 0) +
+                    '</td></tr>';
+                });
+                h += '</tbody></table></div>';
+                var arr = Object.keys(par)
+                    .map(function (k) {
+                      return { k: k, n: par[k] };
+                    })
+                    .sort(function (a, b) {
+                      return b.n - a.n;
+                    })
+                    .slice(0, 8),
+                  cum = 0;
+                if (arr.length) {
+                  h += '<h3 style="margin:16px 0 8px;font-size:15px">پارتو: پرتکرارترین ایرادها</h3>';
+                  arr.forEach(function (x) {
+                    cum += x.n;
+                    var pc = Math.round((x.n * 100) / ngTotal),
+                      cp = Math.round((cum * 100) / ngTotal);
+                    h +=
+                      '<div style="margin:6px 0"><div style="display:flex;justify-content:space-between;gap:8px;font-size:13px"><span>' +
+                      esc(x.k) +
+                      '</span><span class="num">' +
+                      fa(x.n) +
+                      ' (' +
+                      fa(pc) +
+                      '٪ - تجمعی ' +
+                      fa(cp) +
+                      '٪)</span></div><div style="height:10px;background:#8883;border-radius:5px"><div style="height:10px;width:' +
+                      (x.n * 100) / arr[0].n +
+                      '%;background:#c0392b;border-radius:5px"></div></div></div>';
+                  });
+                }
+                if (
+                  S.rprod !== 'padra' &&
+                  Object.keys(gr).some(function (k) {
+                    return k !== 'بدون گرید';
+                  })
+                ) {
+                  h +=
+                    '<h3 style="margin:16px 0 8px;font-size:15px">ایرادها بر اساس گرید (آیتم‌های اکستند)</h3><div class="tbl"><table><thead><tr><th>گرید</th><th>تعداد ایراد</th></tr></thead><tbody>';
+                  Object.keys(gr)
+                    .sort()
+                    .forEach(function (k) {
+                      h += '<tr><td>' + esc(k) + '</td><td>' + fa(gr[k]) + '</td></tr>';
+                    });
+                  h +=
+                    '</tbody></table></div><p class="hint" style="margin-top:6px">گرید فقط برای آیتم‌های فهرست اکستند ثبت شده است.</p>';
+                }
+                return h + '</div>';
+              }
+              function prodChips() {
+                return (
+                  '<div class="card"><b>محصول</b><div class="chips" style="margin-top:8px">' +
+                  [
+                    ['', 'همه'],
+                    ['padra', 'پادرا'],
+                    ['ex', 'اکستند'],
+                  ]
+                    .map(function (x) {
+                      return (
+                        '<button type="button" class="pick" data-act="rprod" data-v="' +
+                        x[0] +
+                        '" aria-pressed="' +
+                        ((S.rprod || '') === x[0]) +
+                        '">' +
+                        x[1] +
+                        '</button>'
+                      );
+                    })
+                    .join('') +
+                  '</div></div>'
+                );
+              }
+              function reportView() {
+                var today = jal(nowIso());
+                if (!S.rd) S.rd = { y: today.y, m: today.m, d: today.d };
+                var y = S.rd.y,
+                  m = S.rd.m,
+                  d = S.rd.d,
+                  R = repData(y, m, d);
+                var ys = [today.y - 1, today.y, today.y + 1].filter(function (v, i, a) {
+                  return a.indexOf(v) === i;
+                });
+                if (ys.indexOf(y) < 0) ys.push(y);
+                var h =
+                  repWinNote() +
+                  prodChips() +
+                  '<div class="card"><h2>گزارش تولید و ایرادها (مونتاژ تا نهایی پایین)</h2><form class="row" onsubmit="return false"><label class="f grow">سال<select class="in" id="rd_y">' +
+                  ys
+                    .map(function (v) {
+                      return (
+                        '<option value="' +
+                        v +
+                        '"' +
+                        (v === y ? ' selected' : '') +
+                        '>' +
+                        fa(v).replace(/٬/g, '') +
+                        '</option>'
+                      );
+                    })
+                    .join('') +
+                  '</select></label><label class="f grow">ماه<select class="in" id="rd_m">' +
+                  JM.map(function (n, i) {
+                    return (
+                      '<option value="' +
+                      (i + 1) +
+                      '"' +
+                      (i + 1 === m ? ' selected' : '') +
+                      '>' +
+                      n +
+                      '</option>'
+                    );
+                  }).join('') +
+                  '</select></label><label class="f grow">روز<select class="in" id="rd_d">' +
+                  Array.apply(null, Array(31))
+                    .map(function (_, i) {
+                      return (
+                        '<option value="' +
+                        (i + 1) +
+                        '"' +
+                        (i + 1 === d ? ' selected' : '') +
+                        '>' +
+                        fa(i + 1) +
+                        '</option>'
+                      );
+                    })
+                    .join('') +
+                  '</select></label></form><p class="hint" style="margin-top:8px">تعداد خودروی تولیدشده بر اساس ثبت اولین برگه «نهایی بالا» هر خودرو (نصب اتاق روی شاسی) شمرده می‌شود.</p></div>';
+                h += repeatCard(y, m, d);
+                var cnt = { ng: 0, sample: 0, shortage: 0 };
+                R.defs.forEach(function (x) {
+                  cnt[x.it.r]++;
+                });
+                h +=
+                  '<div class="card"><h2>روز ' +
+                  fa(d) +
+                  ' ' +
+                  JM[m - 1] +
+                  ' ' +
+                  fa(y).replace(/٬/g, '') +
+                  '</h2><div class="kvs"><div class="kv"><small>خودروی تولیدشده</small><b>' +
+                  fa(R.cars.length) +
+                  '</b></div><div class="kv"><small>ایراد ثبت‌شده</small><b>' +
+                  fa(cnt.ng) +
+                  '</b></div><div class="kv"><small>قطعه نمونه</small><b>' +
+                  fa(cnt.sample) +
+                  '</b></div><div class="kv"><small>کسری ثبت‌شده</small><b>' +
+                  fa(cnt.shortage) +
+                  '</b></div><div class="kv"><small>مورد باز (کل)</small><b>' +
+                  fa(R.open) +
+                  '</b></div></div><div class="row" style="margin-top:12px"><button class="btn sm" data-act="repcsv">ذخیره گزارش روز (Excel / CSV)</button></div></div>';
+                h += qualityCard(y, m);
+                var by = {};
+                ASSEMBLY.forEach(function (k) {
+                  by[k] = { ng: 0, sample: 0, shortage: 0 };
+                });
+                R.defs.forEach(function (x) {
+                  by[x.r.sheet][x.it.r]++;
+                });
+                h +=
+                  '<div class="card"><h2>ایرادها به تفکیک ایستگاه</h2><div class="tbl"><table><thead><tr><th>ایستگاه</th><th>ایراد</th><th>نمونه</th><th>کسری</th></tr></thead><tbody>';
+                ASSEMBLY.forEach(function (k) {
+                  var b = by[k];
+                  h +=
+                    '<tr><td>' +
+                    esc(SHEETS[k].name) +
+                    '</td><td>' +
+                    fa(b.ng) +
+                    '</td><td>' +
+                    fa(b.sample) +
+                    '</td><td>' +
+                    fa(b.shortage) +
+                    '</td></tr>';
+                });
+                h += '</tbody></table></div></div>';
+                h += '<div class="card"><h2>فهرست ایرادها (' + fa(R.defs.length) + ')</h2>';
+                if (!R.defs.length) h += '<p class="hint" style="margin:0">موردی ثبت نشده است.</p>';
+                else {
+                  h +=
+                    '<div class="tbl"><table><thead><tr><th>ساعت</th><th>سریال / شماره</th><th>ایستگاه</th><th>نوع</th><th>مورد و شرح</th><th>ثبت‌کننده</th></tr></thead><tbody>';
+                  R.defs.forEach(function (x) {
+                    var ser = identOf(x.r).serial || x.r.key;
+                    h +=
+                      '<tr><td>' +
+                      esc(timeOnly(x.it.at)) +
+                      '</td><td class="num">' +
+                      esc(ser) +
+                      '</td><td>' +
+                      esc(SHEETS[x.r.sheet].name) +
+                      '</td><td>' +
+                      typeName(x.it.r) +
+                      (x.it.closedAt ? ' (بسته)' : '') +
+                      '</td><td>' +
+                      esc(x.it.custom ? '' : labelOf(x.r.sheet, x.id, x.r)) +
+                      (x.it.note ? ' ' + esc(x.it.note) : '') +
+                      '</td><td>' +
+                      esc(x.it.by || '') +
+                      '</td></tr>';
+                  });
+                  h += '</tbody></table></div>';
+                }
+                h +=
+                  '</div><div class="card"><h2>خودروهای تولیدشده این روز (' +
+                  fa(R.cars.length) +
+                  ')</h2>';
+                if (!R.cars.length) h += '<p class="hint" style="margin:0">خودرویی ثبت نشده است.</p>';
+                else {
+                  h +=
+                    '<div class="tbl"><table><thead><tr><th>ساعت</th><th>سریال</th><th>شاسی</th><th>اتاق</th></tr></thead><tbody>';
+                  R.cars.forEach(function (r) {
+                    var I = identity(r.key);
+                    h +=
+                      '<tr><td>' +
+                      esc(timeOnly(r.createdAt)) +
+                      '</td><td class="num">' +
+                      esc(I.serial || r.key) +
+                      '</td><td class="num">' +
+                      esc(I.chassis || '—') +
+                      '</td><td class="num">' +
+                      esc(I.room || '—') +
+                      '</td></tr>';
+                  });
+                  h += '</tbody></table></div>';
+                }
+                var tc = 0,
+                  tx = 0;
+                Object.keys(R.month).forEach(function (k) {
+                  tc += R.month[k].c;
+                  tx += R.month[k].x;
+                });
+                h +=
+                  '</div><div class="card"><h2>نمودار ماه ' +
+                  JM[m - 1] +
+                  ' ' +
+                  fa(y).replace(/٬/g, '') +
+                  '</h2><p class="hint" style="margin-bottom:8px"><span style="color:#2a5db0">■</span> خودروی تولیدشده (' +
+                  fa(tc) +
+                  ') &nbsp; <span style="color:#c0392b">■</span> ایراد، نمونه و کسری (' +
+                  fa(tx) +
+                  ')</p>' +
+                  chartSvg(R, y, m) +
+                  '<div class="row" style="margin-top:10px"><button class="btn sm" data-act="repmcsv">ذخیره جدول ماه (Excel / CSV)</button></div></div>';
+                return h;
+              }
+              function csvSave(name, rows) {
+                var t =
+                  '\ufeff' +
+                  rows
+                    .map(function (r) {
+                      return r
+                        .map(function (v) {
+                          v = String(v == null ? '' : v);
+                          return /[",\n]/.test(v) ? '"' + v.replace(/"/g, '""') + '"' : v;
+                        })
+                        .join(',');
+                    })
+                    .join('\r\n');
+                return saveFile(name, new Blob([t], { type: 'text/csv;charset=utf-8' }));
+              }
+      // END SECTION: features/reports
+    
+</script>
+
+<script type="text/x-mohr-section" data-mohr-section="dashboard/quality/owned-TEHRAN_MS" data-order="30">
+
+      // BEGIN SECTION: dashboard/quality
+              /* ================= داشبورد مدیریتی «مرکز راهبری کیفیت و تولید» (فقط‌خواندنی) =================
+         همه‌ی اعداد از داده‌ی بارگذاری‌شده‌ی همین دستگاه محاسبه می‌شود و چیزی ذخیره نمی‌شود.
+         ساعت هر ثبت، ساعت دستگاه ثبت‌کننده است (تقریبی). ایران ساعت تابستانی ندارد (UTC+3:30). */
+              var TEHRAN_MS = 12600000,
+                DAY_MS = 86400000,
+                DASH_PAGE = 40,
+                DEF_R = { ng: 1, sample: 1, shortage: 1 };
+              var DASH_RANGES = [
+                ['today', 'امروز'],
+                ['yday', 'دیروز'],
+                ['d7', '۷ روز اخیر'],
+                ['d30', '۳۰ روز اخیر'],
+              ];
+              var DASH_DEF = {
+                sec: 'follow',
+                fo: '',
+                range: 'd30',
+                shift: '',
+                station: '',
+                prod: '',
+                status: '',
+                q: '',
+                sort: 'old',
+                more: DASH_PAGE,
+                car: '',
+              };
+              var DASH_NA = 'اطلاعات در دسترس نیست';
+              var DASHD = null,
+                DASHR = null;
+</script>
+
+<script type="text/x-mohr-section" data-mohr-section="dashboard/quality/owned-dashF" data-order="30.1">
+
+              /* حساب مدیریتی هر بار با بازه‌ی «امروز» شروع می‌کند؛ فیلترها با عوض‌شدن کاربر دوباره ساخته می‌شود */
+              function dashF() {
+                var uid = S.user ? S.user.id : '';
+                if (!S.dash || S.dash.uid !== uid)
+                  S.dash = Object.assign(
+                    { uid: uid },
+                    DASH_DEF,
+                    isMgrUser(S.user) || isCustomRole(S.user) ? { range: 'today' } : {},
+                  );
+                return S.dash;
+              }
+              function dashFree() {
+                DASHD = null;
+                DASHR = null;
+              }
+
+              /* ---------- زمان و شیفت ---------- */
+              function dayStart(ms) {
+                return Math.floor((ms + TEHRAN_MS) / DAY_MS) * DAY_MS - TEHRAN_MS;
+              }
+              function dashPeriod(range, now) {
+                var t0 = dayStart(now);
+                if (range === 'today') return { from: t0, to: t0 + DAY_MS };
+                if (range === 'yday') return { from: t0 - DAY_MS, to: t0 };
+                return { from: t0 - ((range === 'd7' ? 7 : 30) - 1) * DAY_MS, to: t0 + DAY_MS };
+              }
+</script>
+
+<script type="text/x-mohr-section" data-mohr-section="dashboard/quality/owned-shiftCfg" data-order="30.2">
+
+              /* شیفت ۱ از شروع شیفت ۱ تا شروع شیفت ۲؛ بقیه‌ی ساعت‌ها شیفت ۲. تا تنظیم نشده null برمی‌گردد. */
+              function shiftCfg() {
+                var c = (S.lists && S.lists.shift) || {},
+                  a = parseHm(c.s1),
+                  b = parseHm(c.s2),
+                  e = c.s3 ? parseHm(c.s3) : null;
+                return a != null && b != null && a < b
+                  ? { s1: a, s2: b, s3: e != null && e > b ? e : null }
+                  : null;
+              }
+              function shiftOf(ms, cfg) {
+                var m = Math.floor(((ms + TEHRAN_MS) % DAY_MS) / 60000);
+                return m >= cfg.s1 && m < cfg.s2 ? 1 : 2;
+              }
+              function elapsedTxt(ms) {
+                var m = Math.max(0, Math.floor(ms / 60000)),
+                  d = Math.floor(m / 1440),
+                  h = Math.floor((m % 1440) / 60);
+                return d
+                  ? fa(d) + ' روز و ' + fa(h) + ' ساعت'
+                  : h
+                    ? fa(h) + ' ساعت و ' + fa(m % 60) + ' دقیقه'
+                    : fa(m) + ' دقیقه';
+              }
+
+              /* ---------- جمع‌آوری (یک بار برای هر تغییر داده) ---------- */
+              function carIdOf(r) {
+                var o = identOf(r);
+                return o.chassis || o.serial || o.room || o.engine || r.key;
+              }
+              /* محصول هر خودرو از برگه‌های شاسی/موتور/تزیینات؛ یک بار نمایه می‌شود تا برای هر رکورد کل داده پیمایش نشود */
+              function dashProdIndex() {
+                var by = {};
+                S.data.insp.forEach(function (r) {
+                  if (!r.product || !SHEETS[r.sheet] || PSHEETS.indexOf(r.sheet) < 0) return;
+                  var o = identOf(r);
+                  ['serial', 'chassis', 'engine', 'room'].forEach(function (f) {
+                    if (o[f]) by[o[f]] = r.product;
+                  });
+                });
+                return by;
+              }
+              function dashProd(r, by) {
+                var raw = r.product;
+                if (!raw && PSHEETS.indexOf(r.sheet) < 0) {
+                  var o = identOf(r);
+                  raw = by[o.chassis] || by[o.serial] || by[o.room] || by[o.engine] || '';
+                }
+                return raw === 'ex' ? 'ex' : 'padra';
+              }
+              function dashCollect() {
+                var recs = [],
+                  defs = [],
+                  prodBy = dashProdIndex(),
+                  scope = userSheets();
+                S.data.insp.forEach(function (r) {
+                  if (r.test || !SHEETS[r.sheet] || (scope && scope.indexOf(r.sheet) < 0)) return;
+                  var base = { r: r, car: carIdOf(r), prod: dashProd(r, prodBy) },
+                    ms = Date.parse(r.createdAt);
+                  if (!isNaN(ms)) recs.push(Object.assign({ ms: ms }, base));
+                  var items = r.items || {};
+                  Object.keys(items).forEach(function (id) {
+                    var it = items[id],
+                      dm = Date.parse(it.at || r.createdAt);
+                    if (DEF_R[it.r] && !isNaN(dm))
+                      defs.push(Object.assign({ ms: dm, id: id, it: it, open: !it.closedAt }, base));
+                  });
+                });
+                return { recs: recs, defs: defs };
+              }
+              function dashData() {
+                var scopeKey = String(userSheets());
+                if (!DASHD || DASHD.insp !== S.data.insp || DASHD.scopeKey !== scopeKey)
+                  DASHD = { insp: S.data.insp, scopeKey: scopeKey, data: dashCollect(), labels: {} };
+                return DASHD.data;
+              }
+
+              /* ---------- محاسبه ---------- */
+              function dashPredicates(F, cfg) {
+                return {
+                  base: function (x) {
+                    return (!F.prod || x.prod === F.prod) && (!F.station || x.r.sheet === F.station);
+                  },
+                  shiftOk: function (x) {
+                    return !F.shift || (!!cfg && shiftOf(x.ms, cfg) === +F.shift);
+                  },
+                  statusOk: function (x) {
+                    return !F.status || (F.status === 'open') === x.open;
+                  },
+                };
+              }
+              function countCars(recs) {
+                var s = {};
+                recs.forEach(function (x) {
+                  s[x.car] = 1;
+                });
+                return Object.keys(s).length;
+              }
+              function dashStations(recs, defs) {
+                var out = {};
+                STAGES.forEach(function (k) {
+                  out[k] = { ids: {}, cars: 0, defects: 0, open: 0, last: null, lastMs: 0 };
+                });
+                recs.forEach(function (x) {
+                  var s = out[x.r.sheet];
+                  s.ids[x.car] = 1;
+                  if (!s.last || x.ms > s.lastMs) {
+                    s.last = x.r;
+                    s.lastMs = x.ms;
+                  }
+                });
+                defs.forEach(function (x) {
+                  var s = out[x.r.sheet];
+                  s.defects++;
+                  if (x.open) s.open++;
+                });
+                STAGES.forEach(function (k) {
+                  out[k].cars = Object.keys(out[k].ids).length;
+                  delete out[k].ids;
+                });
+                return out;
+              }
+              /* متن آیتم برای هر (برگه، آیتم، محصول) یک بار ساخته می‌شود */
+              function defectLabel(x) {
+                var it = x.it;
+                if (it.custom) return it.part || it.free || it.note || 'توضیح دستی';
+                dashData();
+                var L = DASHD.labels,
+                  k = x.r.sheet + '|' + x.id + '|' + x.prod;
+                return L[k] || (L[k] = labelOf(x.r.sheet, x.id, x.r));
+              }
+              function dashPareto(defs) {
+                var count = {};
+                defs.forEach(function (x) {
+                  var k = SHEETS[x.r.sheet].name + ' - ' + defectLabel(x);
+                  count[k] = (count[k] || 0) + 1;
+                });
+                return Object.keys(count)
+                  .map(function (k) {
+                    return { k: k, n: count[k] };
+                  })
+                  .sort(function (a, b) {
+                    return b.n - a.n;
+                  })
+                  .slice(0, 8);
+              }
+              function dashDaily(defs, pass, now) {
+                var t0 = dayStart(now),
+                  days = [];
+                for (var i = 6; i >= 0; i--) days.push({ from: t0 - i * DAY_MS, n: 0 });
+                defs.forEach(function (x) {
+                  var i = Math.floor((x.ms - days[0].from) / DAY_MS);
+                  if (i >= 0 && i < 7 && pass(x)) days[i].n++;
+                });
+                return days;
+              }
+              function dashShifts(recs, defs, cfg) {
+                var out = [
+                  { ids: {}, defects: 0 },
+                  { ids: {}, defects: 0 },
+                ];
+                recs.forEach(function (x) {
+                  out[shiftOf(x.ms, cfg) - 1].ids[x.car] = 1;
+                });
+                defs.forEach(function (x) {
+                  out[shiftOf(x.ms, cfg) - 1].defects++;
+                });
+                return out.map(function (s) {
+                  return { cars: Object.keys(s.ids).length, defects: s.defects };
+                });
+              }
+              function dashCompute(F, now) {
+                var D = dashData(),
+                  cfg = shiftCfg(),
+                  P = dashPeriod(F.range, now),
+                  f = dashPredicates(F, cfg);
+                var inP = function (x) {
+                  return x.ms >= P.from && x.ms < P.to && f.base(x);
+                };
+                var recsIn = D.recs.filter(inP),
+                  defsIn = D.defs.filter(inP);
+                var recs = recsIn.filter(f.shiftOk),
+                  defsShift = defsIn.filter(f.shiftOk),
+                  defs = defsShift.filter(f.statusOk);
+                var st = dashStations(recs, defs),
+                  keys = F.station ? [F.station] : userSheets() || STAGES;
+                return {
+                  period: P,
+                  cfg: cfg,
+                  keys: keys,
+                  stations: st,
+                  defTotal: defs.length,
+                  nRecs: recs.length,
+                  cars: countCars(recs),
+                  openList: defsShift
+                    .filter(function (x) {
+                      return x.open;
+                    })
+                    .sort(function (a, b) {
+                      return a.ms - b.ms;
+                    }),
+                  withRecords: keys.filter(function (k) {
+                    return st[k].cars > 0;
+                  }).length,
+                  pareto: dashPareto(defs),
+                  daily: dashDaily(
+                    D.defs,
+                    function (x) {
+                      return f.base(x) && f.shiftOk(x) && f.statusOk(x);
+                    },
+                    now,
+                  ),
+                  shifts: cfg ? dashShifts(recsIn, defsIn.filter(f.statusOk), cfg) : null,
+                };
+              }
+              function dashResult(F, now) {
+                var key = [
+                  F.range,
+                  F.shift,
+                  F.station,
+                  F.prod,
+                  F.status,
+                  dayStart(now),
+                  String(userSheets()),
+                  JSON.stringify((S.lists && S.lists.shift) || ''),
+                ].join('|');
+                if (!DASHR || DASHR.insp !== S.data.insp || DASHR.key !== key)
+                  DASHR = { insp: S.data.insp, key: key, res: dashCompute(F, now) };
+                return DASHR.res;
+              }
+
+              /* ---------- صفحه ---------- */
+              function dashPeriodTxt(P) {
+                return (
+                  'از تاریخ ' +
+                  dateOnly(new Date(P.from).toISOString()) +
+                  ' تا تاریخ ' +
+                  dateOnly(new Date(P.to - 1).toISOString())
+                );
+              }
+              function dashChips(key, items, cur) {
+                return (
+                  '<div class="dchips">' +
+                  items
+                    .map(function (x) {
+                      return (
+                        '<button type="button" class="pick" data-act="dset" data-k="' +
+                        key +
+                        '" data-v="' +
+                        x[0] +
+                        '" aria-pressed="' +
+                        (cur === x[0]) +
+                        '">' +
+                        x[1] +
+                        '</button>'
+                      );
+                    })
+                    .join('') +
+                  '</div>'
+                );
+              }
+              function dashNote() {
+                var D = dashData(),
+                  err = '';
+                if (S.connErr)
+                  err =
+                    '<p class="err" style="margin:8px 0 0">اتصال به سرور برقرار نیست؛ اعداد ممکن است ناقص باشند.</p>';
+                else if (!D.recs.length && !D.defs.length)
+                  err =
+                    '<p class="err" style="margin:8px 0 0">هنوز داده‌ای بارگذاری نشده است؛ صفرها به معنی «بدون ثبت» نیست.</p>';
+                return (
+                  err +
+                  '<details class="dnote"><summary class="hint">توضیح اعداد و محدودیت‌ها</summary><p class="hint">این صفحه فقط برای مشاهده است. اعداد از داده‌ی بارگذاری‌شده‌ی همین دستگاه (' +
+                  fa(winDays()) +
+                  ' روز اخیر) محاسبه می‌شود و ساعت هر ثبت، ساعت دستگاه ثبت‌کننده است (تقریبی). «ایراد» در این صفحه شامل ایراد، کسری و قطعه نمونه است. شمار خودرو بر اساس شماره‌ی ثبت‌شده در هر برگه است.</p>' +
+                  winNoteBody() +
+                  '</details>'
+                );
+              }
+              function dashFilterBody(F, R) {
+                var shift = R.cfg
+                  ? dashChips(
+                      'shift',
+                      [
+                        ['', 'همه'],
+                        ['1', 'شیفت ۱ (صبح)'],
+                        ['2', 'شیفت ۲ (بعدازظهر)'],
+                      ],
+                      F.shift,
+                    )
+                  : '<p class="hint" style="margin:6px 0 0">تنظیم نشده (مدیر ساعت شروع شیفت‌ها را در «تنظیمات» وارد کند)</p>';
+                var opts = [['', 'همه‌ی ایستگاه‌ها']]
+                  .concat(
+                    (userSheets() || STAGES).map(function (k) {
+                      return [k, SHEETS[k].name];
+                    }),
+                  )
+                  .map(function (o) {
+                    return (
+                      '<option value="' +
+                      o[0] +
+                      '"' +
+                      (o[0] === F.station ? ' selected' : '') +
+                      '>' +
+                      esc(o[1]) +
+                      '</option>'
+                    );
+                  })
+                  .join('');
+                return (
+                  '<div style="margin-top:10px"><b>شیفت</b>' +
+                  shift +
+                  '</div>' +
+                  '<label class="f" style="margin-top:10px">ایستگاه<select class="in" id="dash_station">' +
+                  opts +
+                  '</select></label>' +
+                  '<div style="margin-top:10px"><b>محصول</b>' +
+                  dashChips(
+                    'prod',
+                    [
+                      ['', 'همه'],
+                      ['padra', 'پادرا'],
+                      ['ex', 'اکستند'],
+                    ],
+                    F.prod,
+                  ) +
+                  '</div>' +
+                  '<div style="margin-top:10px"><b>وضعیت ایراد (برای تحلیل‌ها)</b>' +
+                  dashChips(
+                    'status',
+                    [
+                      ['', 'همه'],
+                      ['open', 'باز'],
+                      ['closed', 'بسته‌شده'],
+                    ],
+                    F.status,
+                  ) +
+                  '</div>' +
+                  '<p class="hint" style="margin:8px 0 0">فهرست «نیازمند پیگیری» همیشه فقط موارد باز را نشان می‌دهد.</p>'
+                );
+              }
+              function dashLabel(list, v) {
+                var x = list.filter(function (o) {
+                  return o[0] === v;
+                })[0];
+                return x ? x[1] : '';
+              }
+              function dashSummary(F, R) {
+                var sh = !R.cfg ? '' : F.shift ? ' · شیفت ' + fa(F.shift) : ' · همه شیفت‌ها';
+                return (
+                  esc(dashLabel(DASH_RANGES, F.range)) +
+                  sh +
+                  ' · ' +
+                  (F.station ? esc(SHEETS[F.station].name) : 'همه ایستگاه‌ها') +
+                  ' · ' +
+                  (F.prod ? esc(PRODN[F.prod]) : 'پادرا و اکستند') +
+                  '<br>' +
+                  dashPeriodTxt(R.period)
+                );
+              }
+              function dashHead(F, R) {
+                return (
+                  '<div class="card dhead"><div class="row"><h2 class="grow" style="margin:0;font-size:18px">مرکز راهبری</h2><button class="btn sm" data-act="dset" data-k="fo" data-v="' +
+                  (F.fo ? '' : '1') +
+                  '" aria-expanded="' +
+                  !!F.fo +
+                  '">' +
+                  (F.fo ? 'بستن فیلتر ▴' : 'فیلتر ▾') +
+                  '</button></div>' +
+                  '<p class="hint dsum">' +
+                  dashSummary(F, R) +
+                  '</p>' +
+                  (F.fo ? dashFilterBody(F, R) : '') +
+                  dashNote() +
+                  '</div>'
+                );
+              }
+              function dashKv(title, value, sub, small, tone) {
+                return (
+                  '<div class="kv' +
+                  (tone ? ' ' + tone : '') +
+                  '"><small>' +
+                  title +
+                  '</small><b class="num' +
+                  (small ? ' dna' : '') +
+                  '">' +
+                  value +
+                  '</b>' +
+                  (sub ? '<small>' + sub + '</small>' : '') +
+                  '</div>'
+                );
+              }
+              function dashCards(R) {
+                return (
+                  '<div class="card dcards"><div class="kvs">' +
+                  dashKv('خودروهای ثبت‌شده', fa(R.cars), '', false, 'info') +
+                  dashKv(
+                    'ایرادهای باز',
+                    fa(R.openList.length),
+                    '',
+                    false,
+                    R.openList.length ? 'bad' : 'good',
+                  ) +
+                  dashKv(
+                    'ایستگاه‌های دارای ثبت',
+                    fa(R.withRecords) + ' از ' + fa(R.keys.length),
+                    '',
+                    false,
+                    R.withRecords === R.keys.length ? 'good' : '',
+                  ) +
+                  dashKv('منتظر تأیید', '—', 'در برنامه ثبت نمی‌شود') +
+                  '</div></div>'
+                );
+              }
+              function dashDesc(x) {
+                return defectLabel(x) + (!x.it.custom && x.it.note ? ' — ' + x.it.note : '');
+              }
+              function dashItem(head, lines) {
+                return (
+                  '<div class="ditem"><div class="dh">' +
+                  head +
+                  '</div>' +
+                  lines
+                    .map(function (l) {
+                      return '<div class="dl">' + l + '</div>';
+                    })
+                    .join('') +
+                  '</div>'
+                );
+              }
+              function dashLine(label, value) {
+                return '<small>' + label + ':</small> ' + value;
+              }
+              function dashTypeChip(r) {
+                return (
+                  '<span class="chip ' + (r === 'ng' ? 'open' : r) + '">' + esc(typeName(r)) + '</span>'
+                );
+              }
+              function dashFollowRow(x, now) {
+                return (
+                  '<details class="dfrow"><summary><div class="l1"><b class="num">' +
+                  esc(x.car) +
+                  '</b><span class="dst">' +
+                  esc(SHEETS[x.r.sheet].name) +
+                  '</span>' +
+                  dashTypeChip(x.it.r) +
+                  '</div>' +
+                  '<div class="l2"><span class="ds">' +
+                  esc(dashDesc(x)) +
+                  '</span><span class="dw">' +
+                  esc(elapsedTxt(now - x.ms)) +
+                  '</span></div></summary>' +
+                  '<div class="dbody"><div>' +
+                  dashLine('شرح', esc(dashDesc(x))) +
+                  '</div><div>' +
+                  whoWhen(x.it.by, x.it.at || x.r.createdAt) +
+                  '</div><div>' +
+                  dashLine('مدت انتظار', elapsedTxt(now - x.ms)) +
+                  '</div><div>' +
+                  dashLine('آخرین اقدام', 'اقدامی ثبت نشده') +
+                  '</div></div></details>'
+                );
+              }
+              function dashFollowRows(R, F) {
+                var rows = R.openList,
+                  q = digits(F.q);
+                if (q)
+                  rows = rows.filter(function (x) {
+                    return String(x.car).indexOf(q) >= 0;
+                  });
+                return F.sort === 'new' ? rows.slice().reverse() : rows;
+              }
+              function dashFollowCard(F, R, now) {
+                var rows = dashFollowRows(R, F),
+                  shown = rows.slice(0, F.more);
+                var h =
+                  '<div class="card"><h2>موارد نیازمند پیگیری (' +
+                  fa(rows.length) +
+                  ')</h2>' +
+                  '<form data-form="dashq" class="row"><label class="f grow">جست‌وجوی شماره خودرو<input class="in num ltr" id="dq" inputmode="numeric" autocomplete="off" value="' +
+                  esc(F.q) +
+                  '"></label><button class="btn" type="submit">جست‌وجو</button></form>' +
+                  dashChips(
+                    'sort',
+                    [
+                      ['old', 'قدیمی‌ترین انتظار اول'],
+                      ['new', 'تازه‌ترین اول'],
+                    ],
+                    F.sort,
+                  );
+                if (!rows.length)
+                  return (
+                    h +
+                    '<p class="hint" style="margin:10px 0 0">' +
+                    (F.q ? 'موردی با این شماره پیدا نشد.' : 'مورد بازی در این بازه نیست.') +
+                    '</p></div>'
+                  );
+                h += shown
+                  .map(function (x) {
+                    return dashFollowRow(x, now);
+                  })
+                  .join('');
+                if (rows.length > shown.length)
+                  h +=
+                    '<button class="btn sm" data-act="dmore" style="margin-top:10px">نمایش بیشتر (' +
+                    fa(rows.length - shown.length) +
+                    ' مورد دیگر)</button>';
+                return h + '</div>';
+              }
+              function dashStationRow(k, s) {
+                var none = !s.cars,
+                  rate = s.cars ? Math.min(100, Math.round((s.defects * 100) / s.cars)) : 0;
+                var last = s.last
+                  ? '<details><summary>آخرین ثبت برگه</summary>' +
+                    whoWhen(s.last.createdBy, s.last.createdAt) +
+                    '</details>'
+                  : '';
+                return (
+                  '<div class="dst2' +
+                  (s.open ? ' bad' : '') +
+                  (none ? ' none' : '') +
+                  '"><div class="nm">' +
+                  esc(SHEETS[k].name) +
+                  '</div>' +
+                  (none
+                    ? '<span class="hint">بدون ثبت در بازه</span>'
+                    : '<div class="nums"><span><small>خودرو</small><b class="num">' +
+                      fa(s.cars) +
+                      '</b></span><span><small>ایراد</small><b class="num">' +
+                      fa(s.defects) +
+                      '</b></span><span><small>باز</small><b class="num">' +
+                      fa(s.open) +
+                      '</b></span></div><div class="dbr" title="ایراد به ازای هر خودرو"><i style="width:' +
+                      rate +
+                      '%"></i></div>' +
+                      last) +
+                  '</div>'
+                );
+              }
+              function dashStationsCard(R) {
+                var none = R.keys.filter(function (k) {
+                  return !R.stations[k].cars;
+                });
+                var h = '<div class="card"><h2>وضعیت ایستگاه‌ها</h2>';
+                if (none.length && none.length < R.keys.length)
+                  h +=
+                    '<p class="err" style="margin:0">ایستگاه‌های بدون ثبت در این بازه: ' +
+                    none
+                      .map(function (k) {
+                        return esc(SHEETS[k].name);
+                      })
+                      .join('، ') +
+                    '</p>';
+                else if (none.length)
+                  h += '<p class="hint" style="margin:0">در این بازه هیچ ثبتی نیست.</p>';
+                return (
+                  h +
+                  '<div class="dgrid">' +
+                  R.keys
+                    .map(function (k) {
+                      return dashStationRow(k, R.stations[k]);
+                    })
+                    .join('') +
+                  '</div>' +
+                  '<p class="hint" style="margin:10px 0 0">نوار قرمز: ایراد به ازای هر خودروی بازرسی‌شده. «بدون ثبت» یعنی در داده‌ی بارگذاری‌شده ثبتی نیست؛ لزوماً به معنی توقف ایستگاه نیست.</p></div>'
+                );
+              }
+              function dashBar(label, n, max, extra, color) {
+                var pc = max ? Math.round((n * 100) / max) : 0;
+                return (
+                  '<div style="margin:6px 0"><div style="display:flex;justify-content:space-between;gap:8px;font-size:13px"><span>' +
+                  label +
+                  '</span><span class="num"><bdi>' +
+                  fa(n) +
+                  (extra || '') +
+                  '</bdi></span></div>' +
+                  '<div style="height:10px;background:#8883;border-radius:5px;overflow:hidden"><div style="width:' +
+                  pc +
+                  '%;height:100%;background:' +
+                  (color || 'var(--open)') +
+                  '"></div></div></div>'
+                );
+              }
+              function dashDayLabel(from) {
+                var j = jal(new Date(from + 12 * 3600000).toISOString());
+                return j ? fa(j.d) + ' ' + JM[j.m - 1] : '';
+              }
+              function dashShiftBlock(R) {
+                if (!R.shifts)
+                  return '<p class="hint" style="margin:0">مقایسه‌ی شیفت‌ها: تنظیم نشده (ساعت شروع شیفت‌ها در «تنظیمات» وارد شود).</p>';
+                var mx = Math.max(R.shifts[0].defects, R.shifts[1].defects);
+                return R.shifts
+                  .map(function (s, i) {
+                    return dashBar(
+                      'شیفت ' + fa(i + 1) + ' · ' + fa(s.cars) + ' خودرو',
+                      s.defects,
+                      mx,
+                      '',
+                      i ? 'var(--wait)' : 'var(--stamp)',
+                    );
+                  })
+                  .join('');
+              }
+              function dashAnalysisCard(R) {
+                var dmx = Math.max.apply(
+                    null,
+                    R.daily.map(function (d) {
+                      return d.n;
+                    }),
+                  ),
+                  cum = 0;
+                var h =
+                  '<div class="card"><h2>تحلیل</h2><h3 class="dsec" style="margin-top:0">ایرادهای ۷ روز اخیر</h3>' +
+                  R.daily
+                    .map(function (d) {
+                      return dashBar(dashDayLabel(d.from), d.n, dmx, '', 'var(--stamp)');
+                    })
+                    .join('') +
+                  '<h3 class="dsec">شیفت ۱ و شیفت ۲ (در بازه)</h3>' +
+                  dashShiftBlock(R) +
+                  '<h3 class="dsec">پارتو: پرتکرارترین موارد (در بازه)</h3>';
+                if (!R.pareto.length)
+                  return h + '<p class="hint" style="margin:0">موردی ثبت نشده است.</p></div>';
+                R.pareto.forEach(function (x) {
+                  cum += x.n;
+                  h += dashBar(
+                    esc(x.k),
+                    x.n,
+                    R.pareto[0].n,
+                    ' (' +
+                      fa(Math.round((x.n * 100) / R.defTotal)) +
+                      '٪ - تجمعی ' +
+                      fa(Math.round((cum * 100) / R.defTotal)) +
+                      '٪)',
+                  );
+                });
+                return h + '</div>';
+              }
+
+              /* ---------- پرونده‌ی سریع خودرو ---------- */
+              function stageStatus(d) {
+                if (!d) return 'ثبتی وجود ندارد (بازرسی تأیید نشده)';
+                var s = stat(d),
+                  made = Object.keys(d.items || {}).filter(function (id) {
+                    return DEF_R[d.items[id].r];
+                  }).length;
+                if (s.open) return fa(s.open) + ' مورد باز';
+                if (!s.ans) return 'برگه باز شده، هنوز بازرسی نشده';
+                if (s.ans < s.total) return 'در حال بازرسی (' + fa(s.ans) + ' از ' + fa(s.total) + ')';
+                return made
+                  ? 'بازرسی کامل؛ ' + fa(made) + ' مورد ثبت و بسته شده'
+                  : 'بازرسی کامل، بدون ایراد';
+              }
+              function dashCarRows(C) {
+                var by = {};
+                C.recs.forEach(function (d) {
+                  by[d.sheet] = d;
+                });
+                return STAGES.map(function (k) {
+                  var d = by[k];
+                  return dashItem(
+                    '<span>' + esc(SHEETS[k].name) + '</span>',
+                    [esc(stageStatus(d))].concat(d ? [whoWhen(d.createdBy, d.createdAt)] : []),
+                  );
+                }).join('');
+              }
+              function dashCarCard(F) {
+                var h =
+                  '<div class="card"><h2>پرونده‌ی سریع خودرو</h2><form data-form="dashcar" class="row"><label class="f grow">شماره شاسی یا سریال<input class="in num ltr" id="dcq" inputmode="numeric" autocomplete="off" value="' +
+                  esc(F.car) +
+                  '"></label><button class="btn primary" type="submit">نمایش</button></form>';
+                if (!F.car) return h + '</div>';
+                var C = carRecords(F.car);
+                if (!C.recs.length)
+                  return (
+                    h +
+                    '<p class="hint" style="margin:10px 0 0">برای این شماره در داده‌ی بارگذاری‌شده ثبتی پیدا نشد (ممکن است قدیمی‌تر از بازه‌ی بارگذاری باشد).</p></div>'
+                  );
+                return (
+                  h +
+                  '<p class="hint" style="margin:10px 0 0">شاسی: <bdi>' +
+                  esc(C.I.chassis || '—') +
+                  '</bdi> · سریال: <bdi>' +
+                  esc(C.I.serial || '—') +
+                  '</bdi> · موتور: <bdi>' +
+                  esc(C.I.engine || '—') +
+                  '</bdi></p>' +
+                  dashCarRows(C) +
+                  '</div>'
+                );
+              }
+              function dashExportCard() {
+                return '<div class="card"><h2>خروجی</h2><p class="hint" style="margin:0 0 10px">فایل شامل تاریخ تهیه و فیلترهای انتخاب‌شده است.</p><div class="row"><button class="btn" data-act="dashx" data-k="xlsx">دانلود اکسل</button><button class="btn" data-act="dashx" data-k="pdf">دانلود PDF</button></div></div>';
+              }
+              var DASH_SECS = [
+                ['follow', 'پیگیری'],
+                ['stations', 'ایستگاه‌ها'],
+                ['analysis', 'تحلیل'],
+                ['car', 'خودرو'],
+                ['export', 'خروجی'],
+              ];
+              var DASH_BODY = {
+                follow: function (F, R, now) {
+                  return dashFollowCard(F, R, now);
+                },
+                stations: function (F, R) {
+                  return dashStationsCard(R);
+                },
+                analysis: function (F, R) {
+                  return dashAnalysisCard(R);
+                },
+                car: function (F) {
+                  return dashCarCard(F);
+                },
+                export: function () {
+                  return dashExportCard();
+                },
+              };
+              function dashTabs(F, R) {
+                return (
+                  '<div class="subtabs" role="tablist">' +
+                  DASH_SECS.map(function (x) {
+                    var n =
+                      x[0] === 'follow' && R.openList.length
+                        ? '<span class="cnt">' + fa(R.openList.length) + '</span>'
+                        : '';
+                    return (
+                      '<button type="button" class="subtab" role="tab" data-act="dset" data-k="sec" data-v="' +
+                      x[0] +
+                      '" aria-selected="' +
+                      (F.sec === x[0]) +
+                      '">' +
+                      x[1] +
+                      n +
+                      '</button>'
+                    );
+                  }).join('') +
+                  '</div>'
+                );
+              }
+              function dashView() {
+                if (!dashAllowed())
+                  return '<div class="card"><p class="hint" style="margin:0">این بخش برای شما فعال نیست.</p></div>';
+                var F = dashF(),
+                  now = Date.now();
+                if (!shiftCfg()) F.shift = '';
+                if (!DASH_BODY[F.sec]) F.sec = 'follow';
+                var R = dashResult(F, now);
+                return (
+                  dashHead(F, R) +
+                  dashLiveView(F, now) +
+                  dashCards(R) +
+                  '<div class="dsticky">' +
+                  dashChips('range', DASH_RANGES, F.range) +
+                  dashTabs(F, R) +
+                  '</div>' +
+                  DASH_BODY[F.sec](F, R, now) +
+                  '<button type="button" class="totop" data-act="totop" aria-label="برگشت به بالا">▲</button>'
+                );
+              }
+      // END SECTION: dashboard/quality
+    
+</script>
+
+<script type="text/x-mohr-section" data-mohr-section="features/stops/owned-openStops" data-order="31.0625">
+
+              function openStops() {
+                return (S.stops || []).filter(function (x) {
+                  return !x.endAt;
+                });
+              }
+              function stopTab() {
+                var n = openStops().length;
+                return (
+                  '<button class="tab" role="tab" data-act="tab" data-t="stop" aria-selected="' +
+                  (S.tab === 'stop') +
+                  '">توقف خط' +
+                  (n ? '<span class="cnt">' + fa(n) + '</span>' : '') +
+                  '</button>'
+                );
+              }
+              function stopOptions(list, cur) {
+                var all = cur && list.indexOf(cur) < 0 ? list.concat([cur]) : list;
+                return all
+                  .map(function (v) {
+                    return '<option' + (v === cur ? ' selected' : '') + '>' + esc(v) + '</option>';
+                  })
+                  .join('');
+              }
+              function minuteOfDay(iso) {
+                return Math.floor(((Date.parse(iso) + TEHRAN_MS) % DAY_MS) / 60000);
+              }
+              function stopTimeMs(min) {
+                return dayStart(Date.now()) + min * 60000;
+              }
+              function stopError(line, reason, sm, em, now) {
+                if (!line || !reason) return 'خط و دلیل توقف را انتخاب کنید.';
+                if ((val('st_from') && sm == null) || (val('st_to') && em == null))
+                  return 'ساعت را فقط با عدد بنویسید (مثلاً ۰۹۳۰).';
+                var start = sm == null ? now : stopTimeMs(sm);
+                if (start > now + 60000) return 'ساعت شروع از الان دیرتر است.';
+                if (em != null) {
+                  var end = stopTimeMs(em);
+                  if (end <= start) return 'ساعت پایان باید بعد از ساعت شروع باشد.';
+                  if (end > now + 60000) return 'ساعت پایان از الان دیرتر است.';
+                }
+                if (
+                  em == null &&
+                  openStops().some(function (x) {
+                    return x.line === line;
+                  })
+                )
+                  return 'برای این خط یک توقف باز هست؛ اول آن را پایان دهید.';
+                return '';
+              }
+              function stopAdd() {
+                var line = val('st_line'),
+                  reason = val('st_reason'),
+                  now = Date.now();
+                var sm = val('st_from') ? parseHm(val('st_from')) : null,
+                  em = val('st_to') ? parseHm(val('st_to')) : null;
+                var err = stopError(line, reason, sm, em, now);
+                if (err) {
+                  toast(err);
+                  return;
+                }
+                var doc = {
+                  kind: 'stop',
+                  line: line,
+                  reason: reason,
+                  note: val('st_note'),
+                  startAt: new Date(sm == null ? now : stopTimeMs(sm)).toISOString(),
+                  endAt: em == null ? '' : new Date(stopTimeMs(em)).toISOString(),
+                  by: S.user.name,
+                  byId: S.user.id,
+                  at: nowIso(),
+                };
+                ['st_from', 'st_to', 'st_note'].forEach(function (k) {
+                  var e = document.getElementById(k);
+                  if (e) e.value = '';
+                });
+                save(function () {
+                  return store.set('users', 'stop_' + uid(), doc);
+                }, 'توقف ثبت شد');
+              }
+              /* خطای ویرایش توقف؛ ساعت‌ها روی همان روزِ شروع توقف حساب می‌شوند */
+              function stopEditError(x, line, reason, sm, em, now) {
+                if (!line || !reason) return 'خط و دلیل توقف را انتخاب کنید.';
+                if (sm == null || (val('se_to') && em == null))
+                  return 'ساعت را فقط با عدد بنویسید (مثلاً ۰۹۳۰).';
+                var day = dayStart(Date.parse(x.startAt)),
+                  start = day + sm * 60000,
+                  end = em == null ? 0 : day + em * 60000;
+                if (start > now + 60000 || end > now + 60000) return 'ساعت از الان دیرتر است.';
+                if (em != null && end <= start) return 'ساعت پایان باید بعد از ساعت شروع باشد.';
+                if (
+                  em == null &&
+                  openStops().some(function (o) {
+                    return o.id !== x.id && o.line === line;
+                  })
+                )
+                  return 'برای این خط یک توقف باز دیگر هست؛ اول آن را پایان دهید.';
+                return '';
+              }
+              function stopEdit(id) {
+                var x = (S.stops || []).filter(function (r) {
+                  return r.id === id;
+                })[0];
+                if (!x) return;
+                var line = val('se_line'),
+                  reason = val('se_reason'),
+                  sm = parseHm(val('se_from')),
+                  em = val('se_to') ? parseHm(val('se_to')) : null;
+                var err = stopEditError(x, line, reason, sm, em, Date.now());
+                if (err) {
+                  toast(err);
+                  return;
+                }
+                var day = dayStart(Date.parse(x.startAt)),
+                  ch = {
+                    line: line,
+                    reason: reason,
+                    note: val('se_note'),
+                    startAt: new Date(day + sm * 60000).toISOString(),
+                    endAt: em == null ? '' : new Date(day + em * 60000).toISOString(),
+                    editBy: S.user.name,
+                    editById: S.user.id,
+                    editAt: nowIso(),
+                  };
+                S.stopEdit = '';
+                save(function () {
+                  return store.update('users', id, ch);
+                }, 'توقف ویرایش شد');
+              }
+              function stopEnd(id) {
+                var x = (S.stops || []).filter(function (r) {
+                  return r.id === id;
+                })[0];
+                if (!x || x.endAt) return;
+                save(function () {
+                  return store.update('users', id, {
+                    endAt: nowIso(),
+                    endBy: S.user.name,
+                    endById: S.user.id,
+                  });
+                }, 'پایان توقف ثبت شد');
+              }
+              function stopEditForm(x) {
+                return (
+                  '<form data-form="stopedit" data-id="' +
+                  esc(x.id) +
+                  '" class="mgform"><div class="it">' +
+                  '<label class="f">خط<select class="in" id="se_line">' +
+                  stopOptions(listK('stopLines'), x.line) +
+                  '</select></label>' +
+                  '<label class="f">دلیل توقف<select class="in" id="se_reason">' +
+                  stopOptions(listK('stopReasons'), x.reason) +
+                  '</select></label>' +
+                  '<div class="mgrow"><label class="f">ساعت شروع<input class="in num ltr" id="se_from" inputmode="numeric" autocomplete="off" value="' +
+                  fmtHm(minuteOfDay(x.startAt)) +
+                  '"></label>' +
+                  '<label class="f">ساعت پایان (خالی = هنوز ادامه دارد)<input class="in num ltr" id="se_to" inputmode="numeric" autocomplete="off" value="' +
+                  (x.endAt ? fmtHm(minuteOfDay(x.endAt)) : '') +
+                  '"></label></div>' +
+                  '<label class="f">توضیح<input class="in" id="se_note" autocomplete="off" value="' +
+                  esc(x.note || '') +
+                  '"></label>' +
+                  '<div class="row"><button class="btn primary sm" type="submit">ذخیره‌ی تغییر</button><button class="btn sm" type="button" data-act="stopeditno">انصراف</button></div></div></form>'
+                );
+              }
+              function stopManageBtns(x) {
+                if (S.stopDel === x.id)
+                  return (
+                    '<div class="row" style="margin-top:8px"><button class="btn sm" data-act="stopdelyes" data-id="' +
+                    esc(x.id) +
+                    '">تأیید حذف</button><button class="btn sm" data-act="stopdelno">انصراف</button></div>'
+                  );
+                return (
+                  '<div class="row" style="margin-top:8px"><button class="btn sm" data-act="stopedit" data-id="' +
+                  esc(x.id) +
+                  '">ویرایش</button><button class="btn sm" data-act="stopdelask" data-id="' +
+                  esc(x.id) +
+                  '">حذف</button></div>'
+                );
+              }
+              function stopItem(x, now, canEnd) {
+                if (canEnd && S.stopEdit === x.id) return stopEditForm(x);
+                var end = x.endAt ? Date.parse(x.endAt) : now,
+                  dur = elapsedTxt(end - Date.parse(x.startAt));
+                return (
+                  '<div class="it"><div class="row"><b class="grow">' +
+                  esc(x.line) +
+                  '</b><span class="chip ' +
+                  (x.endAt ? 'closed' : 'open') +
+                  '">' +
+                  (x.endAt ? 'پایان یافته' : 'باز') +
+                  '</span></div>' +
+                  '<div class="m">دلیل: ' +
+                  esc(x.reason) +
+                  '</div>' +
+                  '<div class="m">شروع: ' +
+                  esc(dateOnly(x.startAt)) +
+                  ' — ساعت ' +
+                  esc(hm(x.startAt)) +
+                  '</div>' +
+                  (x.endAt
+                    ? '<div class="m">پایان: ' +
+                      esc(dateOnly(x.endAt)) +
+                      ' — ساعت ' +
+                      esc(hm(x.endAt)) +
+                      '</div>'
+                    : '') +
+                  '<div class="m">مدت: ' +
+                  dur +
+                  '</div>' +
+                  (x.note ? '<div class="m">توضیح: ' + esc(x.note) + '</div>' : '') +
+                  '<div class="m">' +
+                  whoWhen(x.by, x.at, 'ثبت‌کننده') +
+                  '</div>' +
+                  (x.editAt
+                    ? '<div class="m">' + whoWhen(x.editBy, x.editAt, 'ویرایش‌کننده') + '</div>'
+                    : '') +
+                  (canEnd && !x.endAt
+                    ? '<button class="btn sm primary" data-act="stopend" data-id="' +
+                      esc(x.id) +
+                      '" style="margin-top:8px">پایان توقف (همین حالا)</button>'
+                    : '') +
+                  (canEnd ? stopManageBtns(x) : '') +
+                  '</div>'
+                );
+              }
+              function stopView() {
+                var now = Date.now(),
+                  all = (S.stops || []).slice().sort(function (a, b) {
+                    return (b.startAt || '') < (a.startAt || '') ? -1 : 1;
+                  });
+                var open = all.filter(function (x) {
+                    return !x.endAt;
+                  }),
+                  done = all
+                    .filter(function (x) {
+                      return x.endAt;
+                    })
+                    .slice(0, 15);
+                var h =
+                  '<div class="card"><h2>ثبت توقف خط</h2><form data-form="stopadd" class="mgform">' +
+                  '<label class="f">خط<select class="in" id="st_line">' +
+                  stopOptions(listK('stopLines')) +
+                  '</select></label>' +
+                  '<label class="f">دلیل توقف<select class="in" id="st_reason">' +
+                  stopOptions(listK('stopReasons')) +
+                  '</select></label>' +
+                  '<div class="mgrow"><label class="f">ساعت شروع (خالی = همین حالا)<input class="in num ltr" id="st_from" inputmode="numeric" autocomplete="off" placeholder="0930"></label>' +
+                  '<label class="f">ساعت پایان (خالی = هنوز ادامه دارد)<input class="in num ltr" id="st_to" inputmode="numeric" autocomplete="off" placeholder="1000"></label></div>' +
+                  '<label class="f">توضیح (اختیاری)<input class="in" id="st_note" autocomplete="off"></label>' +
+                  '<button class="btn primary" type="submit">ثبت توقف</button></form></div>';
+                h +=
+                  '<div class="card"><h2>توقف‌های باز (' +
+                  fa(open.length) +
+                  ')</h2>' +
+                  (open.length
+                    ? open
+                        .map(function (x) {
+                          return stopItem(x, now, true);
+                        })
+                        .join('')
+                    : '<p class="hint" style="margin:0">توقف بازی نیست.</p>') +
+                  '</div>';
+                if (done.length)
+                  h +=
+                    '<div class="card"><h2>آخرین توقف‌های پایان‌یافته</h2>' +
+                    done
+                      .map(function (x) {
+                        return stopItem(x, now, canStop());
+                      })
+                      .join('') +
+                    '</div>';
+                return h;
+              }
+      // END SECTION: features/stops
+    
+</script>
+
+<script type="text/x-mohr-section" data-mohr-section="dashboard/production" data-order="34">
+
+      // BEGIN SECTION: dashboard/production
+              /* ---------- بخش زنده‌ی داشبورد: تولید امروز، توقف، راندمان، وضعیت خطوط ---------- */
+              var DASHL = null;
+              /* دقیقه‌های توقف هر خط در بازه‌ی [from,to]؛ توقف‌های هم‌پوشان یک خط یک‌بار شمرده می‌شوند */
+              function stopMsByLine(from, to, now) {
+                var by = {};
+                (S.stops || []).forEach(function (x) {
+                  var a = Math.max(Date.parse(x.startAt), from),
+                    b = Math.min(x.endAt ? Date.parse(x.endAt) : now, to);
+                  if (b > a) (by[x.line] = by[x.line] || []).push([a, b]);
+                });
+                Object.keys(by).forEach(function (k) {
+                  var iv = by[k].sort(function (p, q) {
+                      return p[0] - q[0];
+                    }),
+                    sum = 0,
+                    cur = null;
+                  iv.forEach(function (r) {
+                    if (cur && r[0] <= cur[1]) cur[1] = Math.max(cur[1], r[1]);
+                    else {
+                      if (cur) sum += cur[1] - cur[0];
+                      cur = [r[0], r[1]];
+                    }
+                  });
+                  if (cur) sum += cur[1] - cur[0];
+                  by[k] = sum;
+                });
+                return by;
+              }
+              function sumMs(by) {
+                return Object.keys(by).reduce(function (n, k) {
+                  return n + by[k];
+                }, 0);
+              }
+              /* راندمان = میانگین خط‌ها از (زمان برنامه‌ای − توقف) تقسیم بر زمان برنامه‌ای */
+              function dashEff(lines, by, plannedMs) {
+                if (!lines.length || plannedMs <= 0) return null;
+                return (
+                  (lines.reduce(function (n, l) {
+                    return n + Math.max(0, 1 - (by[l] || 0) / plannedMs);
+                  }, 0) /
+                    lines.length) *
+                  100
+                );
+              }
+              function dashTargetN(F) {
+                var t = (S.lists && S.lists.target) || {},
+                  n = function (k) {
+                    return parseInt(digits(t[k] || ''), 10) || 0;
+                  };
+                return F.prod ? n(F.prod) : n('padra') + n('ex');
+              }
+              /* تولید = خودروهای دارای اولین ثبت «نهایی بالا» (شمارش در نصب اتاق)؛ هر خودرو یک بار */
+              function dashProduction(F, t0) {
+                var D = dashData(),
+                  sc = userSheets(),
+                  res = { ok: !sc || sc.indexOf('final1') >= 0, today: {}, yday: 0, ngT: 0, ngY: 0 },
+                  ydayCars = {};
+                if (!res.ok) return res;
+                D.recs.forEach(function (x) {
+                  if (x.r.sheet !== 'final1' || (F.prod && x.prod !== F.prod)) return;
+                  if (x.ms >= t0) {
+                    if (!(x.car in res.today) || x.ms < res.today[x.car]) res.today[x.car] = x.ms;
+                  } else if (x.ms >= t0 - DAY_MS) ydayCars[x.car] = 1;
+                });
+                res.yday = Object.keys(ydayCars).length;
+                D.defs.forEach(function (x) {
+                  if (x.it.r !== 'ng' || (F.prod && x.prod !== F.prod)) return;
+                  if (x.ms >= t0) res.ngT++;
+                  else if (x.ms >= t0 - DAY_MS) res.ngY++;
+                });
+                return res;
+              }
+              function dashHours(todayMs, t0, now, cfg) {
+                var cnt = {},
+                  lo = cfg ? Math.floor(cfg.s1 / 60) : 6,
+                  hi = Math.max(
+                    cfg && cfg.s3 ? Math.ceil(cfg.s3 / 60) - 1 : 17,
+                    Math.floor((now - t0) / 3600000),
+                  );
+                Object.keys(todayMs).forEach(function (c) {
+                  var h = Math.floor((todayMs[c] - t0) / 3600000);
+                  cnt[h] = (cnt[h] || 0) + 1;
+                  lo = Math.min(lo, h);
+                  hi = Math.max(hi, h);
+                });
+                var out = [];
+                for (var h = Math.max(0, lo); h <= Math.min(23, hi); h++)
+                  out.push({ h: h, n: cnt[h] || 0 });
+                return out;
+              }
+              function dashLiveCompute(F, now) {
+                var t0 = dayStart(now),
+                  cfg = shiftCfg(),
+                  P = dashProduction(F, t0),
+                  lines = listK('stopLines');
+                (S.stops || []).forEach(function (x) {
+                  if (lines.indexOf(x.line) < 0) lines.push(x.line);
+                });
+                var shiftOn = !!(cfg && cfg.s3),
+                  fromT = t0 + (shiftOn ? cfg.s1 : 0) * 60000,
+                  toT = Math.min(now, t0 + (shiftOn ? cfg.s3 : 1440) * 60000);
+                var byT = stopMsByLine(fromT, toT, now),
+                  byY = stopMsByLine(
+                    fromT - DAY_MS,
+                    t0 + (shiftOn ? cfg.s3 : 1440) * 60000 - DAY_MS,
+                    now,
+                  );
+                var open = openStops();
+                return {
+                  prodOk: P.ok,
+                  prodN: Object.keys(P.today).length,
+                  prodY: P.yday,
+                  ngT: P.ngT,
+                  ngY: P.ngY,
+                  target: dashTargetN(F),
+                  hours: dashHours(P.today, t0, now, cfg),
+                  stopMin: Math.round(sumMs(byT) / 60000),
+                  stopYMin: Math.round(sumMs(byY) / 60000),
+                  eff: shiftOn ? dashEff(lines, byT, toT - fromT) : null,
+                  effY: shiftOn ? dashEff(lines, byY, t0 + cfg.s3 * 60000 - (t0 + cfg.s1 * 60000)) : null,
+                  shiftOn: shiftOn,
+                  lines: lines.map(function (l) {
+                    var o = open.filter(function (x) {
+                      return x.line === l;
+                    })[0];
+                    return { n: l, stopped: !!o, reason: o ? o.reason : '', since: o ? o.startAt : '' };
+                  }),
+                };
+              }
+              function dashLive(F, now) {
+                var key = [
+                  F.prod,
+                  Math.floor(now / 60000),
+                  String(userSheets()),
+                  JSON.stringify([
+                    S.lists && S.lists.shift,
+                    S.lists && S.lists.target,
+                    listK('stopLines'),
+                  ]),
+                ].join('|');
+                if (!DASHL || DASHL.insp !== S.data.insp || DASHL.stops !== S.stops || DASHL.key !== key)
+                  DASHL = { insp: S.data.insp, stops: S.stops, key: key, res: dashLiveCompute(F, now) };
+                return DASHL.res;
+              }
+              /* مقایسه با دیروز؛ lowerBetter برای توقف و ایراد (کمتر = بهتر) */
+              function dashDelta(cur, prev, lowerBetter) {
+                if (!prev) return { txt: cur ? 'دیروز ثبتی نبود' : '—', tone: 'flat' };
+                var d = Math.round(((cur - prev) / prev) * 100);
+                if (!d) return { txt: 'بدون تغییر نسبت به دیروز', tone: 'flat' };
+                var good = lowerBetter ? d < 0 : d > 0;
+                return {
+                  txt: (d > 0 ? '▲ ' : '▼ ') + fa(Math.abs(d)) + '٪ نسبت به دیروز',
+                  tone: good ? 'good' : 'bad',
+                };
+              }
+              function dashRing(pct) {
+                var C = 2 * Math.PI * 52,
+                  on = (Math.min(100, pct) / 100) * C;
+                return (
+                  '<svg viewBox="0 0 120 120" role="img" aria-label="پیشرفت تولید ' +
+                  fa(pct) +
+                  ' درصد"><circle class="bg" cx="60" cy="60" r="52" fill="none" stroke-width="12"/><circle class="fg" cx="60" cy="60" r="52" fill="none" stroke-width="12" stroke-linecap="round" stroke-dasharray="' +
+                  on.toFixed(1) +
+                  ' ' +
+                  C.toFixed(1) +
+                  '" transform="rotate(-90 60 60)"/></svg>'
+                );
+              }
+              function dashHeroCard(L, now) {
+                if (!L.prodOk)
+                  return (
+                    '<div class="card"><h2>تولید امروز</h2><p class="hint" style="margin:0">' +
+                    DASH_NA +
+                    '</p></div>'
+                  );
+                var dl = dashDelta(L.prodN, L.prodY, false),
+                  pct = L.target ? Math.round((L.prodN / L.target) * 100) : null;
+                return (
+                  '<div class="card dl-hero"><div class="dl-top"><div><small>خودرو تولیدشده‌ی امروز</small><b class="dl-big num">' +
+                  fa(L.prodN) +
+                  '</b><span class="dl-badge ' +
+                  dl.tone +
+                  '">' +
+                  dl.txt +
+                  '</span></div>' +
+                  '<div class="dl-date"><small>امروز</small><b>' +
+                  esc(dateOnly(new Date(now).toISOString())) +
+                  '</b></div></div>' +
+                  (pct == null
+                    ? '<p class="hint" style="margin:0">هدف روزانه تنظیم نشده است (مدیر در «تنظیمات» وارد می‌کند).</p>'
+                    : '<div class="dl-ring">' +
+                      dashRing(pct) +
+                      '<div><b class="pct num">' +
+                      fa(pct) +
+                      '٪</b><small>پیشرفت تولید روزانه</small><small>هدف روزانه: ' +
+                      fa(L.target) +
+                      ' خودرو</small></div></div>') +
+                  '</div>'
+                );
+              }
+              function dashTrioCard(L) {
+                var effTxt =
+                  L.eff == null
+                    ? '<b class="dna">—</b><small>' +
+                      (L.shiftOn ? 'برنامه‌ای نیست' : 'پایان شیفت تنظیم نشده') +
+                      '</small>'
+                    : '<b class="num">' +
+                      fa(Math.round(L.eff)) +
+                      '٪</b><small>' +
+                      (L.effY == null
+                        ? '&nbsp;'
+                        : (Math.round(L.eff - L.effY) >= 0 ? '▲ ' : '▼ ') +
+                          fa(Math.abs(Math.round(L.eff - L.effY))) +
+                          ' واحد نسبت به دیروز') +
+                      '</small>';
+                var sd = dashDelta(L.stopMin, L.stopYMin, true),
+                  nd = dashDelta(L.ngT, L.ngY, true);
+                return (
+                  '<div class="dl-trio"><div class="dl-c good"><small>راندمان</small>' +
+                  effTxt +
+                  '</div>' +
+                  '<div class="dl-c wait"><small>توقف خطوط</small><b class="num">' +
+                  fa(L.stopMin) +
+                  '</b><small>دقیقه · ' +
+                  sd.txt +
+                  '</small></div>' +
+                  '<div class="dl-c bad"><small>ایرادهای کیفیت</small><b class="num">' +
+                  fa(L.ngT) +
+                  '</b><small>' +
+                  nd.txt +
+                  '</small></div></div>'
+                );
+              }
+              function dashLinesCard(L) {
+                if (!L.lines.length) return '';
+                return (
+                  '<div class="card"><h2>وضعیت خطوط تولید</h2><div class="dl-lines">' +
+                  L.lines
+                    .map(function (l) {
+                      return (
+                        '<div class="dl-line' +
+                        (l.stopped ? ' stop' : '') +
+                        '"><b><i></i>' +
+                        esc(l.n) +
+                        '</b><small>' +
+                        (l.stopped
+                          ? 'متوقف: ' + esc(l.reason) + ' — از ساعت ' + esc(hm(l.since))
+                          : 'فعال') +
+                        '</small></div>'
+                      );
+                    })
+                    .join('') +
+                  '</div></div>'
+                );
+              }
+              function dashHoursCard(L) {
+                if (!L.prodOk) return '';
+                var max = Math.max.apply(
+                  null,
+                  L.hours
+                    .map(function (x) {
+                      return x.n;
+                    })
+                    .concat([1]),
+                );
+                return (
+                  '<div class="card"><h2>تولید ساعتی امروز</h2><div class="dl-bars">' +
+                  L.hours
+                    .map(function (x) {
+                      return (
+                        '<div class="dl-bar"><small class="num">' +
+                        (x.n ? fa(x.n) : '') +
+                        '</small><i style="height:' +
+                        Math.round((x.n / max) * 100) +
+                        '%"></i><small class="num">' +
+                        fa(x.h) +
+                        '</small></div>'
+                      );
+                    })
+                    .join('') +
+                  '</div><p class="hint" style="margin:8px 0 0">ساعت هر ثبت، ساعت دستگاه ثبت‌کننده است (تقریبی). توقف‌ها را برنامه‌ریزی ثبت می‌کند.</p></div>'
+                );
+              }
+              function dashLiveView(F, now) {
+                var L = dashLive(F, now);
+                return dashHeroCard(L, now) + dashTrioCard(L) + dashLinesCard(L) + dashHoursCard(L);
+              }
+      // END SECTION: dashboard/production
+    
+</script>
+
+<script type="text/x-mohr-section" data-mohr-section="dashboard/export" data-order="36">
+
+      // BEGIN SECTION: dashboard/export
+              /* ---------- خروجی اکسل / PDF ---------- */
+              function dashFilterRows(F, R, now) {
+                var iso = new Date(now).toISOString(),
+                  P = R.period;
+                var shift = !R.cfg ? 'تنظیم نشده' : F.shift ? 'شیفت ' + F.shift : 'همه';
+                var status = { '': 'همه', open: 'باز', closed: 'بسته‌شده' }[F.status];
+                return [
+                  ['عنوان', 'مقدار'],
+                  ['تهیه‌کننده', S.user.name],
+                  ['تاریخ تهیه', dateOnly(iso)],
+                  ['ساعت تهیه', hm(iso)],
+                  ['بازه از تاریخ', dateOnly(new Date(P.from).toISOString())],
+                  ['بازه تا تاریخ', dateOnly(new Date(P.to - 1).toISOString())],
+                  ['شیفت', shift],
+                  ['ایستگاه', F.station ? SHEETS[F.station].name : 'همه'],
+                  ['محصول', F.prod ? PRODN[F.prod] : 'همه'],
+                  ['وضعیت ایراد (تحلیل‌ها)', status],
+                  ['خودروهای ثبت‌شده', String(R.cars)],
+                  ['ایرادهای باز', String(R.openList.length)],
+                  ['ایستگاه‌های دارای ثبت', R.withRecords + ' از ' + R.keys.length],
+                  ['منتظر تأیید', DASH_NA],
+                  [
+                    'توضیح',
+                    'داده‌ی بارگذاری‌شده‌ی همین دستگاه؛ ساعت ثبت، ساعت دستگاه ثبت‌کننده است (تقریبی).',
+                  ],
+                ];
+              }
+              function dashFollowExport(R, now) {
+                return [
+                  [
+                    'شماره خودرو',
+                    'ایستگاه',
+                    'نوع',
+                    'شرح',
+                    'ثبت‌کننده',
+                    'تاریخ ثبت',
+                    'ساعت ثبت',
+                    'مدت انتظار',
+                  ],
+                ].concat(
+                  R.openList.map(function (x) {
+                    var at = x.it.at || x.r.createdAt;
+                    return [
+                      x.car,
+                      SHEETS[x.r.sheet].name,
+                      typeName(x.it.r),
+                      dashDesc(x),
+                      x.it.by || '',
+                      dateOnly(at),
+                      hm(at),
+                      elapsedTxt(now - x.ms),
+                    ];
+                  }),
+                );
+              }
+              function dashStationExport(R) {
+                return [
+                  [
+                    'ایستگاه',
+                    'خودروی بازرسی‌شده',
+                    'ایراد',
+                    'باز',
+                    'ایراد به ازای هر خودرو',
+                    'آخرین ثبت: نام',
+                    'تاریخ',
+                    'ساعت',
+                  ],
+                ].concat(
+                  R.keys.map(function (k) {
+                    var s = R.stations[k],
+                      l = s.last;
+                    return [
+                      SHEETS[k].name,
+                      String(s.cars),
+                      String(s.defects),
+                      String(s.open),
+                      s.cars ? String(Math.round((s.defects * 100) / s.cars) / 100) : '—',
+                      l ? l.createdBy || '' : 'بدون ثبت در بازه',
+                      l ? dateOnly(l.createdAt) : '',
+                      l ? hm(l.createdAt) : '',
+                    ];
+                  }),
+                );
+              }
+              function dashAnalysisExport(R) {
+                var rows = [['بخش', 'عنوان', 'تعداد']];
+                R.daily.forEach(function (d) {
+                  rows.push(['۷ روز اخیر', dashDayLabel(d.from), String(d.n)]);
+                });
+                if (R.shifts)
+                  R.shifts.forEach(function (s, i) {
+                    rows.push(['شیفت', 'شیفت ' + (i + 1) + ' (' + s.cars + ' خودرو)', String(s.defects)]);
+                  });
+                R.pareto.forEach(function (x) {
+                  rows.push(['پارتو', x.k, String(x.n)]);
+                });
+                return rows;
+              }
+              /* بخش زنده‌ی داشبورد (تولید امروز، توقف، راندمان، خطوط، ساعت‌به‌ساعت) برای خروجی */
+              function dashLiveExport(L) {
+                var na = DASH_NA,
+                  pct = L.target && L.prodOk ? Math.round((L.prodN / L.target) * 100) : null,
+                  num = function (ok, v) {
+                    return ok ? fa(v) : na;
+                  };
+                var eff = function (v) {
+                  return v == null ? '—' : fa(Math.round(v));
+                };
+                var kpi = [
+                  ['شاخص', 'امروز', 'دیروز', 'توضیح'],
+                  [
+                    'خودروی تولیدشده',
+                    num(L.prodOk, L.prodN),
+                    num(L.prodOk, L.prodY),
+                    L.target
+                      ? 'هدف روزانه ' + fa(L.target) + (pct == null ? '' : ' — ' + fa(pct) + '٪')
+                      : 'هدف روزانه تنظیم نشده',
+                  ],
+                  ['ایراد ثبت‌شده', num(L.prodOk, L.ngT), num(L.prodOk, L.ngY), ''],
+                  ['توقف خط (دقیقه)', fa(L.stopMin), fa(L.stopYMin), ''],
+                  ['راندمان (٪)', eff(L.eff), eff(L.effY), L.shiftOn ? '' : 'پایان شیفت تنظیم نشده'],
+                ];
+                var lines = [['خط', 'وضعیت', 'دلیل توقف', 'تاریخ شروع توقف', 'ساعت شروع توقف']].concat(
+                  L.lines.map(function (l) {
+                    return [
+                      l.n,
+                      l.stopped ? 'متوقف' : 'در حال کار',
+                      l.reason,
+                      l.stopped ? dateOnly(l.since) : '',
+                      l.stopped ? hm(l.since) : '',
+                    ];
+                  }),
+                );
+                var hours = [['ساعت', 'تعداد خودرو']].concat(
+                  L.hours.map(function (x) {
+                    return [fa(x.h) + ' تا ' + fa(x.h + 1), fa(x.n)];
+                  }),
+                );
+                var out = [{ n: 'تولید و توقف امروز', r: kpi, w: [24, 14, 14, 40], h: [0] }];
+                if (L.lines.length)
+                  out.push({ n: 'وضعیت خطوط', r: lines, w: [20, 14, 26, 18, 14], h: [0] });
+                if (L.prodOk && L.hours.length)
+                  out.push({ n: 'تولید ساعتی', r: hours, w: [22, 16], h: [0] });
+                return out;
+              }
+              function dashSections(F, R, now) {
+                var sum = { n: 'خلاصه', r: dashFilterRows(F, R, now), w: [28, 60], h: [0] };
+                return [sum].concat(dashLiveExport(dashLive(F, now))).concat([
+                  {
+                    n: 'نیازمند پیگیری',
+                    r: dashFollowExport(R, now),
+                    w: [16, 24, 12, 40, 18, 14, 10, 18],
+                    h: [0],
+                  },
+                  {
+                    n: 'ایستگاه‌ها',
+                    r: dashStationExport(R),
+                    w: [28, 14, 10, 8, 16, 18, 14, 10],
+                    h: [0],
+                  },
+                  { n: 'تحلیل', r: dashAnalysisExport(R), w: [16, 50, 10], h: [0] },
+                ]);
+              }
+
+              /* PDF: صفحه‌ها روی canvas کشیده می‌شود تا مرورگر حروف فارسی را درست بچسباند */
+              function buildDashPdf(secs, subtitle) {
+                var PW = 1240,
+                  PH = 1754,
+                  M = 64,
+                  LH = 27,
+                  pad = 8,
+                  F = 'Vazirmatn, Tahoma, Arial, sans-serif',
+                  pages = [],
+                  cv,
+                  ctx,
+                  y;
+                function font(sz, b) {
+                  ctx.font = (b ? '700 ' : '400 ') + sz + 'px ' + F;
+                }
+                function newPage() {
+                  cv = document.createElement('canvas');
+                  cv.width = PW;
+                  cv.height = PH;
+                  ctx = cv.getContext('2d');
+                  ctx.fillStyle = '#fff';
+                  ctx.fillRect(0, 0, PW, PH);
+                  ctx.direction = 'rtl';
+                  ctx.textBaseline = 'top';
+                  ctx.textAlign = 'right';
+                  font(30, 1);
+                  ctx.fillStyle = '#14213d';
+                  ctx.fillText('مرکز راهبری کیفیت و تولید - زامیاد', PW - M, M);
+                  font(20, 0);
+                  ctx.fillStyle = '#555';
+                  ctx.fillText(subtitle, PW - M, M + 42);
+                  ctx.strokeStyle = '#14213d';
+                  ctx.lineWidth = 2;
+                  ctx.beginPath();
+                  ctx.moveTo(M, M + 74);
+                  ctx.lineTo(PW - M, M + 74);
+                  ctx.stroke();
+                  pages.push(cv);
+                  y = M + 94;
+                }
+                function wrap(t, mw) {
+                  var lines = [],
+                    cur = '';
+                  String(t || '')
+                    .split(/\s+/)
+                    .forEach(function (w) {
+                      var test = cur ? cur + ' ' + w : w;
+                      if (ctx.measureText(test).width > mw && cur) {
+                        lines.push(cur);
+                        cur = w;
+                      } else cur = test;
+                    });
+                  lines.push(cur);
+                  return lines;
+                }
+                function columns(sec) {
+                  var total = sec.w.reduce(function (a, b) {
+                      return a + b;
+                    }, 0),
+                    x = PW - M;
+                  return sec.w.map(function (w) {
+                    var cw = ((PW - 2 * M) * w) / total,
+                      c = { r: x, w: cw };
+                    x -= cw;
+                    return c;
+                  });
+                }
+                function drawRow(cols, cells, bold, bg) {
+                  font(19, bold);
+                  var lines = cells.map(function (v, i) {
+                      return wrap(v, cols[i].w - pad * 2);
+                    }),
+                    n = Math.max.apply(
+                      null,
+                      lines.map(function (l) {
+                        return l.length;
+                      }),
+                    ),
+                    h = n * LH + pad * 2;
+                  if (y + h > PH - M - 40) return h;
+                  if (bg) {
+                    ctx.fillStyle = bg;
+                    ctx.fillRect(M, y, PW - 2 * M, h);
+                  }
+                  ctx.fillStyle = bold ? '#14213d' : '#1b1b1b';
+                  ctx.strokeStyle = '#c4ccda';
+                  ctx.lineWidth = 1;
+                  ctx.strokeRect(M, y, PW - 2 * M, h);
+                  lines.forEach(function (l, i) {
+                    l.forEach(function (t, k) {
+                      ctx.fillText(t, cols[i].r - pad, y + pad + k * LH);
+                    });
+                    ctx.beginPath();
+                    ctx.moveTo(cols[i].r - cols[i].w, y);
+                    ctx.lineTo(cols[i].r - cols[i].w, y + h);
+                    ctx.stroke();
+                  });
+                  y += h;
+                  return 0;
+                }
+                function table(sec) {
+                  var cols = columns(sec);
+                  function put(cells, bold, bg) {
+                    if (drawRow(cols, cells, bold, bg)) {
+                      newPage();
+                      drawRow(cols, sec.r[0], 1, '#dce3f0');
+                      drawRow(cols, cells, bold, bg);
+                    }
+                  }
+                  font(26, 1);
+                  ctx.fillStyle = '#14213d';
+                  if (y + 120 > PH - M - 40) newPage();
+                  ctx.fillText(sec.n, PW - M, y);
+                  y += 42;
+                  put(sec.r[0], 1, '#dce3f0');
+                  sec.r.slice(1).forEach(function (r) {
+                    put(r, 0);
+                  });
+                  y += 24;
+                }
+                newPage();
+                secs.forEach(table);
+                pages.forEach(function (p, i) {
+                  var c = p.getContext('2d');
+                  c.direction = 'ltr';
+                  c.textBaseline = 'top';
+                  c.fillStyle = '#555';
+                  c.font = '400 20px ' + F;
+                  c.textAlign = 'center';
+                  c.fillText(i + 1 + ' / ' + pages.length, PW / 2, PH - M);
+                });
+                return packPdf(pages, PW, PH);
+              }
+              /* بسته‌بندی صفحه‌های canvas (JPEG) در یک PDF ساده */
+              function packPdf(pages, PW, PH) {
+                var enc = new TextEncoder(),
+                  chunks = [],
+                  len = 0,
+                  offs = [],
+                  n = pages.length,
+                  N = 2 + 3 * n;
+                function add(u) {
+                  chunks.push(u);
+                  len += u.length;
+                }
+                function addS(s) {
+                  add(enc.encode(s));
+                }
+                addS('%PDF-1.4\n');
+                offs[1] = len;
+                addS('1 0 obj\n<< /Type /Catalog /Pages 2 0 R >>\nendobj\n');
+                var kids = [];
+                for (var i = 0; i < n; i++) kids.push(3 + 3 * i + ' 0 R');
+                offs[2] = len;
+                addS(
+                  '2 0 obj\n<< /Type /Pages /Kids [' + kids.join(' ') + '] /Count ' + n + ' >>\nendobj\n',
+                );
+                pages.forEach(function (p, i) {
+                  var bin = atob(p.toDataURL('image/jpeg', 0.9).split(',')[1]),
+                    u = new Uint8Array(bin.length);
+                  for (var k = 0; k < bin.length; k++) u[k] = bin.charCodeAt(k);
+                  var po = 3 + 3 * i,
+                    co = 4 + 3 * i,
+                    io = 5 + 3 * i,
+                    cs = 'q 595 0 0 842 0 0 cm /Im0 Do Q';
+                  offs[po] = len;
+                  addS(
+                    po +
+                      ' 0 obj\n<< /Type /Page /Parent 2 0 R /MediaBox [0 0 595 842] /Resources << /XObject << /Im0 ' +
+                      io +
+                      ' 0 R >> >> /Contents ' +
+                      co +
+                      ' 0 R >>\nendobj\n',
+                  );
+                  offs[co] = len;
+                  addS(
+                    co +
+                      ' 0 obj\n<< /Length ' +
+                      cs.length +
+                      ' >>\nstream\n' +
+                      cs +
+                      '\nendstream\nendobj\n',
+                  );
+                  offs[io] = len;
+                  addS(
+                    io +
+                      ' 0 obj\n<< /Type /XObject /Subtype /Image /Width ' +
+                      PW +
+                      ' /Height ' +
+                      PH +
+                      ' /ColorSpace /DeviceRGB /BitsPerComponent 8 /Filter /DCTDecode /Length ' +
+                      u.length +
+                      ' >>\nstream\n',
+                  );
+                  add(u);
+                  addS('\nendstream\nendobj\n');
+                });
+                var xo = len,
+                  x = 'xref\n0 ' + (N + 1) + '\n0000000000 65535 f \n';
+                for (var j = 1; j <= N; j++) x += ('0000000000' + offs[j]).slice(-10) + ' 00000 n \n';
+                addS(
+                  x + 'trailer\n<< /Size ' + (N + 1) + ' /Root 1 0 R >>\nstartxref\n' + xo + '\n%%EOF',
+                );
+                return new Blob(chunks, { type: 'application/pdf' });
+              }
+              function dashExport(kind) {
+                var F = dashF(),
+                  now = Date.now(),
+                  secs = dashSections(F, dashResult(F, now), now),
+                  base = 'quality-dashboard-' + new Date(now).toISOString().slice(0, 10);
+                if (kind === 'xlsx') return saveFile(base + '.xlsx', packXlsx(secs));
+                var sub =
+                  'تاریخ تهیه: ' +
+                  dateOnly(new Date(now).toISOString()) +
+                  '   ساعت: ' +
+                  hm(new Date(now).toISOString()) +
+                  '   تهیه‌کننده: ' +
+                  S.user.name;
+                var ld =
+                  document.fonts && document.fonts.load
+                    ? Promise.all([
+                        document.fonts.load('400 22px Vazirmatn'),
+                        document.fonts.load('700 22px Vazirmatn'),
+                      ]).catch(function () {})
+                    : Promise.resolve();
+                return ld.then(function () {
+                  return saveFile(base + '.pdf', buildDashPdf(secs, sub));
+                });
+              }
+      // END SECTION: dashboard/export
+    
+</script>
+
+<script type="text/x-mohr-section" data-mohr-section="actions/helpers/owned-exportReportCsv" data-order="40.6">
+
+              function exportReportCsv(a) {
+                var R2 = repData(S.rd.y, S.rd.m, S.rd.d),
+                  nm = 'report-' + S.rd.y + '-' + S.rd.m + (a === 'repcsv' ? '-' + S.rd.d : '') + '.csv',
+                  rows2;
+                if (a === 'repcsv') {
+                  rows2 = [
+                    ['گزارش روز', S.rd.d + ' ' + JM[S.rd.m - 1] + ' ' + S.rd.y],
+                    ['خودروی تولیدشده', R2.cars.length],
+                    [],
+                    ['ساعت', 'سریال', 'شاسی', 'اتاق'],
+                  ];
+                  R2.cars.forEach(function (r) {
+                    var I = identity(r.key);
+                    rows2.push([timeOnly(r.createdAt), I.serial || r.key, I.chassis || '', I.room || '']);
+                  });
+                  rows2.push(
+                    [],
+                    ['ساعت', 'سریال', 'ایستگاه', 'نوع', 'مورد', 'شرح', 'ثبت‌کننده', 'وضعیت'],
+                  );
+                  R2.defs.forEach(function (x) {
+                    rows2.push([
+                      timeOnly(x.it.at),
+                      identOf(x.r).serial || x.r.key,
+                      SHEETS[x.r.sheet].name,
+                      typeName(x.it.r),
+                      x.it.custom ? '' : labelOf(x.r.sheet, x.id, x.r),
+                      x.it.note || '',
+                      x.it.by || '',
+                      x.it.closedAt ? 'بسته' : 'باز',
+                    ]);
+                  });
+                } else {
+                  rows2 = [['روز', 'خودروی تولیدشده', 'ایراد، نمونه و کسری']];
+                  for (var dd = 1; dd <= 31; dd++) {
+                    var v2 = R2.month[dd];
+                    if (v2) rows2.push([dd, v2.c, v2.x]);
+                  }
+                }
+                csvSave(nm, rows2);
+                return;
+              }
+</script>
+
+<script type="text/x-mohr-section" data-mohr-section="actions/clicks/owned-clickStops" data-order="41.14705882352941">
+
+              function clickStops(ev, el, a, id, d) {
+                if (!canStop()) return false;
+                if (a === 'stopedit') {
+                  S.stopEdit = id;
+                  S.stopDel = '';
+                  render();
+                  return true;
+                }
+                if (a === 'stopeditno') {
+                  S.stopEdit = '';
+                  render();
+                  return true;
+                }
+                if (a === 'stopdelask') {
+                  S.stopDel = id;
+                  S.stopEdit = '';
+                  render();
+                  return true;
+                }
+                if (a === 'stopdelno') {
+                  S.stopDel = '';
+                  render();
+                  return true;
+                }
+                if (a === 'stopdelyes') {
+                  S.stopDel = '';
+                  save(function () {
+                    return store.del('users', id);
+                  }, 'توقف حذف شد');
+                  return true;
+                }
+                return false;
+              }
+</script>
+
+<script type="text/x-mohr-section" data-mohr-section="actions/clicks/owned-clickDashboard" data-order="41.64705882352941">
+
+              function clickDashboard(ev, el, a, id, d) {
+                if (a === 'totop') {
+                  window.scrollTo({ top: 0, behavior: 'smooth' });
+                  return true;
+                }
+                if (a === 'dset' && dashAllowed()) {
+                  var df = dashF();
+                  df[el.getAttribute('data-k')] = el.getAttribute('data-v');
+                  df.more = DASH_PAGE;
+                  render();
+                  return true;
+                }
+                if (a === 'dmore' && dashAllowed()) {
+                  dashF().more += DASH_PAGE;
+                  render();
+                  return true;
+                }
+                if (a === 'dashx' && dashAllowed()) {
+                  toast('در حال ساخت فایل…');
+                  var dk = el.getAttribute('data-k');
+                  setTimeout(function () {
+                    dashExport(dk).catch(function (e) {
+                      toast('ساخت فایل ناموفق بود: ' + ((e && e.message) || ''));
+                    });
+                  }, 50);
+                  return true;
+                }
+                if (a === 'rprod') {
+                  S.rprod = el.getAttribute('data-v') || '';
+                  render();
+                  return true;
+                }
+                return false;
+              }
+</script>
+
+<script type="text/x-mohr-section" data-mohr-section="runtime/registrations-07" data-order="41.89705882352941">
+MOHRRuntime.views.register("dashView", dashView, "mohr-part-07-reports-production-stops.html");
+MOHRRuntime.views.register("stopView", stopView, "mohr-part-07-reports-production-stops.html");
+MOHRRuntime.views.register("reportView", reportView, "mohr-part-07-reports-production-stops.html");
+MOHRRuntime.actions.register("clickStops", clickStops, "mohr-part-07-reports-production-stops.html");
+MOHRRuntime.actions.register("clickDashboard", clickDashboard, "mohr-part-07-reports-production-stops.html");
+MOHRRuntime.forms.register("submitDashSearch", submitDashSearch, "mohr-part-07-reports-production-stops.html");
+MOHRRuntime.forms.register("submitDashCar", submitDashCar, "mohr-part-07-reports-production-stops.html");
+MOHRRuntime.forms.register("submitStopAdd", submitStopAdd, "mohr-part-07-reports-production-stops.html");
+MOHRRuntime.forms.register("submitStopEdit", submitStopEdit, "mohr-part-07-reports-production-stops.html");
+</script>
+
+<script type="text/x-mohr-section" data-mohr-section="actions/forms/owned-submitDashSearch" data-order="43.285714285714285">
+
+              function submitDashSearch() {
+                var dq = dashF();
+                dq.q = val('dq');
+                dq.more = DASH_PAGE;
+                render();
+              }
+              function submitDashCar() {
+                var dcq = digits(val('dcq'));
+                ensureCar([dcq]).then(function () {
+                  dashF().car = dcq;
+                  render();
+                });
+              }
+</script>
+
+<script type="text/x-mohr-section" data-mohr-section="actions/forms/owned-submitStopEdit" data-order="43.51428571428571">
+
+              function submitStopEdit(ev) {
+                stopEdit(ev.target.getAttribute('data-id'));
+              }
+              function submitStopAdd() {
+                stopAdd();
+              }
+</script>
+</body>
+</html>

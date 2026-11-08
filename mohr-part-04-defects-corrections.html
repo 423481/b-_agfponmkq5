@@ -1,0 +1,619 @@
+<!doctype html>
+<html lang="fa" dir="rtl">
+<head><meta charset="utf-8" /><title>بخش 04 — ایرادات و اصلاحات</title></head>
+<body>
+<!-- Structural source container only. Open index.html or the existing page URLs.
+     Original executable blocks are copied verbatim, not rewritten.
+     Cross-file execution remains controlled by each block's original data-order.
+     Empty script-section lists mean that the source is a station/page entry only;
+     the existing shared inspection engine remains in group 10. -->
+<script type="application/json" id="mohr-group-map">
+{
+  "group": "04",
+  "title": "ایرادات و اصلاحات",
+  "sources": [
+    {
+      "file": "corrections.html",
+      "page": {
+        "tab": "corr",
+        "label": "اصلاح شماره"
+      },
+      "scriptSections": [
+        "domain/identity"
+      ],
+      "styleSections": []
+    }
+  ]
+}
+</script>
+<!-- Source: corrections.html; original block bodies and data-order are unchanged. -->
+
+
+
+<script type="text/x-mohr-section" data-mohr-section="domain/identity/owned-corrCard" data-order="21">
+
+      // BEGIN SECTION: domain/identity
+              /* سابقه‌ی اصلاح شماره‌های این خودرو (خود اصلاح فقط از دکمه‌ی «اصلاح اشتباه» چکمن ایستگاه انجام می‌شود) */
+              function corrCard(d) {
+                var c = carRecords(d.key),
+                  I = c.I,
+                  vals = [d.key, I.serial, I.chassis, I.engine, I.room].filter(Boolean);
+                var mine = corrAll().filter(function (r) {
+                  return r.field === 'fuel'
+                    ? vals.indexOf(r.chassisKey) >= 0
+                    : vals.indexOf(r.oldVal) >= 0 || vals.indexOf(r.newVal) >= 0;
+                });
+                var done = [];
+                c.recs.forEach(function (x) {
+                  Object.keys(x.corrections || {}).forEach(function (k) {
+                    if (
+                      !mine.some(function (r) {
+                        return r.id === k;
+                      }) &&
+                      !done.some(function (y) {
+                        return y.id === k;
+                      })
+                    )
+                      done.push(
+                        Object.assign(
+                          {
+                            id: k,
+                            status: 'applied',
+                            decidedBy: x.corrections[k].by,
+                            decidedAt: x.corrections[k].at,
+                            by: x.corrections[k].reqBy || x.corrections[k].by,
+                            at: x.corrections[k].reqAt || x.corrections[k].at,
+                          },
+                          x.corrections[k],
+                        ),
+                      );
+                  });
+                });
+                if (!mine.length && !done.length) return '';
+                return (
+                  '<div class="card"><h2>اصلاح شماره‌ی اشتباه</h2><div class="chip open" style="margin-bottom:8px">شماره در این پرونده اصلاح شده یا درخواست اصلاح دارد</div><div class="items">' +
+                  mine.concat(done).map(corrLine).join('') +
+                  '</div></div>'
+                );
+              }
+              /* آیا این شماره در پرونده‌ی خودروی دیگری هست؟ (بعد از ensureCar، داده‌ی سرور هم در حافظه است) */
+              function numTaken(field, v) {
+                return S.data.insp.some(function (x) {
+                  return SHEETS[x.sheet] && identOf(x)[field] === v;
+                });
+              }
+              function corrView() {
+                var all = corrAll(),
+                  pend = all.filter(function (r) {
+                    return r.status === 'pending';
+                  }),
+                  dn = all
+                    .filter(function (r) {
+                      return r.status !== 'pending';
+                    })
+                    .slice(0, 40);
+                var h =
+                  pend.length || dn.length
+                    ? '<div class="card"><h2>درخواست‌های اصلاح شماره (' +
+                      fa(pend.length) +
+                      ' در انتظار)</h2><p class="hint">با «اعمال»، شماره در همه‌ی برگه‌های همان خودرو عوض می‌شود و شماره‌ی قبلی، دلیل و نام شما در تاریخچه می‌ماند. تأییدهای قبلی چکمن‌ها دست‌نخورده می‌ماند.</p></div>'
+                    : '';
+                if (!pend.length && dn.length)
+                  h +=
+                    '<div class="card"><p class="hint" style="margin:0">درخواستی در انتظار نیست.</p></div>';
+                pend.forEach(function (r) {
+                  h +=
+                    '<div class="card">' +
+                    corrLine(r) +
+                    '<div class="kvs" style="margin-top:8px"><div class="kv"><small>شماره‌ی قبلی</small><b class="num">' +
+                    esc(r.oldVal) +
+                    '</b></div><div class="kv"><small>شماره‌ی جدید</small><b class="num">' +
+                    esc(r.newVal) +
+                    '</b></div></div>' +
+                    '<label class="f" style="margin-top:10px">توضیح (برای رد کردن الزامی است)<input class="in" id="cn_' +
+                    esc(r.id) +
+                    '" autocomplete="off"></label><div class="row" style="margin-top:8px"><button class="btn primary" data-act="corrapply" data-id="' +
+                    esc(r.id) +
+                    '">اعمال اصلاح</button><button class="btn" data-act="corrreject" data-id="' +
+                    esc(r.id) +
+                    '">رد درخواست</button><button class="btn sm" data-act="opencar" data-q="' +
+                    esc(r.field === 'fuel' ? r.chassisKey : r.oldVal) +
+                    '">پرونده</button></div></div>';
+                });
+                if (dn.length) {
+                  h +=
+                    '<div class="card"><h2>تاریخچه</h2><div class="items">' +
+                    dn.map(corrLine).join('') +
+                    '</div></div>';
+                }
+                return h;
+              }
+              /* ساخت رکورد با شماره‌ی تازه؛ اگر از تلاش قبلیِ نیمه‌کاره‌ی همین خودرو مانده باشد خطا نمی‌دهد، اگر از خودروی دیگری باشد می‌ایستد */
+              function createMoved(id, copy) {
+                return store.create('inspections', id, copy).catch(function (e) {
+                  if (!e || e.message !== DUP_MSG || !store.get) throw e;
+                  return store.get('inspections', id).then(function (cur) {
+                    if (!cur || cur.createdAt !== copy.createdAt) throw e;
+                  });
+                });
+              }
+              function corrApply(r) {
+                if (r.field === 'fuel') {
+                  var cr0 = carRecords(r.chassisKey).recs.filter(function (x) {
+                    return x.sheet === 'chassis';
+                  })[0];
+                  if (!cr0) return Promise.reject(new Error('برگه شاسی پیدا نشد.'));
+                  var ts0 = nowIso(),
+                    en0 = {
+                      field: 'fuel',
+                      oldVal: r.oldVal,
+                      newVal: r.newVal,
+                      by: S.user.name,
+                      byId: S.user.id,
+                      at: ts0,
+                      reason: r.reason,
+                      reqBy: r.by,
+                      reqAt: r.at,
+                    },
+                    cc0 = {};
+                  cc0[r.id] = en0;
+                  return store
+                    .update('inspections', cr0.id, { fuel: r.newVal, corrections: cc0 })
+                    .then(function () {
+                      return store.update('users', r.id, {
+                        status: 'applied',
+                        decidedBy: S.user.name,
+                        decidedById: S.user.id,
+                        decidedAt: ts0,
+                      });
+                    });
+                }
+                var f = r.field,
+                  ov = r.oldVal,
+                  nv = r.newVal,
+                  e = numErr(f, nv);
+                if (e) return Promise.reject(new Error(e));
+                var car = carRecords(ov).recs,
+                  same = {};
+                car.forEach(function (x) {
+                  same[x.id] = 1;
+                });
+                var recs = car.filter(function (x) {
+                  return identOf(x)[f] === ov;
+                });
+                recs.forEach(function (x) {
+                  if (SHEETS[x.sheet].keyKind === f) same[docId(x.sheet, nv)] = 1;
+                });
+                if (
+                  S.data.insp.some(function (x) {
+                    return SHEETS[x.sheet] && !same[x.id] && identOf(x)[f] === nv;
+                  })
+                )
+                  return Promise.reject(new Error('شماره‌ی جدید قبلاً برای خودروی دیگری ثبت شده است.'));
+                if (!recs.length)
+                  return Promise.reject(
+                    new Error('پرونده‌ای با شماره‌ی قبلی پیدا نشد (شاید قبلاً اصلاح شده).'),
+                  );
+                var ts = nowIso(),
+                  entry = {
+                    field: f,
+                    oldVal: ov,
+                    newVal: nv,
+                    by: S.user.name,
+                    byId: S.user.id,
+                    at: ts,
+                    reason: r.reason,
+                    reqBy: r.by,
+                    reqAt: r.at,
+                  },
+                  ops = [];
+                recs.forEach(function (x) {
+                  var corr = {};
+                  corr[r.id] = entry;
+                  if (SHEETS[x.sheet].keyKind === f) {
+                    var cp = Object.assign({}, x);
+                    delete cp.id;
+                    cp.key = nv;
+                    cp.corrections = Object.assign({}, x.corrections || {}, corr);
+                    ops.push(
+                      createMoved(docId(x.sheet, nv), cp).then(function () {
+                        return store.del('inspections', x.id);
+                      }),
+                    );
+                  } else {
+                    var u = { corrections: corr };
+                    u[CORR_REC[f]] = nv;
+                    ops.push(store.update('inspections', x.id, u));
+                  }
+                });
+                S.data.arch
+                  .filter(function (a) {
+                    return a.id === ov || a[f] === ov;
+                  })
+                  .forEach(function (a) {
+                    if (a.id === ov) {
+                      var ac = Object.assign({}, a);
+                      delete ac.id;
+                      ac.key = nv;
+                      ac[f] = nv;
+                      ops.push(
+                        store.set('archives', nv, ac).then(function () {
+                          return store.del('archives', a.id);
+                        }),
+                      );
+                    } else {
+                      var au = {};
+                      au[f] = nv;
+                      ops.push(store.update('archives', a.id, au));
+                    }
+                  });
+                return Promise.all(ops).then(function () {
+                  return store.update('users', r.id, {
+                    status: 'applied',
+                    decidedBy: S.user.name,
+                    decidedById: S.user.id,
+                    decidedAt: ts,
+                  });
+                });
+              }
+</script>
+
+<script type="text/x-mohr-section" data-mohr-section="domain/identity/owned-fuelPicker" data-order="21.76">
+
+              function fuelPicker(id, cur, label) {
+                return (
+                  '<div class="f grow" style="flex:1 1 100%"><span>' +
+                  label +
+                  '</span><div class="fuelpick"><button type="button" class="fbtn single" data-act="fuelpick" data-f="' +
+                  id +
+                  '" data-v="single" aria-pressed="' +
+                  (cur === 'single') +
+                  '">تک‌سوز</button><button type="button" class="fbtn dual" data-act="fuelpick" data-f="' +
+                  id +
+                  '" data-v="dual" aria-pressed="' +
+                  (cur === 'dual') +
+                  '">دوگانه‌سوز</button></div><input type="hidden" id="' +
+                  id +
+                  '" value="' +
+                  esc(cur || '') +
+                  '"></div>'
+                );
+              }
+</script>
+
+<script type="text/x-mohr-section" data-mohr-section="domain/identity/owned-idFields" data-order="21.84">
+
+              function idFields(sheet, pre, d) {
+                d = d || {};
+                var out = '';
+                var kind = SHEETS[sheet].keyKind,
+                  L = sheet === 'chassis' ? [] : [['color', 'رنگ', d.color, 0]];
+                if (sheet !== 'chassis' && kind !== 'serial')
+                  L.unshift(['serial', 'شماره سریال', d.serial, 0]);
+                if (sheet === 'chassis') L.push(['fuel', 'نوع سوخت', d.fuel, 0]);
+                if (sheet === 'chassis') L.push(['engine', 'شماره موتور', d.engine, 1]);
+                else {
+                  if (kind !== 'chassis') L.push(['chassisNo', 'شماره شاسی', d.chassisNo, 1]);
+                  if (SHEETS[sheet].keyKind !== 'room') L.push(['room', 'شماره اتاق', d.room, 1]);
+                  if (SHEETS[sheet].keyKind !== 'engine') L.push(['engine', 'شماره موتور', d.engine, 1]);
+                }
+                var hid = HIDE[sheet] || [];
+                L = L.filter(function (f) {
+                  return hid.indexOf(f[0]) < 0;
+                });
+                var prodPre =
+                  pre === 'c_' && PSHEETS.indexOf(sheet) >= 0 && !d.product ? lastProduct() : '';
+                if (pre === 'c_' && PSHEETS.indexOf(sheet) >= 0)
+                  out += prodPicker(pre + 'product', d.product || prodPre, 'محصول (الزامی)');
+                L.forEach(function (f) {
+                  if (f[0] === 'fuel') {
+                    var pf = pre === 'c_' && !f[2] ? lastFuel() : '',
+                      curFuel = f[2] || pf;
+                    out += fuelPicker(pre + 'fuel', curFuel, 'نوع سوخت (الزامی)');
+                    if (pre === 'c_')
+                      out +=
+                        (pf || prodPre
+                          ? '<p class="hint" style="flex:1 1 100%;font-size:15px;margin:0">' +
+                            (pf && prodPre ? 'محصول و نوع سوخت' : pf ? 'نوع سوخت' : 'محصول') +
+                            ' از آخرین انتخاب شما پر شده است؛ اگر عوض شده، عوضش کنید.</p>'
+                          : '') +
+                        '<p class="hint" id="fuelcons" style="flex:1 1 100%;font-size:15px;margin:0">' +
+                        fuelCons(curFuel) +
+                        '</p>';
+                    return;
+                  }
+                  if (sheet === 'chassis' && f[0] === 'engine') {
+                    out +=
+                      '<div class="f grow"><label for="' +
+                      pre +
+                      'engine">' +
+                      f[1] +
+                      ' (الزامی)</label><div class="row"><input class="in num ltr grow" id="' +
+                      pre +
+                      'engine" inputmode="numeric" autocomplete="off" value="' +
+                      esc(f[2] || '') +
+                      '"><button type="button" class="btn" data-act="livescan" data-scan="' +
+                      pre +
+                      'engine">اسکن بارکد</button></div></div>';
+                    return;
+                  }
+                  out +=
+                    '<label class="f grow">' +
+                    f[1] +
+                    ((f[0] === 'chassisNo' || f[0] === 'room') && kind === 'serial' && !d[f[0]]
+                      ? ' (لازم، از روی برچسب)'
+                      : ' (اختیاری)') +
+                    '<input class="in' +
+                    (f[3] ? ' num ltr' : '') +
+                    '" id="' +
+                    pre +
+                    f[0] +
+                    '" autocomplete="off" value="' +
+                    esc(f[2] || '') +
+                    '"></label>';
+                });
+                return out;
+              }
+              function idVals(sheet, pre) {
+                var o = idVals0(sheet, pre);
+                (HIDE[sheet] || []).forEach(function (k) {
+                  delete o[k];
+                });
+                return o;
+              }
+              function idVals0(sheet, pre) {
+                var px =
+                  pre === 'c_' && PSHEETS.indexOf(sheet) >= 0 ? { product: val(pre + 'product') } : {};
+                if (sheet === 'chassis')
+                  return Object.assign(
+                    { engine: digits(val(pre + 'engine')), fuel: val(pre + 'fuel') },
+                    px,
+                  );
+                var o = Object.assign({ color: val(pre + 'color') }, px);
+                if (SHEETS[sheet].keyKind !== 'serial') o.serial = val(pre + 'serial');
+                if (SHEETS[sheet].keyKind !== 'chassis') o.chassisNo = digits(val(pre + 'chassisNo'));
+                if (SHEETS[sheet].keyKind !== 'room') o.room = digits(val(pre + 'room'));
+                if (SHEETS[sheet].keyKind !== 'engine') o.engine = digits(val(pre + 'engine'));
+                return o;
+              }
+      // END SECTION: domain/identity
+    
+</script>
+
+<script type="text/x-mohr-section" data-mohr-section="actions/helpers/owned-copyPrevDefects" data-order="40.666666666666664">
+
+              function copyPrevDefects(d) {
+                var bd = null;
+                S.data.insp.forEach(function (x) {
+                  if (x.sheet !== d.sheet || x.key === d.key) return;
+                  Object.keys(x.items || {}).forEach(function (i2) {
+                    var it = x.items[i2];
+                    if (it.r === 'ng' && !it.custom && (!bd || (it.at || '') > (bd.at || '')))
+                      bd = { at: it.at, key: x.key };
+                  });
+                });
+                if (!bd) {
+                  toast('ایرادی از خودروی دیگر در این برگه پیدا نشد.');
+                  return;
+                }
+                var sl = {};
+                S.data.insp.forEach(function (x) {
+                  if (x.sheet !== d.sheet || x.key !== bd.key) return;
+                  Object.keys(x.items || {}).forEach(function (i2) {
+                    var it = x.items[i2];
+                    if (it.r !== 'ng' || it.custom) return;
+                    var ph = (it.picks || []).concat(it.free ? [it.free] : []);
+                    if (!ph.length && it.note) ph = [it.note];
+                    ph.forEach(function (p2) {
+                      p2 = String(p2).trim();
+                      if (p2 && dfOk(d, i2)) sl[i2 + '|' + p2] = { id: i2, p: p2 };
+                    });
+                  });
+                });
+                S.dfSel = sl;
+                render();
+                toast('ایرادهای خودروی قبلی انتخاب شد؛ مواردی که لازم نیست را بردارید.');
+                return;
+              }
+</script>
+
+<script type="text/x-mohr-section" data-mohr-section="actions/clicks/owned-clickCorrection" data-order="41.588235294117645">
+
+              function clickCorrection(ev, el, a, id, d) {
+                if (a === 'corrapply' && isQual()) {
+                  var rq = corrAll().filter(function (x) {
+                    return x.id === id && x.status === 'pending';
+                  })[0];
+                  if (!rq) return true;
+                  save(function () {
+                    return corrApply(rq);
+                  }, 'اصلاح شماره اعمال شد').then(function (ok) {
+                    if (ok && S.key === rq.oldVal && SHEETS[S.sheet].keyKind === rq.field) {
+                      S.key = rq.newVal;
+                      render();
+                    }
+                  });
+
+                  return true;
+                }
+                if (a === 'corrreject' && isQual()) {
+                  var rq2 = corrAll().filter(function (x) {
+                    return x.id === id && x.status === 'pending';
+                  })[0];
+                  if (!rq2) return true;
+                  var nt = val('cn_' + id);
+                  if (!nt) {
+                    toast('برای رد کردن، توضیح بنویسید.');
+                    return true;
+                  }
+                  save(function () {
+                    return store.update('users', id, {
+                      status: 'rejected',
+                      decidedBy: S.user.name,
+                      decidedById: S.user.id,
+                      decidedAt: nowIso(),
+                      decNote: nt,
+                    });
+                  }, 'درخواست رد شد');
+
+                  return true;
+                }
+                return false;
+              }
+</script>
+
+<script type="text/x-mohr-section" data-mohr-section="runtime/registrations-04" data-order="41.852941176470594">
+MOHRRuntime.views.register("corrView", corrView, "mohr-part-04-defects-corrections.html");
+MOHRRuntime.actions.register("clickCorrection", clickCorrection, "mohr-part-04-defects-corrections.html");
+MOHRRuntime.forms.register("submitFuelCorrection", submitFuelCorrection, "mohr-part-04-defects-corrections.html");
+MOHRRuntime.forms.register("submitCorrRequest", submitCorrRequest, "mohr-part-04-defects-corrections.html");
+MOHRRuntime.forms.register("submitIdentity", submitIdentity, "mohr-part-04-defects-corrections.html");
+</script>
+
+<script type="text/x-mohr-section" data-mohr-section="actions/forms/owned-submitFuelCorrection" data-order="43.82857142857143">
+
+              function submitFuelCorrection() {
+                var chq = carRecords(S.key).recs.filter(function (x) {
+                    return x.sheet === 'chassis' && x.fuel;
+                  })[0],
+                  nf = val('cf_fuel'),
+                  rf = val('cf_reason'),
+                  ef = '';
+                if (!chq) ef = 'برگه شاسی با نوع سوخت پیدا نشد.';
+                else if (nf !== 'single' && nf !== 'dual') ef = 'نوع سوخت درست را انتخاب کنید.';
+                else if (nf === chq.fuel) ef = 'نوع سوخت انتخابی با ثبت فعلی یکی است.';
+                else if (rf.length < 3) ef = 'دلیل اصلاح را بنویسید.';
+                if (ef) {
+                  S.corrErr = ef;
+                  render();
+                  return;
+                }
+                S.corrErr = '';
+                var rf2 = {
+                    kind: 'corr',
+                    field: 'fuel',
+                    oldVal: chq.fuel,
+                    newVal: nf,
+                    reason: rf,
+                    sheet: S.sheet,
+                    key: S.key,
+                    chassisKey: chq.key,
+                    by: S.user.name,
+                    byId: S.user.id,
+                    station: S.user.station,
+                    at: nowIso(),
+                    status: 'pending',
+                  },
+                  rfid = 'corr_' + uid();
+                {
+                  rf2.status = 'applied';
+                  rf2.decidedBy = S.user.name;
+                  rf2.decidedById = S.user.id;
+                  rf2.decidedAt = rf2.at;
+                  saveOnce(
+                    'corr',
+                    function () {
+                      return store.set('users', rfid, rf2).then(function () {
+                        return corrApply(Object.assign({ id: rfid }, rf2));
+                      });
+                    },
+                    'نوع سوخت اصلاح شد',
+                  ).then(function (ok) {
+                    if (ok) {
+                      S.corrOpen = '';
+                      S.corrErr = '';
+                    }
+                    render();
+                  });
+                }
+              }
+              function submitCorrRequest() {
+                var dq = insp(S.sheet, S.key),
+                  Iq = identity(S.key),
+                  fq = val('cr_f'),
+                  nq = digits(val('cr_new')),
+                  rq3 = val('cr_reason'),
+                  oq = Iq[fq],
+                  eq = '';
+                if (!dq || !fq || !oq) eq = 'شماره‌ای که اشتباه است را انتخاب کنید.';
+                else if (!nq) eq = 'شماره‌ی درست را وارد کنید.';
+                else if (numErr(fq, nq)) eq = numErr(fq, nq);
+                else if (nq === oq) eq = 'شماره‌ی جدید با شماره‌ی قبلی یکی است.';
+                else if (rq3.length < 3) eq = 'دلیل اصلاح را بنویسید.';
+                S.corrErr = eq;
+                if (eq) {
+                  render();
+                  return;
+                }
+                ensureCar([nq]).then(function () {
+                  if (numTaken(fq, nq)) {
+                    S.corrErr =
+                      'این شماره قبلاً برای خودروی دیگری ثبت شده است؛ اگر آن هم اشتباه است با کیفیت هماهنگ کنید.';
+                    render();
+                    return;
+                  }
+                  var at = nowIso(),
+                    rid = 'corr_' + uid(),
+                    rr = {
+                      kind: 'corr',
+                      field: fq,
+                      oldVal: oq,
+                      newVal: nq,
+                      reason: rq3,
+                      sheet: S.sheet,
+                      key: S.key,
+                      by: S.user.name,
+                      byId: S.user.id,
+                      station: S.user.station,
+                      at: at,
+                      status: 'applied',
+                      decidedBy: S.user.name,
+                      decidedById: S.user.id,
+                      decidedAt: at,
+                    };
+                  saveOnce(
+                    'corr',
+                    function () {
+                      return store.set('users', rid, rr).then(function () {
+                        return corrApply(Object.assign({ id: rid }, rr));
+                      });
+                    },
+                    'شماره اصلاح شد',
+                  ).then(function (ok) {
+                    if (ok) {
+                      S.corrOpen = '';
+                      S.corrErr = '';
+                    }
+                    if (ok && S.key === oq && SHEETS[S.sheet].keyKind === fq) {
+                      S.key = nq;
+                    }
+                    render();
+                  });
+                });
+              }
+              function submitIdentity() {
+                var dI = insp(S.sheet, S.key);
+                if (dI && dI.final) {
+                  toast('شماره‌ها بعد از تأیید نهایی قفل است؛ درخواست اصلاح بدهید.');
+                  return;
+                }
+                var iv = idVals(S.sheet, 'i_'),
+                  idDoc = docId(S.sheet, S.key);
+                ensureCar([iv.serial, iv.chassisNo, iv.engine, iv.room]).then(function () {
+                  var ie = typedErr(S.sheet, iv) || conflictFor(S.sheet, S.key, iv);
+                  if (ie) {
+                    toast(ie);
+                    return;
+                  }
+                  saveOnce(
+                    'ids',
+                    function () {
+                      return store.update('inspections', idDoc, iv);
+                    },
+                    'مشخصات ذخیره شد',
+                  );
+                });
+              }
+</script>
+</body>
+</html>

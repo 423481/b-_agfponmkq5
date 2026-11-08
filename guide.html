@@ -1,0 +1,240 @@
+<!doctype html>
+<html lang="fa" dir="rtl">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>راهنمای فایل‌های HTML سامانهٔ مُهر</title>
+    <style>
+      body {
+        font:
+          16px/1.9 Tahoma,
+          'Segoe UI',
+          sans-serif;
+        max-width: 1000px;
+        margin: 40px auto;
+        padding: 0 20px;
+        background: #f5f7fb;
+        color: #17213a;
+      }
+      table {
+        border-collapse: collapse;
+        width: 100%;
+        background: white;
+      }
+      td,
+      th {
+        padding: 10px 14px;
+        border: 1px solid #d5dbe5;
+        text-align: start;
+      }
+      td:first-child {
+        direction: ltr;
+        unicode-bidi: isolate;
+        text-align: left;
+        overflow-wrap: anywhere;
+      }
+      code {
+        direction: ltr;
+        unicode-bidi: isolate;
+        display: inline-block;
+        background: #e5eaf5;
+        padding: 2px 5px;
+      }
+      a {
+        color: #2446b4;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>راهنمای فایل‌های HTML سامانهٔ مُهر</h1>
+    <p><a href="index.html">ورود به برنامه</a></p>
+    <p>
+      هر صفحه، نشانی HTML مخصوص خود را دارد. کد و سبک نمایش هر بخش داخل فایل‌های HTML قرار گرفته
+      است. توابع کمکی مشترک در <code>shared.html</code> و رویدادها و عملیات مشترک در
+      <code>actions.html</code> هستند. صفحه‌ها این بخش‌ها را مستقیماً از فایل‌های HTML بارگذاری
+      می‌کنند؛ به مرحلهٔ ساخت یا فایل‌های جداگانهٔ جاوااسکریپت و CSS نیازی نیست.
+    </p>
+    <p>
+      برنامه را با یک وب‌سرور محلی یا سرویس میزبانی فایل‌های ایستا اجرا کنید. باز کردن فایل‌ها با
+      نشانی <code>file://</code> ممکن است مانع بارگذاری بخش‌های HTML شود. ورود، سطح دسترسی، رکوردهای
+      ذخیره‌شده و صف ثبت‌های آفلاین همان ساختار قبلی را دارند. برای باز کردن دوبارهٔ صفحه در مرورگر،
+      سرور باید در دسترس باشد.
+    </p>
+    <p>
+      برای ویرایش یک بخش، عبارت <code>BEGIN SECTION:</code> یا ویژگی <code>data-mohr-style</code> را
+      جست‌وجو کنید. نام بخش‌ها و مقدار <code>data-order</code> آن‌ها را حفظ کنید؛ شروع برنامه به
+      ترتیب فعلی آن‌ها وابسته است. کد بارگذاری در پایین هر فایل و فهرست مرکزی در
+      <code>shared.html</code>، بخش‌های مختلف برنامه را به هم متصل می‌کنند. اگر بخشی یا مسیری اضافه
+      یا حذف شد، فهرست مرکزی را در <code>shared.html</code> نیز به‌روزرسانی کنید. سبک‌های نمایش با
+      همان ترتیب قبلی اعمال می‌شوند.
+    </p>
+    <p>
+      صفحه‌های ایستگاه‌ها از بخش‌های مشترک بازدید استفاده می‌کنند. رکوردهای بازدید، تاریخچهٔ خودرو،
+      بایگانی و فهرست همهٔ بازدیدها از توابع مربوط به خودرو در
+      <code>vehicles.html</code> و <code>history.html</code> استفاده می‌کنند. صفحه‌های مدیریتی نیز
+      از توابع کمکی مشترک مدیریت بهره می‌برند؛ کد نمایش آن‌ها در <code>users.html</code>،
+      <code>roles.html</code>، <code>settings.html</code>، <code>security.html</code> و
+      <code>data.html</code> قرار دارد.
+    </p>
+    <p>
+      بدون برنامه‌ریزی برای انتقال داده‌ها، ترتیب گزینه‌های چک‌لیست، شناسهٔ رکوردها یا کلیدهای
+      ذخیره‌سازی را تغییر ندهید. در دسترسی مستقیم به نشانی صفحه‌ها نیز سطح دسترسی کاربر بررسی
+      می‌شود. فایل‌های قدیمی <code>mohr_v*.html</code> نسخه‌های مستقل و دست‌نخوردهٔ قبلی هستند و
+      صفحه‌های جدید آن‌ها را بارگذاری نمی‌کنند.
+    </p>
+    <table>
+      <thead>
+        <tr>
+          <th scope="col">نام فایل HTML</th>
+          <th scope="col">صفحه یا بخش</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><a href="index.html">index.html</a></td>
+          <td>صفحهٔ آغاز برنامه</td>
+        </tr>
+        <tr>
+          <td><a href="login.html">login.html</a></td>
+          <td>ورود</td>
+        </tr>
+        <tr>
+          <td><a href="inspection.html">inspection.html</a></td>
+          <td>بازدید</td>
+        </tr>
+        <tr>
+          <td><a href="inspections.html">inspections.html</a></td>
+          <td>همه بازدیدها</td>
+        </tr>
+        <tr>
+          <td><a href="shortages.html">shortages.html</a></td>
+          <td>کسری‌های باز</td>
+        </tr>
+        <tr>
+          <td><a href="sampling.html">sampling.html</a></td>
+          <td>نمونه‌زنی</td>
+        </tr>
+        <tr>
+          <td><a href="reports.html">reports.html</a></td>
+          <td>گزارش</td>
+        </tr>
+        <tr>
+          <td><a href="vehicles.html">vehicles.html</a></td>
+          <td>پرونده خودرو</td>
+        </tr>
+        <tr>
+          <td><a href="archive.html">archive.html</a></td>
+          <td>بایگانی</td>
+        </tr>
+        <tr>
+          <td><a href="corrections.html">corrections.html</a></td>
+          <td>اصلاح شماره</td>
+        </tr>
+        <tr>
+          <td><a href="dashboard.html">dashboard.html</a></td>
+          <td>داشبورد</td>
+        </tr>
+        <tr>
+          <td><a href="production-stops.html">production-stops.html</a></td>
+          <td>توقف خط</td>
+        </tr>
+        <tr>
+          <td><a href="planning-shortages.html">planning-shortages.html</a></td>
+          <td>کسری برنامه‌ریزی</td>
+        </tr>
+        <tr>
+          <td><a href="customer-protection.html">customer-protection.html</a></td>
+          <td>حفاظت از مشتری</td>
+        </tr>
+        <tr>
+          <td><a href="management.html">management.html</a></td>
+          <td>مدیریت</td>
+        </tr>
+        <tr>
+          <td><a href="users.html">users.html</a></td>
+          <td>کاربران</td>
+        </tr>
+        <tr>
+          <td><a href="roles.html">roles.html</a></td>
+          <td>نقش‌ها</td>
+        </tr>
+        <tr>
+          <td><a href="settings.html">settings.html</a></td>
+          <td>تنظیمات</td>
+        </tr>
+        <tr>
+          <td><a href="security.html">security.html</a></td>
+          <td>امنیت</td>
+        </tr>
+        <tr>
+          <td><a href="data.html">data.html</a></td>
+          <td>داده‌ها</td>
+        </tr>
+        <tr>
+          <td><a href="checklists.html">checklists.html</a></td>
+          <td>فهرست‌ها</td>
+        </tr>
+        <tr>
+          <td><a href="chassis.html">chassis.html</a></td>
+          <td>شاسی و موتور</td>
+        </tr>
+        <tr>
+          <td><a href="engine.html">engine.html</a></td>
+          <td>موتور</td>
+        </tr>
+        <tr>
+          <td><a href="trim.html">trim.html</a></td>
+          <td>تزیینات</td>
+        </tr>
+        <tr>
+          <td><a href="final-upper.html">final-upper.html</a></td>
+          <td>خط نهایی بالا</td>
+        </tr>
+        <tr>
+          <td><a href="final-lower.html">final-lower.html</a></td>
+          <td>خط نهایی پایین</td>
+        </tr>
+        <tr>
+          <td><a href="gas-test.html">gas-test.html</a></td>
+          <td>تست نشتی گاز</td>
+        </tr>
+        <tr>
+          <td><a href="mechanical.html">mechanical.html</a></td>
+          <td>مکانیکی</td>
+        </tr>
+        <tr>
+          <td><a href="mechanical-recheck.html">mechanical-recheck.html</a></td>
+          <td>تست نشتی پس از جاده</td>
+        </tr>
+        <tr>
+          <td><a href="roll-test.html">roll-test.html</a></td>
+          <td>رول تست</td>
+        </tr>
+        <tr>
+          <td><a href="road-test.html">road-test.html</a></td>
+          <td>تست جاده</td>
+        </tr>
+        <tr>
+          <td><a href="commercial.html">commercial.html</a></td>
+          <td>کیفیت مونتاژ تجاری</td>
+        </tr>
+        <tr>
+          <td><a href="shared.html">shared.html</a></td>
+          <td>داده‌ها، ابزارها و منطق مشترک</td>
+        </tr>
+        <tr>
+          <td><a href="history.html">history.html</a></td>
+          <td>تاریخچه و مراحل بازدید خودرو</td>
+        </tr>
+        <tr>
+          <td><a href="scanner.html">scanner.html</a></td>
+          <td>اسکن بارکد</td>
+        </tr>
+        <tr>
+          <td><a href="actions.html">actions.html</a></td>
+          <td>رویدادها و عملیات مشترک</td>
+        </tr>
+      </tbody>
+    </table>
+  </body>
+</html>
