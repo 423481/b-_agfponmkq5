@@ -17367,5 +17367,110 @@ MOHRRuntime.seal();
       // END SECTION: core/bootstrap
     
 </script>
+<style media="not all" data-mohr-style="responsive-v3" data-order="8">
+/* Responsive presentation layer. Existing styles and application contracts remain intact. */
+:root { --tap-size: 44px; }
+html { scroll-padding-block: 16px 112px; }
+body { padding-inline: max(16px, env(safe-area-inset-left, 0px)) max(16px, env(safe-area-inset-right, 0px)); }
+.wrap, .wrap > *, .row > *, .who, .who > *, .mgrow > *, .mglrow > *, .tbgrid > *, .g3 > *, .dgrid > * { min-inline-size: 0; }
+.wrap { inline-size: 100%; }
+.card, .tbl, .chipsbox, .mgchips, .kvs { max-inline-size: 100%; }
+.stepbar { max-inline-size: none; }
+.card, .hint, .whoin, .chip, .mgpill, .kvs, .steplb, .stepdef { overflow-wrap: anywhere; }
+.whoin { white-space: normal; overflow: visible; }
+.who .pickgrp { flex-wrap: wrap; min-inline-size: 0; }
+.who .pickgrp .btn { flex: 1 1 100px; white-space: normal; }
+.btn.sm, .pick, .subtab, .mgt, .tab, .sync, .thm button, summary { min-block-size: var(--tap-size); }
+.btn, .pick, .subtab, .mgt, .tab { height: auto; line-height: 1.5; }
+.btn, .pick, .subtab, .mgt { white-space: normal; overflow-wrap: anywhere; }
+.btn.sm { padding-block: 6px; }
+.who .btn.sm { min-height: 44px; }
+.mgchips .pick { min-height: 44px; }
+.sync { align-items: center; }
+.chip, .mgpill { white-space: normal; }
+.mgchips > .chip { display: inline-flex; align-items: center; gap: 6px; }
+.mgchips > .chip > button { flex: 0 0 auto; }
+.in, select, textarea { max-inline-size: 100%; font-size: max(16px, 1em); }
+textarea { resize: vertical; }
+input, select, textarea, button, summary, [role='button'] { scroll-margin-block: 16px 112px; }
+:is(button, input, select, textarea, summary, [role='button']):focus-visible { outline: 3px solid var(--stamp, #315bd6); outline-offset: 3px; }
+.tabs { max-inline-size: 100%; overscroll-behavior-inline: contain; scroll-padding-inline: 12px; }
+.tabs .tab { flex-shrink: 0; }
+.tbl { inline-size: 100%; overflow-x: auto; overscroll-behavior-inline: contain; -webkit-overflow-scrolling: touch; }
+.tbl table { margin: 0; }
+.tbl :is(th, td) .btn { white-space: nowrap; }
+.mgnav { grid-template-columns: repeat(auto-fit, minmax(min(130px, 100%), 1fr)); }
+.dfrow .l1, .dfrow .l2 { flex-wrap: wrap; }
+.dfrow .l1 b { flex: 0 0 auto; white-space: nowrap; }
+.dfrow .dst { flex-basis: 100px; white-space: normal; }
+.dfrow .ds { flex-basis: 140px; }
+.dl-trio { grid-template-columns: repeat(auto-fit, minmax(min(180px, 100%), 1fr)); }
+.botbar { padding-inline: max(12px, env(safe-area-inset-left, 0px)) max(12px, env(safe-area-inset-right, 0px)); }
+.botbar .btn { flex: 1 1 0; min-inline-size: 0; white-space: normal; }
+.botbar.chsx .btn.back { flex: 0 0 92px !important; gap: 4px; }
+.stepbar.chs li.rmli { flex-shrink: 0; }
+.stepbar.chs li.rmli > span:first-child { min-inline-size: 0; }
+.stepcur.fillc > ul.stepdef { max-height: min(45dvh, 320px); }
+/* Let inspection pages grow with labels, expanded panels and vehicle warnings. */
+html:has(.stepbar.chs), body:has(.stepbar.chs) { overflow: auto; }
+.stepbar.chs { height: auto; min-height: calc(100dvh - 112px) !important; overflow: visible; }
+.stepbar.chs > .stepcur, .stepbar.chs > .stepcur.fillc { flex: 1 0 auto; overflow: visible; }
+.stepcur.fillc .chipsbox.fq { max-height: 50dvh; overflow-y: auto; flex: 1 0 auto; }
+body:has(.stepbar.chs) .botspace { display: block; height: calc(96px + env(safe-area-inset-bottom, 0px)); }
+.toast { max-block-size: 40dvh; overflow-y: auto; overflow-wrap: anywhere; }
+#scanmodal { padding: max(12px, env(safe-area-inset-top, 0px)) max(12px, env(safe-area-inset-right, 0px)) max(12px, env(safe-area-inset-bottom, 0px)) max(12px, env(safe-area-inset-left, 0px)); overflow-y: auto; }
+#scanmodal video { max-inline-size: 100%; max-block-size: 60dvh; object-fit: contain; }
+#scanmodal .btn { flex-shrink: 0; max-inline-size: 100%; }
+
+/* Keep the illustrated header; lay out the real login controls as a readable form. */
+.lgs.lgb { justify-content: flex-start; min-height: 100vh; min-height: 100dvh; }
+.lgb-sky { flex: none; }
+.lgb-b { aspect-ratio: auto; padding-block-start: 80%; background-size: 100% auto; mask-image: none; -webkit-mask-image: none; }
+.lgb-f { position: relative; inset: auto; margin: 0 12px; padding: 20px; display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: 12px; border-radius: 18px; background: #f2f4fb; box-shadow: 0 8px 24px #123e9633; }
+.lgb-f input { position: static; inset: auto; inline-size: 100%; width: 100%; height: auto; min-height: 48px; font-size: 16px; padding: 10px 12px; border: 1px solid #8b9cbb; }
+.lgb-u { grid-column: 1 / -1; }
+.lgb-f button { position: static; inset: auto; width: auto; height: auto; min-height: 44px; padding: 8px 12px; font: inherit; border-radius: 10px; }
+.lgb-e { border: 1px solid #8b9cbb; }
+.lgb-l, .lgb-go { grid-column: 1 / -1; }
+.lgb-l { color: #123e96; }
+.lgb-go { background: #123e96; color: #fff; font-weight: 800 !important; }
+.lgb-l::before, .lgb-go::before { content: attr(aria-label); }
+.lgb-foot { position: relative; }
+.lgs .thm button { min-height: 44px; min-width: 44px; }
+
+/* Compact screens: one field per row, full labels and local table scrolling. */
+@media (max-width: 600px) {
+  body { padding-block-start: 12px; }
+  .card { padding: 12px; }
+  .mgrow, .tbgrid, .g3, .dgrid { grid-template-columns: minmax(0, 1fr); }
+  .mglrow { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); }
+  .mglrow > :first-child { grid-column: 1 / -1; }
+  .row > label.f, .row > div.f, label.f.grow, div.f .row .in { min-width: 0; flex-basis: 100%; }
+  .row > .in { min-width: 0 !important; flex: 1 1 100%; }
+  .row > .grow { min-width: 0 !important; }
+  .mgchips .chip { max-inline-size: 100%; }
+  .mgu > summary { flex-wrap: wrap; }
+  .mgu > summary .nm { white-space: normal; overflow-wrap: anywhere; }
+  .dl-trio { grid-template-columns: minmax(0, 1fr); }
+  .idpage .kvs, .dcards .kvs { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .stepcur .stepok.sm, .smpcard .stepng { width: 100%; }
+  .stepbar.chs li.rmli { flex-wrap: wrap; align-items: flex-start; }
+  .stepbar.chs li.rmli > span:first-child { flex: 1 1 100%; }
+  .stepbar.chs li.rmli .fixb { margin-inline-start: auto; }
+  .smpcard { max-width: 100%; }
+  .botbar { gap: 8px; }
+  .botbar .btn { font-size: 15px; padding-inline: 6px; }
+  .botbar.chs .btn.back { font-size: 14px !important; }
+  .botbar.chsx .btn.confirm { font-size: 14px !important; }
+  .lgs { margin-block-start: -12px; }
+}
+/* Short landscape/keyboard viewports need less decorative space above login. */
+@media (max-height: 650px) {
+  .lgb-b { padding-block-start: 50%; background-position: center 12%; }
+}
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { scroll-behavior: auto !important; animation-duration: .01ms !important; transition-duration: .01ms !important; }
+}
+</style>
 </body>
 </html>
