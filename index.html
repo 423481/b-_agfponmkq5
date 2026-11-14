@@ -3597,6 +3597,25 @@ div.f .row .btn {
   font-size: 15px;
   margin: 0 0 4px;
 }
+.pickcols {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+.pickcols > div {
+  min-width: 0;
+}
+.pickrow.col {
+  flex-direction: column;
+  flex-wrap: nowrap;
+}
+.pickrow.col .pk {
+  width: 100%;
+  text-align: center;
+}
+.lkpick.first {
+  order: 0;
+}
 
 /* فصل 8 — مدیریت، داشبورد، نمونه‌زنی، برنامه‌ریزی
    ترتیب فایل‌های CSS مهم است (قاعده‌ی پایینی روی بالایی غلبه می‌کند). جابه‌جا نکنید. */
@@ -5534,7 +5553,7 @@ var SUPA_URL = "https://kdpmscvzavrdwwoprkfi.supabase.co",
 /* نشانی سرویس دیتابیس شرکت. خالی = همان Supabase (حالت فعلی)؛ پر = همهٔ خواندن/نوشتن به این سرویس می‌رود. */
 var API_URL = "";
 
-var APP_VER = "v167.28";
+var APP_VER = "v167.30";
 
 var AUTH_FN = "";
 
@@ -11145,7 +11164,7 @@ function createCard() {
     '</span></h2><button type="button" class="btn sm" data-act="cclear">تغییر شماره</button></div><details class="info"><summary>ⓘ راهنما</summary><p class="hint">برگه‌ای با این شماره هنوز باز نشده است. مشخصات خودرو در صورت ثبت‌شدن در برگه‌های دیگر خودکار پر شده است؛ در غیر این صورت اگر می‌دانید بنویسید.</p></details>' +
     '<form data-form="create" class="row" style="margin-top:12px">' +
     idFields(S.sheet, "c_", mergedFor(S.sheet, S.key)) +
-    (pick
+    (pick && labelCheckNeeded(S.sheet)
       ? '<div class="f grow" style="flex:1 1 100%;padding:10px 12px;border:1.5px dashed var(--line);border-radius:12px"><b>تأیید با برچسب شیشه (در همین صفحه)</b><span class="hint" style="font-weight:600">سه رقم آخر موتور و نوع سوخت را از روی خود برچسب وارد کنید؛ اگر با ثبت شاسی نخواند، اتصال ثبت نمی‌شود.</span><label class="f">سه رقم آخر شماره موتور روی برچسب<input class="in num ltr" id="c_lk_eng" inputmode="numeric" maxlength="3" autocomplete="off" style="max-width:160px"></label>' +
         fuelPicker("c_lk_fuel", "", "نوع سوخت از روی برچسب (تک‌سوز «بنزینی» / دوگانه‌سوز)") +
         "</div>"
@@ -15575,9 +15594,22 @@ function submitFuelCorrection() {
    توابع اصلی: linkCheck، linkCard، unlinkedChassisRooms، linkPickers، corrReasons، engineFromBarcode، serialLinkStep
    ════════════════════════════════════════════════════════════ */
 
+// فهرست انتخاب شاسی/اتاق با ترتیب «قدیمی‌ترین اول» فقط برای این ایستگاه‌هاست
+var OLDEST_FIRST_SHEETS = ["gas", "final1"];
+var PICK_WINDOW_MS = 2 * 86400000;
+var PICK_LIMIT = 12;
+var SINGLE_NO_GAS_MSG =
+  "این خودرو تک‌سوز است؛ تست نشتی گاز لازم نیست و برگه‌ای برایش باز نمی‌شود.";
+
+// ایستگاه تست گاز کنترل برچسب شیشه ندارد؛ شاسی و اتاق را فقط از فهرست انتخاب می‌کند
+function labelCheckNeeded(sheet) {
+  return sheet !== "gas";
+}
+
 /* تطبیق برچسب شیشه با ثبت شاسی (سه رقم آخر موتور + نوع سوخت)؛ خطا را برمی‌گرداند و در عدم تطابق سوخت درخواست اصلاح برای کیفیت می‌سازد */
 // تأیید ۳ رقم آخر موتور و برچسب سوخت هنگام اتصال.
 function linkCheck(L2, engIn, fuelIn) {
+  if (!labelCheckNeeded(L2.sheet)) return "";
   var le = "",
     lfv = "";
   if (L2.engineVerified) {
@@ -15629,6 +15661,24 @@ function linkCheck(L2, engIn, fuelIn) {
   return le;
 }
 
+// کادر «تأیید با برچسب شیشه» صفحه‌ی تأیید اتصال
+function linkLabelBox(L) {
+  var h = "";
+  h +=
+    '<div style="margin-top:14px;padding-top:12px;border-top:1px dashed var(--line)"><b>تأیید با برچسب شیشه</b><p class="hint" style="margin:6px 0 10px">برای اطمینان، دو چیز را از روی خود برچسب شیشه وارد کنید. اگر با ثبت شاسی نخواند، اتصال ثبت نمی‌شود.</p>';
+  if (L.engineVerified)
+    h +=
+      '<label class="f">سه رقم آخر شماره موتور روی برچسب<input class="in num ltr" id="lk_eng" inputmode="numeric" maxlength="3" autocomplete="off" style="max-width:160px"></label>';
+  else h += '<p class="hint">برگه شاسی با موتور ثبت‌شده پیدا نشد؛ تطبیق موتور ممکن نیست.</p>';
+  if (L.fuel)
+    h +=
+      '<div style="margin-top:10px">' +
+      fuelPicker("lk_fuel", "", "نوع سوخت از روی برچسب (تک‌سوز «بنزینی» / دوگانه‌سوز)") +
+      "</div>";
+  h += "</div>";
+  return h;
+}
+
 // اتصال سریال خط نهایی به شاسی و شماره‌ی اتاق.
 function linkCard() {
   var L = S.linkConfirm,
@@ -15648,18 +15698,7 @@ function linkCard() {
       esc(w) +
       " اگر مطمئن هستید ادامه دهید، وگرنه شماره را اصلاح کنید.</p>";
   });
-  h +=
-    '<div style="margin-top:14px;padding-top:12px;border-top:1px dashed var(--line)"><b>تأیید با برچسب شیشه</b><p class="hint" style="margin:6px 0 10px">برای اطمینان، دو چیز را از روی خود برچسب شیشه وارد کنید. اگر با ثبت شاسی نخواند، اتصال ثبت نمی‌شود.</p>';
-  if (L.engineVerified)
-    h +=
-      '<label class="f">سه رقم آخر شماره موتور روی برچسب<input class="in num ltr" id="lk_eng" inputmode="numeric" maxlength="3" autocomplete="off" style="max-width:160px"></label>';
-  else h += '<p class="hint">برگه شاسی با موتور ثبت‌شده پیدا نشد؛ تطبیق موتور ممکن نیست.</p>';
-  if (L.fuel)
-    h +=
-      '<div style="margin-top:10px">' +
-      fuelPicker("lk_fuel", "", "نوع سوخت از روی برچسب (تک‌سوز «بنزینی» / دوگانه‌سوز)") +
-      "</div>";
-  h += "</div>";
+  if (labelCheckNeeded(L.sheet)) h += linkLabelBox(L);
   if (S.linkErr) h += '<p class="err" style="margin-top:10px">' + esc(S.linkErr) + "</p>";
   return (
     h +
@@ -15667,11 +15706,13 @@ function linkCard() {
   );
 }
 
-function unlinkedChassisRooms() {
+function unlinkedChassisRooms(sheet) {
   var lc = {},
     lr = {},
     chs = [],
-    rms = [];
+    rms = [],
+    oldestFirst = OLDEST_FIRST_SHEETS.indexOf(sheet) >= 0,
+    since = new Date(Date.now() - PICK_WINDOW_MS).toISOString();
   S.data.insp.forEach(function (x) {
     if (SHEETS[x.sheet] && SHEETS[x.sheet].keyKind === "serial") {
       var o = identOf(x);
@@ -15681,51 +15722,94 @@ function unlinkedChassisRooms() {
     if (x.sheet === "chassis") chs.push(x);
     else if (x.sheet === "trim") rms.push(x);
   });
-  var byNew = function (a, b) {
-    return (b.createdAt || "") < (a.createdAt || "") ? -1 : 1;
-  };
+  var order = function (a, b) {
+      var newer = (b.createdAt || "") < (a.createdAt || "");
+      return newer !== oldestFirst ? -1 : 1;
+    },
+    wanted = function (x) {
+      return !oldestFirst || (x.createdAt || "") >= since;
+    };
   return {
     ch: chs
       .filter(function (x) {
-        return !lc[x.key];
+        return !lc[x.key] && wanted(x) && !(sheet === "gas" && x.fuel === "single");
       })
-      .sort(byNew)
-      .slice(0, 12),
+      .sort(order)
+      .slice(0, PICK_LIMIT),
     rm: rms
       .filter(function (x) {
-        return !lr[x.key];
+        return !lr[x.key] && wanted(x);
       })
-      .sort(byNew)
-      .slice(0, 12),
+      .sort(order)
+      .slice(0, PICK_LIMIT),
   };
 }
 
+function pickButton(field, key, notes) {
+  return (
+    '<button type="button" class="pk num" data-act="pickfill" data-f="' +
+    field +
+    '" data-v="' +
+    esc(key) +
+    '" aria-pressed="false">' +
+    esc(key) +
+    notes
+      .map(function (n) {
+        return "<small>" + esc(n) + "</small>";
+      })
+      .join("") +
+    "</button>"
+  );
+}
+
+// دکمه‌ی شاسی: موتور کامل و ساعت ثبت (برای فهرست قدیمی‌ترین‌اول)
+function chassisPickNotes(x, full) {
+  if (!full) return x.engine ? ["موتور …" + String(x.engine).slice(-3)] : [];
+  return (x.engine ? ["موتور " + x.engine] : []).concat(["ثبت " + timeHM(x.createdAt)]);
+}
+
+function pickColumn(title, list, emptyText, btn) {
+  return (
+    "<div><b>" +
+    title +
+    '</b><div class="pickrow col">' +
+    (list.length ? list.map(btn).join("") : '<span class="hint">' + emptyText + "</span>") +
+    "</div></div>"
+  );
+}
+
+// فهرست دو ستونه، قدیمی‌ترین ثبت اول (ترتیب رسیدن خودروها از خط)
+function pickColumns(u) {
+  return (
+    '<div class="card lkpick first"><h2>انتخاب شاسی و اتاق این خودرو</h2><p class="hint">سریال خوانده شد. قدیمی‌ترین ثبت‌شده اول است. شاسی و اتاق را از روی برچسب شیشه لمس کنید؛ اگر در فهرست نبود، پایین تایپ کنید.</p><div class="pickcols">' +
+    pickColumn("شاسی و موتور", u.ch, "شاسی وصل‌نشده‌ای نیست.", function (x) {
+      return pickButton("c_chassisNo", x.key, chassisPickNotes(x, true));
+    }) +
+    pickColumn("اتاق", u.rm, "اتاق وصل‌نشده‌ای نیست.", function (x) {
+      return pickButton("c_room", x.key, ["ثبت " + timeHM(x.createdAt)]);
+    }) +
+    "</div></div>"
+  );
+}
+
 function linkPickers() {
-  var u = cachedByRows("linkPick", "", unlinkedChassisRooms),
+  var u = cachedByRows("linkPick", S.sheet, function () {
+      return unlinkedChassisRooms(S.sheet);
+    }),
     ch = u.ch,
     rm = u.rm;
+  if (OLDEST_FIRST_SHEETS.indexOf(S.sheet) >= 0) return pickColumns(u);
   var h =
     '<div class="card lkpick"><h2>انتخاب شاسی و اتاق این خودرو</h2><p class="hint">سریال خوانده شد. شماره‌ی شاسی و اتاق را از روی برچسب شیشه با لمس انتخاب کنید (فقط شاسی‌ها و اتاق‌هایی که هنوز به سریالی وصل نشده‌اند). اگر در فهرست نبود، پایین تایپ کنید.</p>';
   h += '<b>شاسی</b><div class="pickrow">';
   if (!ch.length) h += '<span class="hint">شاسی وصل‌نشده‌ای نیست.</span>';
   ch.forEach(function (x) {
-    h +=
-      '<button type="button" class="pk num" data-act="pickfill" data-f="c_chassisNo" data-v="' +
-      esc(x.key) +
-      '" aria-pressed="false">' +
-      esc(x.key) +
-      (x.engine ? "<small>موتور …" + esc(String(x.engine).slice(-3)) + "</small>" : "") +
-      "</button>";
+    h += pickButton("c_chassisNo", x.key, chassisPickNotes(x, false));
   });
   h += '</div><b>اتاق</b><div class="pickrow">';
   if (!rm.length) h += '<span class="hint">اتاق وصل‌نشده‌ای نیست.</span>';
   rm.forEach(function (x) {
-    h +=
-      '<button type="button" class="pk num" data-act="pickfill" data-f="c_room" data-v="' +
-      esc(x.key) +
-      '" aria-pressed="false">' +
-      esc(x.key) +
-      "</button>";
+    h += pickButton("c_room", x.key, []);
   });
   return h + "</div></div>";
 }
@@ -15789,6 +15873,11 @@ function serialLinkStep(rec, I3) {
     var ce = insp("chassis", ch),
       w = [],
       te = insp("trim", rm);
+    if (S.sheet === "gas" && ce && ce.fuel === "single") {
+      S.formErr = SINGLE_NO_GAS_MSG;
+      render();
+      return true;
+    }
     if (ce && te && prodOf(ce) !== prodOf(te)) {
       S.formErr =
         "محصول شاسی (" +
@@ -15816,7 +15905,8 @@ function serialLinkStep(rec, I3) {
     };
     var e3 = digits(fieldValue("c_lk_eng")),
       fu3 = fieldValue("c_lk_fuel");
-    if (!w.length && (!LK.engineVerified || e3.length === 3) && (!LK.fuel || fu3)) {
+    var labelTyped = !labelCheckNeeded(S.sheet) || ((!LK.engineVerified || e3.length === 3) && (!LK.fuel || fu3));
+    if (!w.length && labelTyped) {
       var le3 = linkCheck(LK, e3, fu3);
       if (le3) {
         S.formErr = le3;
@@ -17292,6 +17382,9 @@ function conflictFor(sheet, key, vals) {
   return msg;
 }
 
+// در ثبت اولیه‌ی ایستگاه گاز، این دو مورد از برگه‌ی شاسی/تزیینات خوانده می‌شود
+var GAS_CREATE_HIDDEN = ["color", "engine"];
+
 function idFields(sheet, pre, d) {
   d = d || {};
   var out = "";
@@ -17305,7 +17398,7 @@ function idFields(sheet, pre, d) {
     if (SHEETS[sheet].keyKind !== "room") L.push(["room", "شماره اتاق", d.room, 1]);
     if (SHEETS[sheet].keyKind !== "engine") L.push(["engine", "شماره موتور", d.engine, 1]);
   }
-  var hid = HIDE[sheet] || [];
+  var hid = (HIDE[sheet] || []).concat(pre === "c_" && sheet === "gas" ? GAS_CREATE_HIDDEN : []);
   L = L.filter(function (f) {
     return hid.indexOf(f[0]) < 0;
   });
@@ -17677,7 +17770,7 @@ function histRows(hist) {
       timeHM(e.at) || "—",
       (e.pdiBy ? "بازرس PDI: " + e.pdiBy + (e.note ? " — " : "") : "") +
         (e.note || "") +
-        (e.code745 ? "کد ۷۴۵" : ""),
+        (e.code745 ? "کد ۷۴" : ""),
     ];
   });
 }
@@ -17777,7 +17870,7 @@ function listView() {
 
 /* ════════════════════════════════════════════════════════════
    فصل 30 — ایستگاه تجاری، بایگانی و PDI
-   تأیید نهایی تجاری، کد ۷۴۵ و تحویل با کسری، بایگانی خودرو (قفل حذف)، بازگشت PDI.
+   تأیید نهایی تجاری، کد ۷۴ و تحویل با کسری، بایگانی خودرو (قفل حذف)، بازگشت PDI.
    توابع اصلی: releaseOf، releaseForm، releaseCard، archIdSet، isArchivedCar، assertNotArchived، archOf، archHist و …
    ════════════════════════════════════════════════════════════ */
 
@@ -17962,7 +18055,7 @@ function archiveEvent(type, extra) {
   return Object.assign({ type: type, by: S.user.name, byId: S.user.id, at: nowIso() }, extra || {});
 }
 
-// بایگانی خودرو بعد از تجاری (کد ۷۴۵ اگر کسری باز باشد).
+// بایگانی خودرو بعد از تجاری (کد ۷۴ اگر کسری باز باشد).
 function archiveCar(q) {
   var c = carRecords(q),
     I = c.I,
@@ -17995,7 +18088,7 @@ function archiveCar(q) {
         }),
       });
     },
-    chk.shortOpen > 0 ? "پرونده با کد ۷۴۵ بایگانی شد" : "پرونده بایگانی شد",
+    chk.shortOpen > 0 ? "پرونده با کد ۷۴ بایگانی شد" : "پرونده بایگانی شد",
   );
 }
 
@@ -18099,7 +18192,7 @@ function archivedBlock(c, a) {
       ? '<p class="hint" style="margin-top:10px">بایگانی مجدد: ' + esc(chk.err) + "</p>"
       : '<p class="hint" style="margin:10px 0">' +
         (chk.shortOpen
-          ? faDigits(chk.shortOpen) + " کسری باز است و خودرو با کد ۷۴۵ دوباره بایگانی می‌شود."
+          ? faDigits(chk.shortOpen) + " کسری باز است و خودرو با کد ۷۴ دوباره بایگانی می‌شود."
           : "همه‌ی ایرادها رفع شده است.") +
         '</p><button class="btn primary" data-act="rearchive" data-q="' +
         esc(c.key) +
@@ -18120,7 +18213,7 @@ function pdiCard(c, a) {
         "</div>" +
         (e.pdiBy ? '<div class="m">بازرس PDI: ' + esc(e.pdiBy) + "</div>" : "") +
         (e.note ? '<div class="m">توضیح: ' + esc(e.note) + "</div>" : "") +
-        (e.code745 ? '<div class="m">کد ۷۴۵</div>' : "") +
+        (e.code745 ? '<div class="m">کد ۷۴</div>' : "") +
         "</div>"
       );
     })
@@ -18326,12 +18419,12 @@ function archiveActionHtml(c, open, miss) {
     '<p class="hint" style="margin-bottom:10px">' +
     (openShort.length
       ? faDigits(openShort.length) +
-        " کسری باز است. خودرو با کد ۷۴۵ بایگانی می‌شود و کسری‌ها باز می‌ماند تا برنامه‌ریزی یا چکمن همان واحد ببندد."
+        " کسری باز است. خودرو با کد ۷۴ بایگانی می‌شود و کسری‌ها باز می‌ماند تا برنامه‌ریزی یا چکمن همان واحد ببندد."
       : "همه مراحل تأیید شده و مورد بازی نیست.") +
     '</p><button class="btn primary" data-act="archive" data-q="' +
     esc(c.key) +
     '">' +
-    (openShort.length ? "بایگانی با کد ۷۴۵ به نام من" : "بایگانی پرونده به نام من") +
+    (openShort.length ? "بایگانی با کد ۷۴ به نام من" : "بایگانی پرونده به نام من") +
     "</button>"
   );
 }
@@ -18396,7 +18489,7 @@ function archiveView() {
         "</td><td>" +
         esc(a.color || "") +
         (a.code745
-          ? ' <span class="chip open">کد ۷۴۵' +
+          ? ' <span class="chip open">کد ۷۴' +
             (function () {
               var n = 0;
               carRecords(a.key).recs.forEach(function (r) {
