@@ -1,0 +1,758 @@
+/* فصل 3 — ویزارد ایستگاه: نوار مراحل، کاشی‌ها، صفحه‌ی سبز تأیید، اطلاعات خودرو
+   ترتیب فایل‌های CSS مهم است (قاعده‌ی پایینی روی بالایی غلبه می‌کند). جابه‌جا نکنید. */
+
+.dcard.dng li::marker {
+  color: #ff8a8a;
+}
+.dcard.dsh li::marker {
+  color: #ffc474;
+}
+.dcard.dsm li::marker {
+  color: #a9ceff;
+}
+.donescr {
+  position: fixed;
+  inset: 0;
+  z-index: 50;
+  background: var(--ok);
+  color: #fff;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  text-align: center;
+  cursor: pointer;
+  padding: 24px;
+}
+.donescr .dchk {
+  font-size: 96px;
+  line-height: 1;
+}
+.donescr .dt {
+  font-size: 30px;
+  font-weight: 900;
+}
+.donescr .dk {
+  font-size: 40px;
+  font-weight: 900;
+  letter-spacing: 0.05em;
+}
+.donescr .dm {
+  font-size: 20px;
+  font-weight: 700;
+}
+.donescr .dh {
+  margin-top: 24px;
+  font-size: 15px;
+  opacity: 0.9;
+}
+.stepbar {
+  font-size: 17px;
+}
+.stepbar .steplb {
+  font-size: 28px !important;
+  margin: 6px 0 10px !important;
+  font-weight: 900;
+}
+.stepbar .hint {
+  font-size: 15px;
+}
+.stepbar .stepdef li {
+  font-size: 17px;
+  font-weight: 700;
+}
+.stepbar .crow {
+  font-size: 16px;
+}
+.stepbar .cl,
+.stepbar .ct {
+  font-size: 16px;
+  font-weight: 800;
+}
+.stepbar .stepitemsbtn {
+  font-size: 17px !important;
+  min-height: 52px;
+}
+.stepbar .wst span {
+  font-size: 13px;
+  font-weight: 800;
+}
+.botbar .btn {
+  font-size: 16px !important;
+  font-weight: 800;
+}
+.stepbar {
+  margin-inline: -16px;
+  border-radius: 0 !important;
+  border-width: 3px !important;
+  box-shadow: none !important;
+  min-height: calc(100vh - 96px);
+  max-height: none !important;
+  padding: 14px 16px !important;
+}
+.stepfix {
+  width: 100%;
+  min-height: 52px;
+  margin-top: 12px;
+  border: 2px solid var(--wait);
+  color: var(--wait);
+  background: var(--wait-soft);
+  font-size: 17px;
+  font-weight: 800;
+  border-radius: 14px;
+}
+.stepcur .stepok,
+.stepcur .stepok.sm {
+  width: 84% !important;
+  min-height: 64px !important;
+  font-size: 18px !important;
+  margin-inline: auto !important;
+  display: flex !important;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  line-height: 1.4;
+}
+.tiles {
+  gap: 14px;
+  justify-content: center;
+}
+.tile {
+  flex: 0 1 42% !important;
+  min-height: 84px !important;
+  font-size: 19px !important;
+  border-width: 2px !important;
+  border-radius: 16px;
+}
+.tile b {
+  font-size: 26px !important;
+}
+.tile small {
+  font-size: 14px !important;
+}
+.botbar .btn {
+  flex: 0 0 50% !important;
+}
+li.rmli {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  list-style: none;
+}
+li.rmli > span:first-child {
+  flex: 1 1 auto;
+}
+.rmx {
+  flex: 0 0 auto;
+  min-width: 40px;
+  min-height: 40px;
+  border: 1.5px solid var(--line);
+  border-radius: 10px;
+  background: transparent;
+  color: var(--muted, inherit);
+  font-size: 16px;
+  cursor: pointer;
+}
+.rmq {
+  font-size: 14px;
+  white-space: nowrap;
+}
+.rmq .btn {
+  min-height: 36px;
+  padding: 0 12px;
+}
+.smpmini {
+  margin-top: 12px;
+  text-align: center;
+}
+.smpmini .sxbox,
+.smpmini .editbox {
+  text-align: start;
+}
+.smpbtn {
+  min-height: 44px;
+  font-size: 15px;
+  color: var(--stamp);
+  border: 1.5px solid var(--stamp);
+  background: var(--stamp-soft);
+  padding: 0 18px;
+}
+.donescr {
+  justify-content: flex-start !important;
+  overflow-y: auto;
+  padding-top: calc(env(safe-area-inset-top, 0px) + 26px) !important;
+  padding-bottom: 40px;
+}
+.donescr .dchk {
+  font-size: 64px !important;
+}
+.donescr .dt {
+  font-size: 26px !important;
+}
+.donescr .dk {
+  font-size: 34px !important;
+}
+.donescr .dcard {
+  min-height: 72px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  width: 100%;
+  max-width: 460px;
+  background: rgba(255, 255, 255, 0.16);
+  border-radius: 14px;
+  padding: 10px 14px;
+  text-align: start;
+  font-size: 16px;
+}
+.donescr .drow {
+  display: flex;
+  justify-content: space-between;
+  gap: 10px;
+  align-items: baseline;
+}
+.donescr .dsub {
+  font-size: 14px;
+  opacity: 0.9;
+}
+.donescr ul {
+  margin: 6px 0 0;
+  padding-inline-start: 20px;
+}
+.donescr li {
+  font-size: 15px;
+  font-weight: 700;
+}
+.donescr .dbtn {
+  width: 70%;
+  min-height: 56px;
+  font-size: 19px;
+  font-weight: 800;
+  background: #fff;
+  color: var(--ok);
+  border-radius: 14px;
+  margin-top: 6px;
+}
+.donescr {
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: stretch !important;
+  justify-content: flex-start !important;
+  gap: 0 !important;
+  padding: 0 !important;
+  overflow: hidden !important;
+  height: 100vh;
+  height: 100dvh;
+  cursor: default;
+}
+.donescr .dtop {
+  flex: none;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  padding: calc(env(safe-area-inset-top, 0px) + 14px) 16px 10px;
+  text-align: center;
+}
+.donescr .dtop .dchk {
+  font-size: 44px !important;
+  line-height: 1;
+}
+.donescr .dtop .dt {
+  font-size: 22px !important;
+}
+.donescr .dtop .dk {
+  font-size: 30px !important;
+}
+.donescr .dtop .dm {
+  font-size: 16px;
+}
+.donescr .dscroll {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  padding: 4px 16px 16px;
+}
+.donescr .dscroll .dcard {
+  flex: none;
+}
+.donescr.nobtn {
+  cursor: pointer;
+  padding-bottom: calc(env(safe-area-inset-bottom, 0px) + 10px) !important;
+}
+.donescr .dfoot {
+  flex: none;
+  padding: 12px 16px calc(env(safe-area-inset-bottom, 0px) + 14px);
+  background: var(--ok);
+  box-shadow: 0 -6px 14px rgba(0, 0, 0, 0.18);
+  display: flex;
+  justify-content: center;
+}
+.donescr .dfoot .dbtn {
+  width: 100%;
+  max-width: 460px;
+  margin: 0;
+  min-height: 56px;
+}
+.postb {
+  display: inline-block;
+  font-size: 11px;
+  font-weight: 800;
+  color: var(--wait);
+  background: var(--wait-soft);
+  border-radius: 6px;
+  padding: 0 6px;
+  vertical-align: middle;
+}
+.amend {
+  margin-top: 12px;
+  padding-top: 10px;
+  border-top: 1px dashed var(--line);
+}
+.botbar .btn.back {
+  flex: 0 0 32% !important;
+}
+.botbar .btn.confirm {
+  flex: 1 1 auto !important;
+  font-size: 17px !important;
+}
+.sxtop {
+  gap: 8px;
+  margin-bottom: 8px;
+}
+.sxmic {
+  min-height: 52px;
+  flex: 1 1 40%;
+  font-size: 17px;
+  font-weight: 800;
+  border: 2px solid var(--stamp);
+  color: var(--stamp);
+  background: var(--stamp-soft);
+  border-radius: 14px;
+}
+.rmbtns {
+  display: flex;
+  gap: 6px;
+  flex: 0 0 auto;
+}
+.fixb {
+  min-height: 40px;
+  padding: 0 12px;
+  border: 1.5px solid var(--ok);
+  border-radius: 10px;
+  background: transparent;
+  color: var(--ok);
+  font-size: 14px;
+  font-weight: 800;
+  cursor: pointer;
+}
+li.fixedli {
+  list-style: none;
+  color: var(--ok);
+  font-weight: 700;
+}
+li.fixedli small {
+  opacity: 0.8;
+}
+.stepbar .stepitemsbtn {
+  min-height: 44px !important;
+  font-size: 15px !important;
+  color: var(--muted, inherit) !important;
+  font-weight: 600 !important;
+}
+.accbody {
+  padding: 10px 12px;
+  border: 2px solid var(--line);
+  border-top: 0;
+  border-radius: 0 0 14px 14px;
+}
+.stepdef.smp {
+  color: var(--stamp);
+}
+/* v92 (شاسی): هدر با برچسب شماره شاسی، یک دکمه‌ی ایراد، صفحه‌ی شناسایی با مقیاس نوشتار ثابت، صفحه‌ی اصلاح اشتباه */
+.carinfo.ch .ci1 {
+  display: flex !important;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: nowrap;
+}
+.carinfo.ch .cnum small {
+  display: block;
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--muted, inherit);
+  margin-bottom: 2px;
+}
+.carinfo.ch .cnum .num {
+  font-size: 28px;
+  line-height: 1.1;
+}
+.carinfo.ch .cside {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 6px;
+}
+.carinfo.ch .cfuel {
+  padding: 6px 14px;
+  border: 2px solid var(--stamp);
+  border-radius: 999px;
+  background: var(--stamp-soft);
+  font-size: 16px;
+  font-weight: 800;
+  white-space: nowrap;
+}
+.stepbtns .stepng:only-child {
+  width: 100%;
+}
+/* v93 (شاسی): چیدمان یکدست، پر کردن فضای خالی، فهرست کسری بلند با دکمه‌های پایین */
+.stepbar.chs {
+  display: flex;
+  flex-direction: column;
+}
+.stepbar.chs > .stepcur.fillc,
+.stepbar.chs > .stepcur.idpage {
+  flex: 1 1 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  min-height: 0;
+}
+.stepbar.chs > .stepcur > .btn.sm {
+  align-self: flex-start;
+}
+.secsum {
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--muted, inherit);
+}
+.stepcur.fillc .stepitemsbtn {
+  width: 100%;
+  min-height: 56px !important;
+  font-size: 17px !important;
+  border-radius: 14px;
+}
+.stepcur.fillc .tiles {
+  flex: 1 1 auto;
+  margin: 0;
+  gap: 0;
+  min-height: 170px;
+}
+.stepcur.fillc .tiles.one .tile {
+  flex: 1 1 100% !important;
+  min-height: 170px !important;
+  font-size: 26px !important;
+  border-radius: 18px;
+}
+.stepcur.fillc .tile b {
+  font-size: 34px !important;
+}
+.stepcur.fillc .smpmini {
+  margin-top: 0;
+  width: 100%;
+}
+.stepcur.fillc .smpbtn {
+  width: 100%;
+  min-height: 56px;
+  font-size: 17px;
+  border-radius: 14px;
+}
+.stepcur.shs .chipsbox {
+  flex: 1 1 auto;
+  min-height: 160px;
+  overflow-y: auto;
+}
+.stepcur.shs .shbtm {
+  margin-top: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.stepcur.shs .shbtm .btn {
+  width: 100%;
+  margin: 0;
+}
+.idpage .corrbtn {
+  margin-top: auto;
+}
+/* v94 (شاسی): ایرادهای پرتکرار، نوار ایراد پایین، دکمه‌ی نمونه در کادر بالا */
+.carinfo.ch .smppill {
+  min-height: 36px;
+  padding: 2px 12px;
+  border: 2px solid var(--stamp);
+  border-radius: 999px;
+  background: var(--surface);
+  color: var(--stamp);
+  font: inherit;
+  font-size: 14px;
+  font-weight: 800;
+  cursor: pointer;
+  white-space: nowrap;
+}
+.stepcur.fillc .chipsbox.fq {
+  flex: 0 1 auto;
+  min-height: 150px;
+  max-height: calc(100vh - 690px);
+  max-height: calc(100dvh - 690px);
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+}
+.stepcur.fillc .chips .pick {
+  min-height: 52px !important;
+  font-size: 16px !important;
+}
+.fqbtm {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin-top: auto;
+}
+.fqbtm .btn {
+  width: 100%;
+  margin: 0;
+  min-height: 56px;
+  font-size: 18px;
+}
+.carinfo.ch .cfuel,
+.carinfo.ch .smppill {
+  box-sizing: border-box;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 118px;
+  min-height: 38px;
+  padding: 2px 14px;
+  font-family: inherit;
+  font-size: 15px;
+  font-weight: 800;
+  line-height: 1;
+  border: 2px solid var(--stamp);
+  border-radius: 999px;
+  white-space: nowrap;
+}
+.carinfo.ch .cfuel {
+  background: var(--stamp-soft);
+  color: var(--stamp);
+}
+/* v95 (شاسی): قاب ثابت هر مرحله؛ کل صفحه اسکرول نمی‌خورد و فقط فهرست‌های داخلی اسکرول می‌شوند */
+html:has(.stepbar.chs),
+body:has(.stepbar.chs) {
+  overflow: hidden;
+}
+body:has(.stepbar.chs) .botspace {
+  display: none;
+}
+.stepbar.chs {
+  height: calc(100vh - 96px - env(safe-area-inset-bottom, 0px));
+  height: calc(100dvh - 96px - env(safe-area-inset-bottom, 0px));
+  min-height: 0 !important;
+  max-height: none !important;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+.stepbar.chs > .carinfo,
+.stepbar.chs > .wiz,
+.stepbar.chs > .undobar {
+  flex: 0 0 auto;
+}
+.stepbar.chs > .undobar {
+  margin: 6px 0;
+}
+.stepbar.chs > .stepcur {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+}
+.stepbar.chs > .stepcur.fillc {
+  overflow: hidden;
+}
+.stepcur.fillc > ul.stepdef {
+  max-height: 132px;
+  overflow-y: auto;
+  flex: 0 0 auto;
+}
+.stepcur.fillc .chipsbox.fq {
+  flex: 1 1 auto;
+  min-height: 0;
+  max-height: none;
+}
+.stepcur.shs .chipsbox {
+  min-height: 0;
+}
+.ngbar {
+  width: 100%;
+  min-height: 60px;
+  border: 2px solid #e04848;
+  border-radius: 16px;
+  background: color-mix(in srgb, #e04848 15%, var(--surface));
+  color: var(--ink);
+  font: inherit;
+  font-size: 18px;
+  font-weight: 900;
+  cursor: pointer;
+}
+.stepcur.shs .chips .pick {
+  min-height: 56px !important;
+  font-size: 17px !important;
+}
+.idpage .kvs {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+.idpage .kv {
+  padding: 10px 12px;
+  border: 1.5px solid var(--line);
+  border-radius: 12px;
+}
+.idpage .kv small {
+  display: block;
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--muted, inherit);
+  margin-bottom: 2px;
+}
+.idpage .kv b {
+  font-size: 22px;
+  font-weight: 800;
+  line-height: 1.3;
+}
+.idpage .kv b.num {
+  font-size: 24px;
+  letter-spacing: 0.04em;
+}
+.corrbtn {
+  width: 100%;
+  min-height: 52px;
+  margin-top: 14px;
+  border: 2px solid var(--stamp);
+  color: var(--stamp);
+  background: var(--stamp-soft);
+  font-size: 17px;
+  font-weight: 800;
+  border-radius: 14px;
+}
+.corrpage {
+  padding: 6px 0;
+}
+.corrpage .corrq {
+  font-size: 20px;
+  font-weight: 800;
+  margin: 8px 0 12px;
+}
+.corrpick {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin: 0 0 14px;
+}
+.corrbig {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  min-height: 72px;
+  padding: 10px 16px;
+  border: 2px solid var(--stamp);
+  border-radius: 16px;
+  background: var(--stamp-soft);
+  color: var(--ink);
+  font: inherit;
+  cursor: pointer;
+}
+.corrbig span {
+  font-size: 18px;
+  font-weight: 800;
+}
+.corrbig b {
+  font-size: 22px;
+  font-weight: 800;
+}
+.corrform {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.corrcur {
+  padding: 10px 14px;
+  border: 1.5px solid var(--line);
+  border-radius: 12px;
+}
+.corrcur small {
+  display: block;
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--muted, inherit);
+}
+.corrcur b {
+  font-size: 26px;
+  font-weight: 800;
+}
+.corrreasons {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 0;
+}
+.corrreasons .pick {
+  flex: 1 1 calc(50% - 8px);
+  min-height: 46px;
+  font-size: 15px;
+  font-weight: 800;
+  border: 2px solid var(--line);
+  border-radius: 12px;
+  background: var(--surface);
+  color: var(--ink);
+  cursor: pointer;
+  padding: 6px 10px;
+}
+.corrreasons .pick[aria-pressed="true"] {
+  border-color: var(--stamp);
+  background: var(--stamp-soft);
+  color: var(--stamp);
+}
+.corrbtns {
+  display: flex;
+  gap: 12px;
+}
+.corrbtns .btn {
+  flex: 1 1 0;
+  min-height: 56px;
+  font-size: 17px;
+  font-weight: 800;
+  border-radius: 14px;
+}
+.stepok2 {
+  width: 100%;
+  min-height: 56px;
+  font-size: 18px;
+  margin-top: 10px;
+}
+.wizcard {
+  padding: 14px 10px 6px;
+}
+.focusbar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 4px 10px;
+  font-size: 14px;
+  flex-wrap: wrap;
+}
+.focusbar .num {
+  font-size: 18px;
+  letter-spacing: 0.04em;
+  flex: 1 1 90px;
+  min-width: 0;
+}

@@ -1,0 +1,561 @@
+/* فصل 10 — هویت بصری صنعتی (شاسی تا نهایی پایین)
+   الهام: اصول ISA-101 (رنگ فقط برای وضعیت، زمینه‌ی خاکستری آرام، افزونگی رنگ+نماد+متن)، سامانه‌های MES/کنترل کیفیت.
+   فقط ظاهر؛ ساختار صفحه و رفتار برنامه تغییر نمی‌کند. این فایل باید آخر بیاید. */
+
+:root {
+  --bg: #e6eaf0;
+  --surface: #ffffff;
+  --surface-2: #f0f3f8;
+  --line: #cbd3de;
+  --ink: #151d2b;
+  --muted: #465167;
+  --stamp: #1f4a8a;
+  --stamp-soft: #dfe8f5;
+  --on-stamp: #ffffff;
+  --on-ok: #ffffff;
+  --open: #b3321f;
+  --open-soft: #fbe5e0;
+  --wait: #8a5600;
+  --wait-soft: #fbeed0;
+  --ok: #16744a;
+  --ok-soft: #d9efe3;
+  --chrome: #1a2740;
+  --on-chrome: #f2f5fa;
+  --chrome-soft: #8fa0bd;
+  --shadow: 0 1px 2px rgba(18, 28, 45, 0.08), 0 4px 14px rgba(18, 28, 45, 0.05);
+  --radius: 14px;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0c111a;
+    --surface: #151c29;
+    --surface-2: #1b2434;
+    --line: #2a3549;
+    --ink: #e8edf6;
+    --muted: #b2bdd2;
+    --stamp: #8db0ec;
+    --stamp-soft: #1f2d4a;
+    --on-stamp: #0c111a;
+    --on-ok: #07210f;
+    --open: #ff9d86;
+    --open-soft: #3a1d18;
+    --wait: #f0c26a;
+    --wait-soft: #35280d;
+    --ok: #6fd3a0;
+    --ok-soft: #12301f;
+    --chrome: #1d2a44;
+    --on-chrome: #e8edf6;
+    --chrome-soft: #8fa0bd;
+    --shadow: 0 1px 2px rgba(0, 0, 0, 0.4);
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #0c111a;
+  --surface: #151c29;
+  --surface-2: #1b2434;
+  --line: #2a3549;
+  --ink: #e8edf6;
+  --muted: #b2bdd2;
+  --stamp: #8db0ec;
+  --stamp-soft: #1f2d4a;
+  --on-stamp: #0c111a;
+  --on-ok: #07210f;
+  --open: #ff9d86;
+  --open-soft: #3a1d18;
+  --wait: #f0c26a;
+  --wait-soft: #35280d;
+  --ok: #6fd3a0;
+  --ok-soft: #12301f;
+  --chrome: #1d2a44;
+  --on-chrome: #e8edf6;
+  --chrome-soft: #8fa0bd;
+  --shadow: 0 1px 2px rgba(0, 0, 0, 0.4);
+}
+
+/* ---- سربرگ برنامه ---- */
+.wrap > .top {
+  flex-direction: column;
+  align-items: stretch;
+  gap: 6px;
+  padding: 12px 16px;
+  min-height: 0;
+  background: var(--chrome);
+  color: var(--on-chrome);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+}
+.wrap > .top .brand {
+  flex-wrap: nowrap;
+  justify-content: space-between;
+}
+.wrap > .top .proto {
+  flex: 1 1 0;
+  text-align: start;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.wrap > .top .menubtn {
+  flex: none;
+}
+.wrap > .top h1 {
+  flex: 0 0 auto;
+  white-space: nowrap;
+  color: var(--on-chrome);
+  font-size: 19px;
+  font-weight: 800;
+  letter-spacing: 0;
+}
+.wrap > .top .proto {
+  background: rgba(255, 255, 255, 0.12);
+  color: var(--chrome-soft);
+  border-radius: 999px;
+  padding: 1px 10px;
+  font-size: 11px;
+}
+.wrap > .top .menubtn {
+  min-height: var(--menu-tap, 54px);
+  min-width: var(--menu-tap, 54px);
+  padding: 0 10px;
+  background: rgba(255, 255, 255, 0.1);
+  border-color: rgba(255, 255, 255, 0.2);
+  color: var(--on-chrome);
+}
+.wrap > .top .who2 {
+  margin: 0;
+  padding: 0;
+  line-height: 1.5;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  flex-wrap: wrap;
+  color: var(--chrome-soft);
+}
+.wrap > .top .whoin {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2px 14px;
+  align-items: baseline;
+}
+.wrap > .top .whoin .nm {
+  color: var(--on-chrome);
+  font-weight: 800;
+  font-size: 15px;
+}
+.wrap > .top small,
+.wrap > .top .sync {
+  color: var(--chrome-soft);
+  font-size: 12px;
+}
+
+/* ---- کارت و دکمه و ورودی ---- */
+.card {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+}
+.btn {
+  min-height: 48px;
+  border: 1.5px solid var(--line);
+  border-radius: 12px;
+  background: var(--surface);
+  color: var(--ink);
+  font-weight: 700;
+  transition:
+    background 0.12s,
+    border-color 0.12s,
+    transform 0.05s;
+}
+.btn:active {
+  transform: translateY(1px);
+}
+.btn:focus-visible,
+.in:focus-visible,
+.wst:focus-visible {
+  outline: 3px solid var(--stamp-soft);
+  outline-offset: 1px;
+  border-color: var(--stamp);
+}
+.btn.primary {
+  background: var(--stamp);
+  border-color: var(--stamp);
+  color: var(--on-stamp);
+}
+.btn.ok {
+  background: var(--ok);
+  border-color: var(--ok);
+  color: var(--on-ok);
+}
+.in {
+  min-height: 52px;
+  border: 2px solid var(--line);
+  border-radius: 12px;
+  background: var(--surface);
+  color: var(--ink);
+  font-size: 18px;
+  font-weight: 700;
+}
+.in:focus {
+  border-color: var(--stamp);
+  box-shadow: 0 0 0 4px var(--stamp-soft);
+  outline: 0;
+}
+
+/* ---- نوار تب پایین/بالا ---- */
+.tabs.main .tab {
+  min-height: var(--menu-tap, 54px);
+  border-radius: 12px;
+  font-weight: 700;
+}
+.tabs.main .tab[aria-selected="true"] {
+  background: var(--chrome);
+  border-color: var(--chrome);
+  color: var(--on-chrome);
+}
+
+/* ---- برگه‌ی بازدید (ویزارد) ---- */
+.stepbar.chs {
+  margin-inline: -16px;
+  padding: 14px 16px !important;
+  background: var(--surface);
+  border: 0 !important;
+  border-top: 5px solid var(--stamp) !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+}
+@media (min-width: 700px) {
+  .stepbar.chs {
+    margin-inline: 0;
+    border: 1px solid var(--line) !important;
+    border-top: 5px solid var(--stamp) !important;
+    border-radius: var(--radius) !important;
+    box-shadow: var(--shadow) !important;
+    min-height: 0;
+  }
+}
+.carinfo {
+  display: block;
+  margin: 0 0 14px;
+  padding: 12px 14px;
+  background: var(--surface-2);
+  border: 1px solid var(--line);
+  border-radius: 12px;
+}
+.carinfo .ci1 {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+.carinfo .cnum small {
+  display: block;
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 700;
+}
+.carinfo .cnum b {
+  font-size: 30px;
+  line-height: 1.1;
+  font-weight: 900;
+  color: var(--ink);
+  letter-spacing: 0.06em;
+}
+.carinfo .cfuel {
+  padding: 4px 14px;
+  border: 1.5px solid var(--stamp);
+  border-radius: 999px;
+  background: var(--stamp-soft);
+  color: var(--stamp);
+  font-size: 13px;
+  font-weight: 800;
+}
+.carinfo .ci2 {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 16px;
+  margin-top: 8px;
+  padding-top: 8px;
+  border-top: 1px dashed var(--line);
+  color: var(--muted);
+  font-size: 13px;
+  font-weight: 600;
+}
+.carinfo .ci2 > span {
+  border: 0 !important;
+  padding: 0 !important;
+}
+
+/* مراحل */
+.wiz {
+  margin-bottom: 14px;
+}
+.wst i {
+  width: 34px;
+  height: 34px;
+  border: 2.5px solid var(--line);
+  background: var(--surface);
+  font-size: 15px;
+}
+.wst::after {
+  top: 17px;
+  left: calc(-50% + 19px);
+  width: calc(100% - 38px);
+  height: 3px;
+  background: var(--line);
+}
+.wst.done i {
+  background: var(--ok);
+  border-color: var(--ok);
+}
+.wst.done::after {
+  background: var(--ok);
+}
+.wst.cur i {
+  width: 42px;
+  height: 42px;
+  margin-top: -4px;
+  background: var(--stamp);
+  border-color: var(--stamp);
+  font-size: 18px;
+  box-shadow: 0 0 0 4px var(--stamp-soft);
+}
+.wst.cur::after {
+  top: 17px;
+}
+.wst.todo span {
+  color: var(--muted);
+}
+
+.histbar {
+  min-height: 46px;
+  background: var(--surface-2);
+  border: 1px solid var(--line);
+  border-radius: 12px;
+}
+
+.stepbar .steplb {
+  margin: 10px 0 4px !important;
+  padding-inline-start: 12px;
+  border-inline-start: 5px solid var(--stamp);
+  font-size: 26px !important;
+  line-height: 1.25;
+}
+.stepbar .secsum {
+  padding-inline-start: 17px;
+  margin-bottom: 12px;
+  color: var(--muted);
+  font-weight: 600;
+}
+.stepbar .stepitemsbtn {
+  width: 100%;
+  min-height: 54px;
+  justify-content: space-between;
+  border: 1.5px solid var(--line);
+  border-radius: 12px;
+  background: var(--surface);
+  font-size: 16px;
+  font-weight: 800;
+  box-shadow: var(--shadow);
+}
+.ngbar {
+  min-height: 54px;
+  border: 2px solid var(--open);
+  border-radius: 12px;
+  background: var(--open-soft);
+  color: var(--open);
+  font-weight: 800;
+  font-size: 17px;
+}
+.stepfix {
+  border-radius: 12px;
+}
+
+/* نوار پایین (برگشت / نمونه / تأیید) */
+.botbar {
+  gap: 8px;
+  padding: 10px 12px calc(10px + env(safe-area-inset-bottom, 0px));
+  background: var(--surface);
+  border-top: 1px solid var(--line);
+  box-shadow: 0 -4px 16px rgba(18, 28, 45, 0.1);
+}
+.botbar .btn {
+  min-height: 54px;
+  border-radius: 12px;
+  font-size: 15px;
+  white-space: nowrap;
+}
+.botbar .btn.back {
+  flex: 0 0 80px !important;
+  gap: 2px;
+  padding-inline: 2px;
+}
+.botbar .btn.smpbtn {
+  flex: 0 0 50px;
+  padding: 0;
+  border-color: var(--stamp);
+  color: var(--stamp);
+}
+.botbar .btn.confirm,
+.botbar .btn.ok {
+  flex: 1 1 auto;
+  background: var(--ok);
+  border-color: var(--ok);
+  color: var(--on-ok);
+}
+@media (min-width: 700px) {
+  .botbar {
+    inset-inline: 0;
+    width: min(1000px, 100%);
+    margin-inline: auto;
+    border: 1px solid var(--line);
+    border-bottom: 0;
+    border-radius: var(--radius) var(--radius) 0 0;
+  }
+}
+.botbar .btn.confirm {
+  gap: 6px;
+  font-size: 15px !important;
+}
+
+/* فهرست انتخاب (گاز، نهایی بالا، نهایی پایین) و نوار انتخاب بخش */
+.lkpick,
+.scopebar {
+  border-radius: var(--radius);
+}
+.pickrow .pk,
+.pickgrp .pk,
+.pickgrp button {
+  min-height: 52px;
+  border: 1.5px solid var(--line);
+  border-radius: 12px;
+  background: var(--surface);
+  font-weight: 800;
+}
+.pickrow.col .pk {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 2px 14px;
+  padding: 8px 14px;
+  text-align: start;
+}
+.pickrow.col .pk small {
+  display: inline;
+  font-size: 12px;
+}
+.pickrow.col .pk small:last-child {
+  margin-inline-start: auto;
+}
+.pickrow .pk:hover,
+.pickgrp button:hover {
+  border-color: var(--stamp);
+  background: var(--stamp-soft);
+}
+.pickgrp [aria-pressed="true"],
+.pickgrp .on {
+  background: var(--stamp);
+  border-color: var(--stamp);
+  color: var(--on-stamp);
+}
+
+/* صفحه‌ی تأیید نهایی: نوار سبز بالا، کارت‌های سفید با متن تیره (خوانا روی هر صفحه‌ی نمایش) */
+.donescr {
+  inset: 0;
+  height: auto !important;
+  background: var(--bg);
+  color: var(--ink);
+}
+.donescr .dtop {
+  background: var(--ok);
+  color: var(--on-ok);
+  border-radius: 0 0 22px 22px;
+  padding-bottom: 16px;
+  box-shadow: var(--shadow);
+}
+.donescr .dscroll {
+  padding-top: 14px;
+}
+.donescr .dcard {
+  background: var(--surface);
+  color: var(--ink);
+  border: 1px solid var(--line);
+  border-inline-start: 6px solid var(--ok);
+  border-radius: 12px;
+  box-shadow: var(--shadow);
+}
+.donescr .dcard.dng {
+  border-inline-start-color: var(--open);
+}
+.donescr .dcard.dsh {
+  border-inline-start-color: var(--wait);
+}
+.donescr .dcard.dsm {
+  border-inline-start-color: var(--stamp);
+}
+.donescr .dcard li::marker {
+  color: currentColor;
+}
+.donescr .dcard .dsub,
+.donescr .dcard .fxmeta {
+  opacity: 1;
+  color: var(--muted);
+  font-weight: 600;
+}
+.donescr .dfoot {
+  background: var(--surface);
+  border-top: 1px solid var(--line);
+  box-shadow: 0 -4px 16px rgba(18, 28, 45, 0.1);
+}
+.donescr .dbtn {
+  background: var(--ok);
+  color: var(--on-ok);
+}
+
+.donescr .dexp {
+  gap: 8px;
+  border-inline-start-color: var(--stamp);
+}
+.donescr .dexp .exportbar {
+  display: flex;
+  gap: 10px;
+  margin: 0;
+}
+.donescr .dexp .exportbar .btn {
+  flex: 1;
+  min-height: 48px;
+  font-size: 16px;
+}
+
+/* وضعیت‌ها: رنگ + نماد + متن (افزونگی برای کم‌بینا/رنگ‌کور) */
+.sync i {
+  border-radius: 50%;
+}
+.hint {
+  color: var(--muted);
+}
+
+/* قاب مرحله‌ای: ارتفاع با ضریب اندازهٔ متن (zoom) هم‌خوان باشد تا نه فضای خالی بماند و نه زیر نوار پایین برود */
+.wrap {
+  --z: 1;
+}
+html[data-tsz="s"] .wrap {
+  --z: 0.92;
+}
+html[data-tsz="l"] .wrap {
+  --z: 1.12;
+}
+.stepbar.chs {
+  height: calc((100vh - 16px - env(safe-area-inset-bottom, 0px)) / var(--z) - 80px);
+  height: calc((100dvh - 16px - env(safe-area-inset-bottom, 0px)) / var(--z) - 80px);
+}
+
+/* نوار انتخاب بخش: فاصله از لبهٔ بالا و از کارت مشخصات */
+.scopebar {
+  margin-block: 6px 12px;
+}
+.scopebar .pickgrp {
+  gap: 8px;
+}

@@ -1,0 +1,764 @@
+/* فصل 7 — فهرست‌ها و فرم‌های مخصوص ایستگاه‌ها
+   ترتیب فایل‌های CSS مهم است (قاعده‌ی پایینی روی بالایی غلبه می‌کند). جابه‌جا نکنید. */
+
+tr.link:hover {
+  background: var(--surface-2);
+}
+
+.toast {
+  position: fixed;
+  inset-inline: 16px;
+  bottom: calc(16px + env(safe-area-inset-bottom, 0px));
+  margin-inline: auto;
+  max-width: 440px;
+  background: var(--ink);
+  color: var(--bg);
+  padding: 12px 18px;
+  border-radius: 12px;
+  font-weight: 700;
+  text-align: center;
+  z-index: 9;
+}
+@media (prefers-reduced-motion: no-preference) {
+  .toast {
+    animation: up 0.2s ease-out;
+  }
+  @keyframes up {
+    from {
+      transform: translateY(10px);
+      opacity: 0;
+    }
+  }
+}
+
+/* big numbers */
+.in.num {
+  font-size: 26px;
+  font-weight: 900;
+  letter-spacing: 0.1em;
+  min-height: 58px;
+}
+.kv b.num {
+  font-size: 22px;
+  font-weight: 900;
+  letter-spacing: 0.04em;
+  overflow-wrap: anywhere;
+}
+.ditem {
+  border: 1.5px solid var(--line);
+  border-radius: 12px;
+  padding: 10px 12px;
+  margin-top: 8px;
+}
+.ditem .dh {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+  flex-wrap: wrap;
+  font-weight: 800;
+}
+.ditem .dl {
+  margin-top: 6px;
+  font-size: 14px;
+}
+.ditem .dl small {
+  color: var(--muted);
+  font-weight: 700;
+}
+.chk {
+  display: inline-flex;
+  gap: 6px;
+  align-items: center;
+  margin: 4px 14px 4px 0;
+}
+.dchips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 6px;
+}
+.dchips .pick {
+  display: inline-flex;
+  grid-template-columns: none;
+  width: auto;
+  min-height: 40px;
+  margin: 0;
+  padding: 6px 14px;
+  font-size: 14px;
+}
+.kv b.dna {
+  font-size: 15px;
+  letter-spacing: 0;
+}
+.kvs {
+  grid-template-columns: repeat(auto-fit, minmax(min(140px, 100%), 1fr));
+}
+.kv {
+  min-width: 0;
+}
+.row > .hint.grow {
+  flex: 1 1 100%;
+}
+.bignum b {
+  font-size: 30px;
+  letter-spacing: 0.06em;
+  overflow-wrap: anywhere;
+}
+.bignum {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 6px 14px;
+  margin: 0 0 12px;
+  padding: 10px 14px;
+  border-radius: 12px;
+  background: var(--surface-2);
+  border: 1px solid var(--line);
+}
+.bignum small {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--muted);
+}
+.bignum b {
+  font-size: 38px;
+  font-weight: 900;
+  letter-spacing: 0.12em;
+}
+.fuelpick {
+  display: flex;
+  gap: 10px;
+  width: 100%;
+}
+.fbtn {
+  flex: 1;
+  min-height: 68px;
+  font-size: 22px;
+  font-weight: 900;
+  border-radius: 14px;
+  border: 3px solid var(--line);
+  background: var(--card, #fff);
+  color: inherit;
+  cursor: pointer;
+  font-family: inherit;
+}
+.fbtn.single {
+  border-color: #1d4ed8;
+  color: #1e40af;
+}
+.fbtn.dual {
+  border-color: #c2410c;
+  color: #9a3412;
+}
+.fbtn.padra {
+  border-color: #0f766e;
+  color: #115e59;
+}
+.fbtn.ex {
+  border-color: #7c3aed;
+  color: #5b21b6;
+}
+.fbtn.padra[aria-pressed="true"] {
+  background: #0f766e;
+  color: #fff;
+}
+.fbtn.ex[aria-pressed="true"] {
+  background: #7c3aed;
+  color: #fff;
+}
+.fbtn.single[aria-pressed="true"] {
+  background: #1d4ed8;
+  color: #fff;
+}
+.fbtn.dual[aria-pressed="true"] {
+  background: #c2410c;
+  color: #fff;
+}
+.fuelbar {
+  display: inline-block;
+  padding: 8px 16px;
+  border-radius: 12px;
+  font-weight: 900;
+  font-size: 20px;
+  margin-top: 8px;
+  border: 3px solid;
+}
+.fuelbar.single {
+  background: #dbeafe;
+  color: #1e40af;
+  border-color: #1d4ed8;
+}
+.fuelbar.dual {
+  background: #ffedd5;
+  color: #9a3412;
+  border-color: #c2410c;
+}
+.fuelbar.unk {
+  background: #f1f5f9;
+  color: #475569;
+  border-color: #94a3b8;
+  font-size: 15px;
+}
+.pickrow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 8px 0;
+}
+.pickrow .pk {
+  min-height: 56px;
+  padding: 6px 14px;
+  border-radius: 12px;
+  border: 2px solid var(--line);
+  background: var(--card, #fff);
+  font-size: 20px;
+  font-weight: 900;
+  letter-spacing: 0.06em;
+  cursor: pointer;
+  font-family: inherit;
+  color: inherit;
+}
+.pickrow .pk small {
+  display: block;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 0;
+  color: var(--muted);
+}
+.pickrow .pk[aria-pressed="true"] {
+  background: #1d4ed8;
+  color: #fff;
+  border-color: #1d4ed8;
+}
+.pickrow .pk[aria-pressed="true"] small {
+  color: #dbeafe;
+}
+button.btn[data-act="livescan"] {
+  min-height: 56px;
+  font-size: 15px;
+}
+#scanmodal {
+  position: fixed;
+  inset: 0;
+  z-index: 9999;
+  background: #000;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  padding: 12px;
+}
+#scanmodal video {
+  width: 100%;
+  max-width: 560px;
+  max-height: 62vh;
+  border-radius: 14px;
+  background: #111;
+  object-fit: cover;
+}
+#scanmodal .sc-frame {
+  position: absolute;
+  pointer-events: none;
+  border: 3px solid #ffd24a;
+  border-radius: 12px;
+  width: min(80vw, 440px);
+  height: min(30vw, 150px);
+}
+#scanmodal p {
+  color: #fff;
+  font-size: 16px;
+  font-weight: 700;
+  text-align: center;
+  margin: 0;
+}
+#scanmodal .btn {
+  min-height: 52px;
+  font-size: 17px;
+}
+div.f {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--muted);
+}
+div.f.grow {
+  flex: 1 1 100%;
+}
+.brow {
+  padding: 8px 0;
+  border-bottom: 1px dashed var(--line);
+}
+.brow .in,
+.brow .in.num {
+  font-size: 16px;
+  font-weight: 700;
+  min-height: 46px;
+  letter-spacing: 0;
+  padding: 8px 10px;
+}
+div.f .row .in {
+  flex: 1 1 240px;
+  min-width: 220px;
+}
+div.f .row .btn {
+  flex: 0 0 auto;
+}
+.cfgrow {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: 10px;
+  margin: 8px 0;
+}
+.cfgrow .in {
+  width: 90px;
+}
+/* v99 (فقط شاسی): لایه‌ی طراحی یکدست — توکن‌ها، هم‌ترازی، اندازه‌ی لمس ۵۲، آیکون SVG */
+:root {
+  --sp-1: 4px;
+  --sp-2: 8px;
+  --sp-3: 12px;
+  --sp-4: 16px;
+  --r-md: 14px;
+  --tap: 52px;
+  --fs-sm: 15px;
+  --fs-md: 17px;
+  --fs-title: 26px;
+}
+.ic {
+  width: 1.2em;
+  height: 1.2em;
+  flex: 0 0 auto;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2.4;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+.stepbar.chs .btn,
+.stepbar.chs .pick,
+.stepbar.chs .ngbar,
+.stepbar.chs .smppill,
+.stepbar.chs .fixb,
+.stepbar.chs .rmx,
+.botbar.chs .btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--sp-2);
+  line-height: 1.25;
+  text-align: center;
+}
+.stepbar.chs .btn,
+.stepbar.chs .pick,
+.stepbar.chs .ngbar {
+  min-height: var(--tap) !important;
+  border-radius: var(--r-md);
+}
+.stepbar.chs .btn.sm {
+  min-height: 44px !important;
+  font-size: var(--fs-sm);
+}
+.stepbar.chs .wst i {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+.stepbar.chs .wst i .ic {
+  width: 18px;
+  height: 18px;
+}
+.stepbar.chs .steplb {
+  font-size: var(--fs-title) !important;
+  line-height: 1.3;
+  margin: var(--sp-2) 0 var(--sp-1) !important;
+}
+.stepbar.chs .secsum,
+.stepbar.chs .hint {
+  font-size: var(--fs-sm);
+  line-height: 1.5;
+  color: var(--muted);
+  margin: 0;
+}
+.stepbar.chs ul.stepdef {
+  display: flex;
+  flex-direction: column;
+  gap: var(--sp-2);
+  margin: 0;
+  padding: 0;
+}
+.stepbar.chs li.rmli {
+  min-height: var(--tap);
+  padding: var(--sp-2) var(--sp-3);
+  gap: var(--sp-3);
+  border: 1.5px solid var(--line);
+  border-radius: var(--r-md);
+  background: var(--surface-2);
+  font-size: var(--fs-md);
+}
+.stepbar.chs li.rmli > span:first-child {
+  display: flex;
+  align-items: center;
+  gap: var(--sp-2);
+}
+.stepbar.chs .rmbtns {
+  gap: var(--sp-2);
+  align-items: center;
+}
+.stepbar.chs .fixb,
+.stepbar.chs .rmx {
+  min-height: 44px;
+  min-width: 44px;
+  border-radius: 10px;
+  font-size: var(--fs-sm);
+  font-weight: 800;
+}
+.stepbar.chs .carinfo.ch .ci2 {
+  align-items: center;
+  font-size: var(--fs-sm);
+}
+.stepbar.chs .stepitemsbtn,
+.stepbar.chs .ngbar {
+  font-size: var(--fs-md);
+}
+.botbar.chs {
+  gap: var(--sp-3);
+  padding: var(--sp-3) var(--sp-4) calc(var(--sp-3) + env(safe-area-inset-bottom, 0px));
+}
+.botbar.chs .btn {
+  min-height: 56px;
+  font-size: var(--fs-md) !important;
+  border-radius: var(--r-md);
+}
+.stepbar.chs :focus-visible,
+.botbar.chs :focus-visible {
+  outline: 3px solid var(--stamp);
+  outline-offset: 2px;
+}
+.stepbar.chs .btn:active,
+.stepbar.chs .pick:active,
+.botbar.chs .btn:active {
+  transform: scale(0.98);
+}
+
+/* v102 (فقط شاسی): نوار مراحل، کارت ایراد، بالای صفحه */
+.stepbar.chsx .wst.view i {
+  box-shadow:
+    0 0 0 3px var(--surface),
+    0 0 0 6px var(--ink);
+}
+.stepbar.chsx .wst.view span {
+  color: var(--ink);
+  font-weight: 900;
+}
+.stepbar.chsx .wst.ng i {
+  background: var(--ok);
+  border-color: var(--open);
+  position: relative;
+}
+.stepbar.chsx .wst.ng i::after {
+  content: "";
+  position: absolute;
+  top: -5px;
+  inset-inline-end: -5px;
+  width: 13px;
+  height: 13px;
+  border-radius: 50%;
+  background: var(--open);
+  border: 2px solid var(--surface);
+}
+.stepbar.chsx ul.stepdef li {
+  color: var(--ink);
+  font-weight: 700;
+}
+.stepbar.chsx ul.stepdef li.rmli {
+  border-inline-start: 6px solid var(--open);
+  padding-inline-start: 12px;
+}
+.stepbar.chsx ul.stepdef li.fixedli {
+  border-inline-start: 6px solid var(--ok);
+  padding-inline-start: 12px;
+}
+.stepbar.chsx ul.stepdef li.shli {
+  border-inline-start-color: var(--wait);
+}
+.stepbar.chsx ul.stepdef li.smli {
+  border-inline-start-color: var(--stamp);
+}
+.stepbar.chsx .rmbtns {
+  gap: 16px;
+}
+.stepbar.chsx .rmx {
+  opacity: 0.7;
+}
+.stepbar.chsx .stepfix {
+  min-height: 44px;
+  font-size: 15px;
+  font-weight: 700;
+  border: 1.5px solid var(--line);
+  color: var(--muted);
+  background: transparent;
+  margin-top: 8px;
+}
+.stepbar.chsx > .stepcur.viewpg {
+  display: flex;
+  flex-direction: column;
+}
+.stepbar.chsx > .stepcur.viewpg > .stepng {
+  margin-top: auto;
+}
+.stepbar.chsx .cnum small {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.stepbar.chsx .carinfo.ch .ci2 {
+  color: var(--ink);
+  font-weight: 700;
+  font-size: 15px;
+}
+.stepbar.chsx .carinfo.ch .ci2 span + span {
+  border-inline-start: 2px solid var(--line);
+  padding-inline-start: 12px;
+}
+
+/* v103 (فقط شاسی): خلاصه‌ی تأیید نهایی، بدون دکمه‌ی تکراری */
+.stepbar.chsx .stepok2 {
+  display: none;
+}
+.stepbar.chsx .finfo {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin: 8px 0 16px;
+}
+.stepbar.chsx .finfo div {
+  display: flex;
+  gap: 12px;
+  align-items: baseline;
+}
+.stepbar.chsx .finfo dt {
+  min-width: 92px;
+  color: var(--muted);
+  font-weight: 700;
+}
+.stepbar.chsx .finfo dd {
+  margin: 0;
+  font-weight: 800;
+}
+.stepbar.chsx .fsumcnt {
+  font-weight: 800;
+  font-size: 18px;
+  margin: 6px 0 4px;
+}
+.stepbar.chsx .fgrp {
+  margin-top: 16px;
+}
+.stepbar.chsx .fgrp h4 {
+  margin: 0 0 8px;
+  font-size: 17px;
+  font-weight: 900;
+}
+.stepbar.chsx .fgrp h4 small {
+  color: var(--muted);
+  font-weight: 700;
+  margin-inline-start: 10px;
+}
+.stepbar.chsx .fsum .stepfix {
+  margin-top: 16px;
+}
+.stepbar.chsx .fsum .card {
+  border: 0;
+  box-shadow: none;
+  background: transparent;
+  padding: 0;
+  margin-top: 20px;
+}
+.stepbar.chsx .fsum .card h2 {
+  font-size: 16px;
+  margin: 0 0 8px;
+}
+.stepbar.chsx .fsum .card .hint {
+  display: none;
+}
+.stepbar.chsx .fsum .card .row {
+  gap: 10px;
+}
+.stepbar.chsx .fsum .card .row .btn {
+  flex: 1 1 0;
+}
+
+.stepbar.chsx li.fixedli {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 6px;
+}
+.fxmeta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2px 14px;
+  font-size: 13px;
+  color: var(--muted);
+}
+.stepbar.chsx .fxmeta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 18px;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--muted);
+}
+.stepbar.chsx .amend li {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+/* v104 (فقط شاسی): دکمه‌ی نمونه در نوار پایین */
+.botbar.chsx .btn.back {
+  flex: 0 0 28% !important;
+}
+.botbar.chsx .smpbtn {
+  flex: 0 0 56px !important;
+  min-width: 56px;
+  padding: 0;
+  position: relative;
+  border: 2px solid var(--stamp);
+  color: var(--stamp);
+  background: var(--surface);
+  font-size: 22px;
+}
+.botbar.chsx .smpbtn .cnt {
+  position: absolute;
+  top: -8px;
+  inset-inline-end: -6px;
+  min-width: 22px;
+  height: 22px;
+  padding: 0 5px;
+  border-radius: 99px;
+  background: var(--stamp);
+  color: var(--on-stamp);
+  font-size: 13px;
+  font-weight: 800;
+  display: grid;
+  place-items: center;
+}
+.botbar.chsx .btn.confirm {
+  white-space: normal;
+  line-height: 1.25;
+  font-size: 16px !important;
+}
+
+/* v105 (فقط شاسی): صفحه‌ی سبز؛ جلوگیری از انتقال اسکرول به صفحه‌ی زیر */
+.donescr,
+.donescr .dscroll {
+  overscroll-behavior: contain;
+}
+.donescr .fxmeta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 16px;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+/* v106: قالب مرحله‌ای برای خط نهایی (EWT1)؛ رنگ ایراد (قرمز) و کسری (کهربایی) جدا */
+.stepbar.chsx {
+  --open: #d32f2f;
+  --open-soft: #fde4e4;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) .stepbar.chsx {
+    --open: #ff7a7a;
+    --open-soft: #3a1717;
+  }
+}
+:root[data-theme="dark"] .stepbar.chsx {
+  --open: #ff7a7a;
+  --open-soft: #3a1717;
+}
+.stepbar.chsx .wst.sh i {
+  background: #f5b800;
+  border-color: #f5b800;
+  color: #3a2a00;
+}
+.stepbar.chsx .wst.sh span {
+  color: #8a6500;
+}
+.stepbar.chsx ul.stepdef li.shli {
+  border-inline-start-color: #e3a008;
+}
+.dcard.dsh {
+  border-inline-start-color: #ffd54a;
+}
+.dcard.dsh li::marker {
+  color: #ffe08a;
+}
+.stepbar.chsx .opened {
+  margin-top: 10px;
+}
+.stepbar.chsx .opened small {
+  display: block;
+  color: var(--muted);
+  font-weight: 700;
+  margin-bottom: 4px;
+}
+
+.orig {
+  margin-top: 8px;
+}
+.orig summary {
+  cursor: pointer;
+  color: var(--muted);
+  font-weight: 700;
+  font-size: 14px;
+  padding: 6px 0;
+  list-style: none;
+}
+.orig summary::-webkit-details-marker {
+  display: none;
+}
+.orig .chips {
+  margin-top: 6px;
+}
+.orig .pick {
+  min-height: 36px;
+  padding: 2px 12px;
+  font-size: 14px;
+}
+.lgh h1 {
+  font-size: 44px;
+  font-weight: 800;
+  margin: 0;
+  line-height: 1.3;
+}
+.lgh .sub {
+  position: relative;
+  color: #0e2a66;
+  font-weight: 700;
+  font-size: 15px;
+  margin: 0 0 4px;
+}
+.pickcols {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+.pickcols > div {
+  min-width: 0;
+}
+.pickrow.col {
+  flex-direction: column;
+  flex-wrap: nowrap;
+}
+.pickrow.col .pk {
+  width: 100%;
+  text-align: center;
+}
+.lkpick.first {
+  order: 0;
+}

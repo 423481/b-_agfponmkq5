@@ -1,0 +1,457 @@
+/* فصل 5 — صفحه‌ی ورود
+   ترتیب فایل‌های CSS مهم است (قاعده‌ی پایینی روی بالایی غلبه می‌کند). جابه‌جا نکنید. */
+
+.lgh svg.bg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  opacity: 0.13;
+}
+.lgh .car {
+  position: relative;
+  width: min(300px, 76%);
+  margin: 6px auto 8px;
+  display: block;
+  opacity: 0.95;
+}
+.lgh h1 {
+  position: relative;
+  font-size: 22px;
+  font-weight: 800;
+  margin: 4px 0 2px;
+  color: #fff;
+}
+.lgh .fc {
+  position: relative;
+  font-size: 13px;
+  opacity: 0.8;
+  letter-spacing: 0.5px;
+}
+.lgh .thm {
+  position: absolute;
+  top: calc(env(safe-area-inset-top, 0px) + 10px);
+  inset-inline-start: 12px;
+  z-index: 2;
+  display: flex;
+  gap: 4px;
+}
+.lgh .thm button {
+  min-height: 34px;
+  min-width: 34px;
+  padding: 0 8px;
+  border-radius: 17px;
+  border: 1px solid rgba(255, 255, 255, 0.35);
+  background: rgba(255, 255, 255, 0.1);
+  color: #fff;
+  font-size: 15px;
+  cursor: pointer;
+}
+.lgh .thm button[aria-pressed="true"] {
+  background: #fff;
+  color: #1d2f6b;
+}
+.lgc {
+  position: relative;
+  z-index: 1;
+  margin: -36px 12px 0;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 22px;
+  padding: 22px 18px 18px;
+  box-shadow: 0 10px 30px rgba(10, 20, 60, 0.18);
+}
+.lgc h2 {
+  font-size: 19px;
+  margin: 0 0 4px;
+}
+.lgc .big {
+  font-size: 22px;
+  min-height: 56px;
+  text-align: center;
+  letter-spacing: 3px;
+}
+.lgc .pwr {
+  position: relative;
+}
+.lgc .pwr .in {
+  min-height: 56px;
+  padding-inline-end: 64px;
+}
+.lgc .eye {
+  position: absolute;
+  inset-inline-end: 6px;
+  top: 6px;
+  min-height: 44px;
+  min-width: 52px;
+  border: 0;
+  background: transparent;
+  font-weight: 700;
+  color: var(--stamp);
+  cursor: pointer;
+}
+.lgc .go {
+  min-height: 56px;
+  font-size: 18px;
+  width: 100%;
+  border-radius: 14px;
+}
+.lgc .lnk {
+  background: none;
+  border: 0;
+  color: var(--stamp);
+  font-weight: 700;
+  min-height: 44px;
+  cursor: pointer;
+  width: 100%;
+  margin-top: 4px;
+}
+.lgc .own {
+  margin-top: 12px;
+  padding-top: 12px;
+  border-top: 1px solid var(--line);
+}
+
+.lgt {
+  text-align: center;
+  color: var(--stamp);
+  margin-bottom: 16px;
+}
+.lgt h2 {
+  font-size: 19px;
+  margin: 4px 0 2px;
+  color: var(--ink);
+}
+.lgt p {
+  font-size: 13px;
+  color: var(--muted);
+  margin: 0 0 8px;
+}
+.lgt i {
+  display: block;
+  width: 44px;
+  height: 3px;
+  border-radius: 2px;
+  background: var(--stamp);
+  margin: 0 auto;
+}
+.fld {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  min-height: 66px;
+  padding: 6px 14px;
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  background: var(--surface-2);
+}
+.fld > svg {
+  width: 24px;
+  height: 24px;
+  color: var(--stamp);
+  flex: none;
+}
+.fld .tx {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  border-inline-start: 1px solid var(--line);
+  padding-inline-start: 12px;
+  min-width: 0;
+}
+.fld small {
+  font-size: 12px;
+  color: var(--muted);
+  font-weight: 700;
+}
+.fld input {
+  border: 0;
+  background: transparent;
+  color: var(--ink);
+  font-size: 17px;
+  font-weight: 700;
+  padding: 0;
+  min-height: 30px;
+  width: 100%;
+  outline: 0;
+}
+.fld:focus-within {
+  border-color: var(--stamp);
+  box-shadow: 0 0 0 3px var(--stamp-soft);
+}
+.fld .eye {
+  position: static;
+  min-width: 44px;
+}
+.lgc .go {
+  background: linear-gradient(90deg, #0b3a82, #2a44b0);
+  border: 0;
+}
+.lgu {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 6px 0;
+  margin: 16px 12px 0;
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--muted);
+}
+.lgu span {
+  padding: 0 12px;
+  border-inline-start: 1px solid var(--line);
+}
+.lgu span:last-child {
+  border-inline-start: 0;
+}
+.lgf {
+  text-align: center;
+  padding: 18px 12px 24px;
+  color: var(--muted);
+  font-size: 13px;
+}
+@media (min-width: 900px) and (orientation: landscape) {
+  .lgw {
+    flex-direction: row-reverse;
+    min-height: 100vh;
+  }
+  .lgh {
+    flex: 1.1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 40px;
+  }
+  .lgh .car {
+    width: min(440px, 80%);
+  }
+  .lgh h1 {
+    font-size: 30px;
+  }
+  .lgside {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    max-width: 560px;
+    margin-inline: auto;
+    width: 100%;
+  }
+  .lgc {
+    margin: 0 24px;
+  }
+}
+
+.lgw {
+  background: linear-gradient(180deg, #0e2250, #091737);
+  margin-bottom: -40px;
+  padding-bottom: 40px;
+}
+.lgh {
+  background: linear-gradient(180deg, #bfe0fb 0%, #7fb4e6 55%, #4f86c6 100%);
+  padding: calc(env(safe-area-inset-top, 0px) + 56px) 20px 120px;
+  min-height: 400px;
+}
+.lgh .sc {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  width: 100%;
+  height: 78%;
+  opacity: 1;
+}
+.lgh h1 {
+  color: #0e2a66;
+  font-size: 24px;
+  text-shadow: 0 1px 0 rgba(255, 255, 255, 0.5);
+}
+.lgh .fc {
+  color: #23407f;
+  opacity: 1;
+  font-weight: 700;
+  font-size: 14px;
+}
+.lgh .car {
+  position: absolute;
+  bottom: 60px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: min(240px, 62%);
+  margin: 0;
+  z-index: 1;
+}
+.lgh .thm button {
+  border-color: rgba(14, 42, 102, 0.35);
+  background: rgba(255, 255, 255, 0.55);
+  color: #0e2a66;
+}
+.lgh .thm button[aria-pressed="true"] {
+  background: #0e2a66;
+  color: #fff;
+}
+.lgc {
+  margin: -70px 14px 0;
+  background: rgba(255, 255, 255, 0.93);
+  backdrop-filter: blur(10px);
+  border-radius: 24px;
+}
+:root[data-theme="dark"] .lgc {
+  background: rgba(24, 30, 52, 0.93);
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) .lgc {
+    background: rgba(24, 30, 52, 0.93);
+  }
+}
+.lgf {
+  color: #9fb4dc;
+}
+@media (min-width: 900px) and (orientation: landscape) {
+  .lgh {
+    min-height: 100vh;
+    justify-content: flex-start;
+    padding-top: 90px;
+  }
+  .lgh .car {
+    width: min(380px, 60%);
+    bottom: 90px;
+  }
+  .lgc {
+    margin: 0 24px;
+  }
+}
+
+.lgc {
+  margin: -64px 22px 0;
+  padding: 16px 16px 12px;
+  border-radius: 20px;
+  font-weight: 400;
+}
+.lgt {
+  margin-bottom: 12px;
+}
+.lgt svg {
+  width: 26px;
+  height: 26px;
+}
+.lgt h2 {
+  font-size: 16px;
+  font-weight: 700;
+  margin: 2px 0;
+}
+.lgt p {
+  font-size: 11.5px;
+  font-weight: 400;
+  margin: 0 0 6px;
+}
+.lgt i {
+  width: 34px;
+  height: 2px;
+}
+.lgc form {
+  gap: 10px !important;
+}
+.fld {
+  min-height: 50px;
+  padding: 4px 12px;
+  border-radius: 12px;
+  gap: 10px;
+  background: rgba(240, 245, 252, 0.8);
+}
+.fld > svg {
+  width: 19px;
+  height: 19px;
+}
+.fld small {
+  font-size: 10.5px;
+  font-weight: 500;
+}
+.fld input {
+  font-size: 14px;
+  font-weight: 500;
+  min-height: 24px;
+}
+.fld input::placeholder {
+  font-size: 12.5px;
+  font-weight: 400;
+  opacity: 0.7;
+}
+.fld .eye {
+  min-height: 36px;
+  min-width: 40px;
+  font-size: 12px;
+  font-weight: 500;
+}
+.lgc .go {
+  min-height: 46px;
+  font-size: 15px;
+  font-weight: 700;
+  border-radius: 12px;
+  box-shadow: 0 6px 14px rgba(30, 60, 140, 0.3);
+}
+.lgc .lnk {
+  font-size: 12px;
+  font-weight: 500;
+  min-height: 36px;
+}
+.lgc .own {
+  margin-top: 6px;
+  padding-top: 8px;
+}
+.lgc .own .btn {
+  min-height: 36px;
+  font-size: 12px;
+  font-weight: 500;
+  padding: 0 12px;
+  width: 100%;
+}
+.lgh h1 {
+  font-size: 21px;
+  font-weight: 700;
+}
+.lgh .fc {
+  font-size: 12.5px;
+  font-weight: 500;
+}
+.lgf {
+  font-size: 11.5px;
+  font-weight: 400;
+  padding-top: 12px;
+}
+@media (min-width: 900px) and (orientation: landscape) {
+  .lgc {
+    margin: 0 40px;
+  }
+}
+.lgh .cars {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  width: 100%;
+  height: 150px;
+  object-fit: cover;
+  object-position: 50% 70%;
+  z-index: 1;
+  -webkit-mask-image: linear-gradient(180deg, transparent 0, #000 38%);
+  mask-image: linear-gradient(180deg, transparent 0, #000 38%);
+}
+.lgh {
+  padding-bottom: 170px;
+  min-height: 440px;
+}
+.lgh .cars {
+  height: 170px;
+  object-position: 50% 80%;
+  -webkit-mask-image: linear-gradient(180deg, transparent 0, #000 22%);
+  mask-image: linear-gradient(180deg, transparent 0, #000 22%);
+}
+.lgc {
+  margin-top: -26px;
+}
+@media (min-width: 900px) and (orientation: landscape) {
+  .lgh .cars {
+    height: 300px;
+  }
+}

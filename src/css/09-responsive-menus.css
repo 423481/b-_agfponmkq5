@@ -1,0 +1,991 @@
+/* عکس ورود یک بار تعریف می‌شود و دو جا استفاده می‌شود (حجم فایل نهایی کمتر می‌شود). */
+:root {
+  --img-login-top: url(../assets/login-top.webp);
+}
+
+/* فصل 9 — دسکتاپ، ورود نسخه‌ی جدید، مرکز مدیریت، منو، حالت دستکش، فرم‌های مرحله‌ای
+   ترتیب فایل‌های CSS مهم است (قاعده‌ی پایینی روی بالایی غلبه می‌کند). جابه‌جا نکنید. */
+
+@media (min-width: 900px) and (orientation: landscape) {
+  .lgw {
+    padding-bottom: 0;
+  }
+  .lgh .cars {
+    height: 58vh;
+    object-position: 50% 78%;
+  }
+  .botbar {
+    max-width: 1032px;
+    margin-inline: auto;
+    border-inline: 3px solid var(--stamp);
+    border-radius: 0;
+  }
+}
+
+/* v167.8: صفحه‌ی ورود با تصویر طلوع، دماوند و خودروها؛ کارت واقعی روی تصویر (فقط صفحه‌ی ورود) */
+.lgs {
+  position: relative;
+  width: calc(100vw / var(--z, 1));
+  margin-inline: calc(50% - 50vw / var(--z, 1));
+  margin-top: -16px;
+  margin-bottom: -40px;
+  padding-bottom: 40px;
+  min-height: calc(100dvh / var(--z, 1));
+  /* فرم با اندازهٔ انتخابی کاربر رشد می‌کند؛ کوچک‌سازی inline قدیمی متوقف می‌شود. */
+  zoom: 1 !important;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  background: #29497c;
+}
+.lgs::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: calc(100vw * 560 / 900);
+  bottom: 0;
+  background: linear-gradient(180deg, #566f9e 0, #3a72b8 22%, #2f64ab 55%, #29497c 100%);
+}
+.lgs-top {
+  position: relative;
+  z-index: 1;
+  aspect-ratio: 900/655;
+  background: var(--img-login-top) center top/100% 100% no-repeat;
+}
+.lgs::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  margin-bottom: 0;
+  aspect-ratio: 900/192;
+  background: url(../assets/login-ground.webp) center bottom/100% 100% no-repeat;
+  pointer-events: none;
+  z-index: 1;
+}
+.lgs .lgside {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  max-width: none;
+  margin: 0;
+  width: 100%;
+  position: relative;
+  z-index: 2;
+  padding-bottom: calc(100vw * 0.3 * 192 / 900);
+}
+.lgs .lgf {
+  margin-top: auto;
+  color: #cfdcf5;
+}
+.lgs .thm {
+  position: absolute;
+  top: calc(env(safe-area-inset-top, 0px) + 10px);
+  inset-inline-start: 12px;
+  z-index: 3;
+  display: flex;
+  gap: 4px;
+}
+.lgs .thm button {
+  min-height: var(--menu-tap);
+  min-width: var(--menu-tap);
+  padding: 0 8px;
+  border-radius: 17px;
+  border: 1px solid rgba(14, 42, 102, 0.35);
+  background: rgba(255, 255, 255, 0.6);
+  color: #0e2a66;
+  font-size: 15px;
+  cursor: pointer;
+}
+.lgs .thm button[aria-pressed="true"] {
+  background: #0e2a66;
+  color: #fff;
+}
+.lgs .lgc {
+  position: relative;
+  margin: 44px 18px 0;
+  padding: 0 0 14px;
+  background: var(--surface);
+  border: 1px solid rgba(255, 255, 255, 0.55);
+  border-radius: 22px;
+  box-shadow: 0 12px 30px rgba(6, 18, 60, 0.4);
+  backdrop-filter: none;
+}
+.lgs .lgc > * {
+  margin-inline: 18px;
+}
+.lgn-head {
+  margin: 0 !important;
+  height: 78px;
+  display: flex;
+  align-items: center;
+  padding-inline: 26px 0;
+  background: linear-gradient(90deg, #0b2f78, #123e96 60%, #0d3283);
+  border-radius: 22px 22px 0 0;
+  margin-bottom: 22px !important;
+}
+.lgn-head h2 {
+  margin: 0;
+  color: #fff;
+  font-size: 26px;
+  font-weight: 800;
+  padding-inline-start: 0;
+  flex: 1;
+  text-align: start;
+  position: relative;
+}
+.lgn-head h2::after {
+  content: "";
+  position: absolute;
+  inset-inline-end: auto;
+  inset-inline-start: calc(100% + 18px);
+  top: -6px;
+  height: 36px;
+}
+.lgn-head::before {
+  content: "";
+  width: 1px;
+  height: 38px;
+  background: rgba(255, 255, 255, 0.35);
+  order: 2;
+  margin-inline: 0 108px;
+}
+.lgn-seal {
+  position: absolute;
+  inset-inline-end: auto;
+  left: 18px;
+  top: -30px;
+  width: 88px;
+  height: 88px;
+  z-index: 3;
+  margin: 0 !important;
+  filter: drop-shadow(0 4px 10px rgba(6, 18, 60, 0.45));
+}
+.lgn-seal svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+.lgs .lgt {
+  margin-bottom: 12px;
+}
+.lgs .lgt p {
+  margin: 0;
+  font-size: 11.5px;
+  color: var(--muted);
+}
+.lgs .fld {
+  position: relative;
+  min-height: 56px;
+  margin-top: 6px;
+  padding: 4px 12px;
+  border: 1.5px solid #bccbe4;
+  border-radius: 14px;
+  background: var(--surface-2);
+}
+.lgs .fld > svg {
+  width: 30px;
+  height: 30px;
+  padding: 5px;
+  border-radius: 50%;
+  color: #0f3a8a;
+}
+.lgs .fld .tx {
+  border: 0;
+  padding: 0;
+}
+.lgs .fld small {
+  position: absolute;
+  top: -11px;
+  inset-inline-end: 14px;
+  padding: 0 8px;
+  background: var(--surface);
+  border-radius: 8px;
+  font-size: 13px;
+  font-weight: 800;
+  color: #0f3a8a;
+}
+.lgs .fld input {
+  font-size: 15px;
+}
+.lgs .fld input::placeholder {
+  font-size: 14px;
+  color: var(--muted);
+  opacity: 0.85;
+}
+.lgs .lnk {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: auto;
+  min-height: 36px;
+  margin: 0;
+  font-size: 13px;
+  font-weight: 600;
+  color: #123e96;
+  justify-content: flex-start;
+}
+.lgs .lnk i {
+  display: inline-grid;
+  place-items: center;
+  width: 22px;
+  height: 22px;
+  border-radius: 50%;
+  background: #123e96;
+  color: #fff;
+  font-style: normal;
+  font-size: 13px;
+  font-weight: 800;
+}
+.lgs .lgc .go {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  min-height: 54px;
+  font-size: 17px;
+  background: linear-gradient(90deg, #0b2f78, #1a4aa8);
+  box-shadow: 0 8px 16px rgba(14, 50, 130, 0.35);
+}
+.lgs .lgc .go svg {
+  width: 22px;
+  height: 22px;
+}
+
+/* تصویر هویتی همان فایل اصلی است؛ فقط ناحیهٔ کارت برای کنترل‌های لمسی رشد می‌کند. */
+.lgb {
+  --entry-tap: var(--menu-tap);
+  --entry-gap: 16px;
+  container-type: inline-size;
+  justify-content: flex-start;
+  gap: 0;
+  background: linear-gradient(180deg, #4f9dee calc(100% - 40px), #113d86 calc(100% - 40px));
+}
+.lgb::before,
+.lgb::after { display: none; }
+.lgb-sky {
+  flex: 1 0 0;
+  min-height: 0;
+  position: relative;
+  background:
+    radial-gradient(60% 18% at 20% 62%, rgba(255, 255, 255, 0.55), transparent 70%),
+    radial-gradient(50% 14% at 80% 38%, rgba(255, 255, 255, 0.45), transparent 70%),
+    radial-gradient(70% 16% at 55% 82%, rgba(255, 255, 255, 0.35), transparent 70%),
+    linear-gradient(180deg, #1d5cc2 0, #3a86e0 50%, #4f9dee 100%);
+}
+/* قاب نه‌تکه، خودروها و نشان‌ها را بدون کشیدگی نگه می‌دارد؛ تنها بدنهٔ کارت قد می‌کشد. */
+.lgb-b {
+  position: relative;
+  flex: none;
+  min-width: 0;
+  border-style: solid;
+  border-width: 89.84375cqw 12cqw 27.34375cqw;
+  border-image-source: url(../assets/login-card.webp);
+  border-image-slice: 920 123 280 123 fill;
+  border-image-repeat: stretch;
+}
+.lgb-foot { background: #113d86; }
+/* کلیدهای تم بالای تصویر می‌مانند تا روی لوگو قرار نگیرند. */
+.lgb .thm {
+  position: relative;
+  inset: auto;
+  display: flex;
+  justify-content: flex-start;
+  gap: 8px;
+  padding: 12px;
+}
+.lgb .thm button {
+  min-height: var(--entry-tap);
+  min-width: var(--entry-tap);
+  padding: 8px;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: var(--surface);
+  color: var(--ink);
+  cursor: pointer;
+}
+.lgb .thm button[aria-pressed="true"] {
+  background: var(--stamp);
+  color: var(--on-stamp);
+  border-color: var(--stamp);
+}
+.lgb-f {
+  position: relative;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: var(--entry-gap) 8px;
+  margin: 0;
+  padding: 16px 12px;
+  border: 1px solid var(--line);
+  border-top: 0;
+  border-radius: 0 0 18px 18px;
+  background: var(--surface);
+  color: var(--ink);
+  box-shadow: var(--shadow);
+}
+.lgb-f input {
+  min-width: 0;
+  width: 100%;
+  min-height: var(--entry-tap);
+  padding: 12px;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: var(--surface-2);
+  color: var(--ink);
+  font: inherit;
+}
+.lgb-f input::placeholder {
+  color: var(--muted);
+  opacity: 1;
+}
+.lgb-u { grid-column: 1 / -1; }
+.lgb-f button {
+  min-height: var(--entry-tap);
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  padding: 10px 12px;
+  background: var(--surface);
+  color: var(--stamp);
+  font: inherit;
+  font-weight: 700;
+  cursor: pointer;
+}
+.lgb-l,
+.lgb-go { grid-column: 1 / -1; }
+.lgb-l::after,
+.lgb-go::after { content: attr(aria-label); }
+.lgb-f .lgb-go {
+  background: var(--stamp);
+  border-color: var(--stamp);
+  color: var(--on-stamp);
+}
+.lgb-f :focus-visible,
+.lgb .thm button:focus-visible {
+  outline: 3px solid var(--stamp);
+  outline-offset: 3px;
+}
+.lgb-f button:active { transform: translateY(1px); }
+.lgb-msg {
+  margin: 12px 16px 0;
+  padding: 14px;
+  text-align: start;
+  color: var(--wait);
+  background: var(--wait-soft);
+  border: 1px solid var(--wait);
+  border-radius: 12px;
+  font-size: 0.9em;
+  line-height: 1.9;
+}
+html[data-glove="1"] .lgb { --entry-gap: 20px; }
+/* بازیابی رمز نیز تصویرهای قبلی را نگه می‌دارد؛ اندازهٔ فرم مستقل از zoom قدیمی است. */
+.lgs .lgc form :is(.btn, .in) { min-height: var(--menu-tap); }
+.mgtop {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+.mgtop h1 {
+  margin: 0;
+  font-size: 20px;
+  flex: 1 1 auto;
+}
+.mgback {
+  min-height: 40px;
+  padding: 0 14px;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: var(--surface);
+  color: var(--ink);
+  font: inherit;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+}
+.mgpt {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin: 0 0 4px;
+}
+.mgpt h2 {
+  margin: 0;
+  font-size: 18px;
+  flex: 1 1 160px;
+}
+.mgseg {
+  display: flex;
+  gap: 4px;
+  padding: 4px;
+  border-radius: 14px;
+  background: var(--line);
+}
+.mgseg button {
+  flex: 1;
+  min-height: 40px;
+  border: 0;
+  border-radius: 11px;
+  background: none;
+  color: var(--muted);
+  font: inherit;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+}
+.mgseg button[aria-selected="true"] {
+  background: var(--surface);
+  color: var(--ink);
+  box-shadow: 0 1px 3px rgba(16, 24, 40, 0.12);
+}
+.mghero {
+  padding: 20px;
+  border-radius: 20px;
+  background: linear-gradient(135deg, var(--stamp), #1b2d78);
+  color: #fff;
+}
+.mghero h1 {
+  margin: 0 0 4px;
+  font-size: 22px;
+  color: #fff;
+}
+.mghero p {
+  margin: 0;
+  opacity: 0.85;
+  font-size: 14px;
+}
+.mghub {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+.mgtile {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 6px;
+  min-height: 128px;
+  padding: 16px;
+  border: 1px solid var(--line);
+  border-radius: 18px;
+  background: var(--surface);
+  color: var(--ink);
+  font: inherit;
+  text-align: start;
+  cursor: pointer;
+  box-shadow: 0 1px 2px rgba(16, 24, 40, 0.05);
+}
+.mgtile .mgi {
+  width: 26px;
+  height: 26px;
+  padding: 9px;
+  border-radius: 14px;
+  background: var(--stamp-soft);
+  color: var(--stamp);
+  box-sizing: content-box;
+  margin-bottom: 4px;
+}
+.mgtile b {
+  font-size: 16px;
+}
+.mgtile small {
+  color: var(--muted);
+  font-size: 12.5px;
+  line-height: 1.5;
+}
+.mgrows {
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  background: var(--surface);
+  overflow: hidden;
+}
+.mgrow2 {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+  min-height: 56px;
+  padding: 12px 16px;
+  border: 0;
+  border-bottom: 1px solid var(--line);
+  background: none;
+  color: var(--ink);
+  font: inherit;
+  text-align: start;
+  cursor: pointer;
+}
+.mgrows > .mgrow2:last-child {
+  border-bottom: 0;
+}
+.mgrow2 .mgi {
+  width: 20px;
+  height: 20px;
+  padding: 7px;
+  border-radius: 11px;
+  background: var(--stamp-soft);
+  color: var(--stamp);
+  box-sizing: content-box;
+}
+.mgrt {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  flex: 1;
+  min-width: 0;
+}
+.mgrt small {
+  color: var(--muted);
+  font-size: 12.5px;
+}
+.mgchev {
+  color: var(--muted);
+  font-size: 22px;
+}
+.mgmore > summary {
+  cursor: pointer;
+  padding: 12px 4px;
+  color: var(--muted);
+  font-weight: 700;
+  font-size: 14px;
+}
+.mgmore[open] > summary {
+  margin-bottom: 6px;
+}
+.mgmore .mgrows {
+  margin-bottom: 8px;
+}
+.row > label.f.grow {
+  flex: 1 1 150px;
+  min-width: 0;
+}
+.row > .btn {
+  flex: none;
+}
+form.row > label.f.grow {
+  flex: 1 1 100%;
+}
+form.row > .btn {
+  flex: 1 1 110px;
+}
+.mgrow .f small.hint,
+.f small.hint {
+  display: block;
+  margin-top: 4px;
+  font-size: 12px;
+}
+.mghero {
+  background: linear-gradient(135deg, var(--stamp) 0%, #4a2fb0 100%);
+  box-shadow: 0 8px 20px -10px var(--stamp);
+}
+.mgtile {
+  --tn: var(--stamp);
+  position: relative;
+  overflow: hidden;
+  border-color: color-mix(in srgb, var(--tn) 22%, var(--line));
+  background: linear-gradient(
+    160deg,
+    color-mix(in srgb, var(--tn) 9%, var(--surface)),
+    var(--surface) 70%
+  );
+}
+.mgtile .mgi {
+  background: color-mix(in srgb, var(--tn) 16%, transparent);
+  color: var(--tn);
+}
+.mgtile::after {
+  content: "";
+  position: absolute;
+  inset-inline-end: -18px;
+  top: -18px;
+  width: 70px;
+  height: 70px;
+  border-radius: 50%;
+  background: var(--tn);
+  opacity: 0.08;
+}
+.mgtile:active,
+.mgrow2:active {
+  transform: scale(0.98);
+}
+.mgrow2:hover {
+  background: var(--surface-2);
+}
+.mgseg button[aria-selected="true"] {
+  color: var(--stamp);
+}
+.who2 {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  flex-wrap: wrap;
+  flex: 1 1 100%;
+}
+.who2 .whoin3 {
+  flex: 1 1 160px;
+  min-width: 0;
+}
+.who2 .sync {
+  font-size: 12px;
+}
+.top {
+  position: relative;
+}
+.brand {
+  width: 100%;
+}
+.brand h1 {
+  font-size: 18px;
+}
+.menubtn {
+  margin-inline-start: auto;
+  min-width: 44px;
+  font-size: 20px;
+  line-height: 1;
+}
+.menu {
+  position: relative;
+  z-index: 20;
+  align-self: stretch;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  width: 100%;
+  min-width: 0;
+  color: var(--ink);
+  padding: 16px;
+  border-radius: 16px;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  box-shadow: 0 14px 34px rgba(16, 24, 40, 0.22);
+}
+.menu .btn {
+  width: 100%;
+  justify-content: flex-start;
+  min-height: var(--menu-tap);
+  padding: 12px 14px;
+}
+.menu .btn.danger {
+  color: var(--open);
+  border-color: var(--open);
+}
+.menurow {
+  display: flex;
+  flex-wrap: wrap;
+  padding-block: 8px;
+  border-block: 1px solid var(--line);
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  font-weight: 700;
+  font-size: 14px;
+}
+.menu .seg {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  padding: 3px;
+  background: var(--line);
+  border-radius: 12px;
+}
+.menu .seg button {
+  min-height: var(--menu-tap);
+  min-width: 54px;
+  padding: 0 12px;
+  border: 0;
+  border-radius: 9px;
+  background: none;
+  color: var(--muted);
+  font: inherit;
+  font-weight: 700;
+  cursor: pointer;
+}
+.menu .seg button[aria-pressed="true"] {
+  background: var(--surface);
+  color: var(--stamp);
+  box-shadow: 0 1px 3px rgba(16, 24, 40, 0.15);
+}
+.scopebar {
+  display: flex;
+}
+.scopebar .pickgrp {
+  flex: 1;
+}
+.scopebar .pickgrp .btn {
+  flex: 1;
+  min-height: 44px;
+}
+.wrap {
+  --menu-tap: calc(54px / var(--z, 1));
+  zoom: 1;
+}
+html[data-glove="1"] .wrap {
+  --menu-tap: calc(60px / var(--z, 1));
+}
+html[data-tsz="s"] .wrap {
+  zoom: 0.92;
+}
+html[data-tsz="l"] .wrap {
+  zoom: 1.12;
+}
+html[data-glove="1"] .btn:not(:where(.menu .btn, .menubtn, .lgs .btn)),
+html[data-glove="1"] .tab:not(:where(.tabs.main .tab, .moresheet .tab)),
+html[data-glove="1"] .pick,
+html[data-glove="1"] .fbtn,
+html[data-glove="1"] .in {
+  min-height: 60px;
+}
+html[data-glove="1"] .btn.sm:not(:where(.menubtn)) {
+  min-height: 52px;
+  padding-inline: 16px;
+}
+html[data-glove="1"] .chips,
+html[data-glove="1"] .row {
+  gap: 14px;
+}
+@media (max-width: 699px) {
+  .tabs.main {
+    position: fixed;
+    inset-inline: 0;
+    bottom: 0;
+    z-index: 8;
+    margin: 0;
+    padding: 8px 10px calc(8px + env(safe-area-inset-bottom, 0px));
+    background: var(--surface);
+    border-top: 1px solid var(--line);
+    box-shadow: 0 -6px 18px rgba(16, 24, 40, 0.08);
+  }
+  .wrap {
+    padding-bottom: 84px;
+  }
+  .totop {
+    bottom: 86px;
+  }
+  .toast {
+    bottom: calc(88px + env(safe-area-inset-bottom, 0px));
+  }
+}
+.lkpick {
+  order: 2;
+}
+.chip.open::before {
+  content: "✕ ";
+}
+.chip.shortage::before {
+  content: "⚠ ";
+}
+.chip.sample::before {
+  content: "◆ ";
+}
+.chip.closed::before,
+.chip.done::before {
+  content: "✓ ";
+}
+.csteps {
+  flex: 1 1 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+.csteps b {
+  font-size: 14px;
+  color: var(--muted);
+}
+.csteps .dots {
+  display: flex;
+  gap: 6px;
+}
+.csteps .dots i {
+  width: 26px;
+  height: 6px;
+  border-radius: 3px;
+  background: var(--line);
+}
+.csteps .dots i.cur {
+  background: var(--stamp);
+}
+.csteps .dots i.done {
+  background: var(--ok);
+}
+.cnav {
+  flex: 1 1 100%;
+  display: flex;
+  gap: 10px;
+}
+.cnav .btn {
+  flex: 1;
+  min-height: 52px;
+}
+form[data-form="create"] [hidden],
+form[data-stp] [hidden] {
+  display: none !important;
+}
+details.info {
+  margin: 4px 0;
+}
+details.info > summary {
+  cursor: pointer;
+  color: var(--stamp);
+  font-weight: 700;
+  font-size: 14px;
+  padding: 4px 0;
+}
+/* دسکتاپ: صفحه‌ی ورود یک نوار باریک است؛ پشتش همان تصویر طلوع، محو و تمام‌صفحه می‌شود تا دو طرف خالی نماند. */
+@media (min-width: 700px) {
+  body:has(.lgb) {
+    background: #113d86;
+  }
+  body:has(.lgb)::before {
+    content: "";
+    position: fixed;
+    inset: -60px;
+    z-index: -1;
+    background: var(--img-login-top) center / cover no-repeat;
+    filter: blur(22px) brightness(0.82) saturate(1.2);
+  }
+  body:has(.lgb)::after {
+    content: "";
+    position: fixed;
+    inset: 0;
+    z-index: -1;
+    background: radial-gradient(ellipse at center, rgba(8, 28, 72, 0.15) 30%, rgba(8, 28, 72, 0.6) 100%);
+  }
+  .lgb {
+    box-shadow: 0 0 70px rgba(5, 20, 60, 0.55);
+  }
+}
+.lgb .lgf {
+  margin: 0;
+  padding: 12px 12px 4px;
+  color: #cfdcf5;
+}
+@media (min-width: 700px) {
+  .lgb {
+    width: min(520px, 100%);
+    margin-inline: auto;
+  }
+}
+@media (min-width: 700px) {
+  .lgs {
+    width: min(520px, 100%);
+    margin-inline: auto;
+    border-radius: 0 0 22px 22px;
+  }
+  .lgs::before {
+    top: calc(520px * 560 / 900);
+  }
+  .lgs .lgside {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    max-width: none;
+    margin: 0;
+    width: 100%;
+    position: relative;
+    z-index: 2;
+    padding-bottom: calc(100vw * 0.3 * 192 / 900);
+  }
+}
+
+/* گوشی: صفحه‌ی ورود روی کل صفحه ثابت می‌شود تا حاشیه یا نوار مشکی کنار و پایینش نماند
+   (در بعضی مرورگرهای گوشی ۱۰۰vw و ۱۰۰vh درست حساب نمی‌شد). */
+body:has(.lgb) { background: #113d86; }
+@media (max-width: 699px) {
+  .lgb {
+    position: fixed;
+    inset: 0;
+    z-index: 20;
+    width: auto;
+    height: auto;
+    min-height: 0;
+    margin: 0;
+    padding: 0;
+    justify-content: flex-start;
+    overflow-x: hidden;
+    overflow-y: auto;
+  }
+  .lgb-foot {
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+  }
+}
+
+/* کد پرسنلی (کلاس num جهت را چپ‌به‌راست می‌کرد): متن از راست شروع شود، ارقام همچنان درست دیده شوند. */
+.lgb-f input.lgb-u {
+  display: block;
+  direction: rtl;
+  text-align: right;
+}
+
+/* تب «بیشتر»: فقط در گوشی دیده می‌شود. */
+.tab-more,
+.moresheet {
+  display: none;
+}
+@media (max-width: 699px) {
+  .tabs.main .tab-x {
+    display: none;
+  }
+  .tabs.main .tab {
+    flex: 1 1 0;
+    min-width: 0;
+    padding: 0 4px;
+    font-size: 13px;
+    line-height: 1.25;
+    white-space: normal;
+    text-align: center;
+  }
+  .tabs.main .tab .cnt {
+    margin-inline-start: 3px;
+    padding: 0 5px;
+  }
+  .tabs.main .tab-more {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .moresheet {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    position: fixed;
+    inset-inline: 10px;
+    bottom: calc(78px + env(safe-area-inset-bottom, 0px));
+    max-height: calc(100dvh / var(--z, 1) - 110px);
+    overflow-y: auto;
+    z-index: 9;
+    padding: 10px;
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: 16px;
+    box-shadow: 0 10px 30px rgba(16, 24, 40, 0.25);
+  }
+  .moresheet .tab {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    min-height: var(--menu-tap);
+    padding: 0 16px;
+    font-size: 15px;
+    border-radius: 12px;
+  }
+}
+
+
+/* جزئیات هویت در منوی باز، هر مورد در یک خط مستقل می‌ماند. */
+.top:has(> .menu) .whoin3 {
+  display: grid;
+  gap: 4px;
+  white-space: normal;
+}
+.top:has(> .menu) .whoin3 .nm::before { content: "نام: "; }
+.menu :is(button, .btn):focus-visible {
+  outline: 3px solid var(--stamp);
+  outline-offset: 2px;
+}
+
+
