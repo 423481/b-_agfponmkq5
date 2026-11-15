@@ -817,6 +817,10 @@ li.rmli > span:first-child {
   font-size: 34px !important;
 }
 .donescr .dcard {
+  min-height: 72px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
   width: 100%;
   max-width: 460px;
   background: rgba(255, 255, 255, 0.16);
@@ -5532,6 +5536,568 @@ body:has(.lgb) {
 }
 
 
+/* فصل 10 — هویت بصری صنعتی (شاسی تا نهایی پایین)
+   الهام: اصول ISA-101 (رنگ فقط برای وضعیت، زمینه‌ی خاکستری آرام، افزونگی رنگ+نماد+متن)، سامانه‌های MES/کنترل کیفیت.
+   فقط ظاهر؛ ساختار صفحه و رفتار برنامه تغییر نمی‌کند. این فایل باید آخر بیاید. */
+
+:root {
+  --bg: #e6eaf0;
+  --surface: #ffffff;
+  --surface-2: #f0f3f8;
+  --line: #cbd3de;
+  --ink: #151d2b;
+  --muted: #465167;
+  --stamp: #1f4a8a;
+  --stamp-soft: #dfe8f5;
+  --on-stamp: #ffffff;
+  --on-ok: #ffffff;
+  --open: #b3321f;
+  --open-soft: #fbe5e0;
+  --wait: #8a5600;
+  --wait-soft: #fbeed0;
+  --ok: #16744a;
+  --ok-soft: #d9efe3;
+  --chrome: #1a2740;
+  --on-chrome: #f2f5fa;
+  --chrome-soft: #8fa0bd;
+  --shadow: 0 1px 2px rgba(18, 28, 45, 0.08), 0 4px 14px rgba(18, 28, 45, 0.05);
+  --radius: 14px;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0c111a;
+    --surface: #151c29;
+    --surface-2: #1b2434;
+    --line: #2a3549;
+    --ink: #e8edf6;
+    --muted: #b2bdd2;
+    --stamp: #8db0ec;
+    --stamp-soft: #1f2d4a;
+    --on-stamp: #0c111a;
+    --on-ok: #07210f;
+    --open: #ff9d86;
+    --open-soft: #3a1d18;
+    --wait: #f0c26a;
+    --wait-soft: #35280d;
+    --ok: #6fd3a0;
+    --ok-soft: #12301f;
+    --chrome: #1d2a44;
+    --on-chrome: #e8edf6;
+    --chrome-soft: #8fa0bd;
+    --shadow: 0 1px 2px rgba(0, 0, 0, 0.4);
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #0c111a;
+  --surface: #151c29;
+  --surface-2: #1b2434;
+  --line: #2a3549;
+  --ink: #e8edf6;
+  --muted: #b2bdd2;
+  --stamp: #8db0ec;
+  --stamp-soft: #1f2d4a;
+  --on-stamp: #0c111a;
+  --on-ok: #07210f;
+  --open: #ff9d86;
+  --open-soft: #3a1d18;
+  --wait: #f0c26a;
+  --wait-soft: #35280d;
+  --ok: #6fd3a0;
+  --ok-soft: #12301f;
+  --chrome: #1d2a44;
+  --on-chrome: #e8edf6;
+  --chrome-soft: #8fa0bd;
+  --shadow: 0 1px 2px rgba(0, 0, 0, 0.4);
+}
+
+/* ---- سربرگ برنامه ---- */
+.wrap > .top {
+  flex-direction: column;
+  align-items: stretch;
+  gap: 6px;
+  padding: 12px 16px;
+  min-height: 0;
+  background: var(--chrome);
+  color: var(--on-chrome);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+}
+.wrap > .top .brand {
+  flex-wrap: nowrap;
+  justify-content: space-between;
+}
+.wrap > .top .proto {
+  flex: 1 1 0;
+  text-align: start;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.wrap > .top .menubtn {
+  flex: none;
+}
+.wrap > .top h1 {
+  flex: 0 0 auto;
+  white-space: nowrap;
+  color: var(--on-chrome);
+  font-size: 19px;
+  font-weight: 800;
+  letter-spacing: 0;
+}
+.wrap > .top .proto {
+  background: rgba(255, 255, 255, 0.12);
+  color: var(--chrome-soft);
+  border-radius: 999px;
+  padding: 1px 10px;
+  font-size: 11px;
+}
+.wrap > .top .menubtn {
+  min-height: 36px;
+  min-width: 40px;
+  padding: 0 10px;
+  background: rgba(255, 255, 255, 0.1);
+  border-color: rgba(255, 255, 255, 0.2);
+  color: var(--on-chrome);
+}
+.wrap > .top .who2 {
+  margin: 0;
+  padding: 0;
+  line-height: 1.5;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  flex-wrap: wrap;
+  color: var(--chrome-soft);
+}
+.wrap > .top .whoin {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 2px 14px;
+  align-items: baseline;
+}
+.wrap > .top .whoin .nm {
+  color: var(--on-chrome);
+  font-weight: 800;
+  font-size: 15px;
+}
+.wrap > .top small,
+.wrap > .top .sync {
+  color: var(--chrome-soft);
+  font-size: 12px;
+}
+
+/* ---- کارت و دکمه و ورودی ---- */
+.card {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+}
+.btn {
+  min-height: 48px;
+  border: 1.5px solid var(--line);
+  border-radius: 12px;
+  background: var(--surface);
+  color: var(--ink);
+  font-weight: 700;
+  transition:
+    background 0.12s,
+    border-color 0.12s,
+    transform 0.05s;
+}
+.btn:active {
+  transform: translateY(1px);
+}
+.btn:focus-visible,
+.in:focus-visible,
+.wst:focus-visible {
+  outline: 3px solid var(--stamp-soft);
+  outline-offset: 1px;
+  border-color: var(--stamp);
+}
+.btn.primary {
+  background: var(--stamp);
+  border-color: var(--stamp);
+  color: var(--on-stamp);
+}
+.btn.ok {
+  background: var(--ok);
+  border-color: var(--ok);
+  color: var(--on-ok);
+}
+.in {
+  min-height: 52px;
+  border: 2px solid var(--line);
+  border-radius: 12px;
+  background: var(--surface);
+  color: var(--ink);
+  font-size: 18px;
+  font-weight: 700;
+}
+.in:focus {
+  border-color: var(--stamp);
+  box-shadow: 0 0 0 4px var(--stamp-soft);
+  outline: 0;
+}
+
+/* ---- نوار تب پایین/بالا ---- */
+.tabs.main .tab {
+  min-height: 44px;
+  border-radius: 12px;
+  font-weight: 700;
+}
+.tabs.main .tab[aria-selected="true"] {
+  background: var(--chrome);
+  border-color: var(--chrome);
+  color: var(--on-chrome);
+}
+
+/* ---- برگه‌ی بازدید (ویزارد) ---- */
+.stepbar.chs {
+  margin-inline: -16px;
+  padding: 14px 16px !important;
+  background: var(--surface);
+  border: 0 !important;
+  border-top: 5px solid var(--stamp) !important;
+  border-radius: 0 !important;
+  box-shadow: none !important;
+}
+@media (min-width: 700px) {
+  .stepbar.chs {
+    margin-inline: 0;
+    border: 1px solid var(--line) !important;
+    border-top: 5px solid var(--stamp) !important;
+    border-radius: var(--radius) !important;
+    box-shadow: var(--shadow) !important;
+    min-height: 0;
+  }
+}
+.carinfo {
+  display: block;
+  margin: 0 0 14px;
+  padding: 12px 14px;
+  background: var(--surface-2);
+  border: 1px solid var(--line);
+  border-radius: 12px;
+}
+.carinfo .ci1 {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+.carinfo .cnum small {
+  display: block;
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 700;
+}
+.carinfo .cnum b {
+  font-size: 30px;
+  line-height: 1.1;
+  font-weight: 900;
+  color: var(--ink);
+  letter-spacing: 0.06em;
+}
+.carinfo .cfuel {
+  padding: 4px 14px;
+  border: 1.5px solid var(--stamp);
+  border-radius: 999px;
+  background: var(--stamp-soft);
+  color: var(--stamp);
+  font-size: 13px;
+  font-weight: 800;
+}
+.carinfo .ci2 {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 16px;
+  margin-top: 8px;
+  padding-top: 8px;
+  border-top: 1px dashed var(--line);
+  color: var(--muted);
+  font-size: 13px;
+  font-weight: 600;
+}
+.carinfo .ci2 > span {
+  border: 0 !important;
+  padding: 0 !important;
+}
+
+/* مراحل */
+.wiz {
+  margin-bottom: 14px;
+}
+.wst i {
+  width: 34px;
+  height: 34px;
+  border: 2.5px solid var(--line);
+  background: var(--surface);
+  font-size: 15px;
+}
+.wst::after {
+  top: 17px;
+  left: calc(-50% + 19px);
+  width: calc(100% - 38px);
+  height: 3px;
+  background: var(--line);
+}
+.wst.done i {
+  background: var(--ok);
+  border-color: var(--ok);
+}
+.wst.done::after {
+  background: var(--ok);
+}
+.wst.cur i {
+  width: 42px;
+  height: 42px;
+  margin-top: -4px;
+  background: var(--stamp);
+  border-color: var(--stamp);
+  font-size: 18px;
+  box-shadow: 0 0 0 4px var(--stamp-soft);
+}
+.wst.cur::after {
+  top: 17px;
+}
+.wst.todo span {
+  color: var(--muted);
+}
+
+.histbar {
+  min-height: 46px;
+  background: var(--surface-2);
+  border: 1px solid var(--line);
+  border-radius: 12px;
+}
+
+.stepbar .steplb {
+  margin: 10px 0 4px !important;
+  padding-inline-start: 12px;
+  border-inline-start: 5px solid var(--stamp);
+  font-size: 26px !important;
+  line-height: 1.25;
+}
+.stepbar .secsum {
+  padding-inline-start: 17px;
+  margin-bottom: 12px;
+  color: var(--muted);
+  font-weight: 600;
+}
+.stepbar .stepitemsbtn {
+  width: 100%;
+  min-height: 54px;
+  justify-content: space-between;
+  border: 1.5px solid var(--line);
+  border-radius: 12px;
+  background: var(--surface);
+  font-size: 16px;
+  font-weight: 800;
+  box-shadow: var(--shadow);
+}
+.ngbar {
+  min-height: 54px;
+  border: 2px solid var(--open);
+  border-radius: 12px;
+  background: var(--open-soft);
+  color: var(--open);
+  font-weight: 800;
+  font-size: 17px;
+}
+.stepfix {
+  border-radius: 12px;
+}
+
+/* نوار پایین (برگشت / نمونه / تأیید) */
+.botbar {
+  gap: 8px;
+  padding: 10px 12px calc(10px + env(safe-area-inset-bottom, 0px));
+  background: var(--surface);
+  border-top: 1px solid var(--line);
+  box-shadow: 0 -4px 16px rgba(18, 28, 45, 0.1);
+}
+.botbar .btn {
+  min-height: 54px;
+  border-radius: 12px;
+  font-size: 15px;
+  white-space: nowrap;
+}
+.botbar .btn.back {
+  flex: 0 0 80px !important;
+  gap: 2px;
+  padding-inline: 2px;
+}
+.botbar .btn.smpbtn {
+  flex: 0 0 50px;
+  padding: 0;
+  border-color: var(--stamp);
+  color: var(--stamp);
+}
+.botbar .btn.confirm,
+.botbar .btn.ok {
+  flex: 1 1 auto;
+  background: var(--ok);
+  border-color: var(--ok);
+  color: var(--on-ok);
+}
+@media (min-width: 700px) {
+  .botbar {
+    inset-inline: 0;
+    width: min(1000px, 100%);
+    margin-inline: auto;
+    border: 1px solid var(--line);
+    border-bottom: 0;
+    border-radius: var(--radius) var(--radius) 0 0;
+  }
+}
+.botbar .btn.confirm {
+  gap: 6px;
+  font-size: 15px !important;
+}
+
+/* فهرست انتخاب (گاز، نهایی بالا، نهایی پایین) و نوار انتخاب بخش */
+.lkpick,
+.scopebar {
+  border-radius: var(--radius);
+}
+.pickrow .pk,
+.pickgrp .pk,
+.pickgrp button {
+  min-height: 52px;
+  border: 1.5px solid var(--line);
+  border-radius: 12px;
+  background: var(--surface);
+  font-weight: 800;
+}
+.pickrow.col .pk {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: baseline;
+  gap: 2px 14px;
+  padding: 8px 14px;
+  text-align: start;
+}
+.pickrow.col .pk small {
+  display: inline;
+  font-size: 12px;
+}
+.pickrow.col .pk small:last-child {
+  margin-inline-start: auto;
+}
+.pickrow .pk:hover,
+.pickgrp button:hover {
+  border-color: var(--stamp);
+  background: var(--stamp-soft);
+}
+.pickgrp [aria-pressed="true"],
+.pickgrp .on {
+  background: var(--stamp);
+  border-color: var(--stamp);
+  color: var(--on-stamp);
+}
+
+/* صفحه‌ی تأیید نهایی: نوار سبز بالا، کارت‌های سفید با متن تیره (خوانا روی هر صفحه‌ی نمایش) */
+.donescr {
+  inset: 0;
+  height: auto !important;
+  background: var(--bg);
+  color: var(--ink);
+}
+.donescr .dtop {
+  background: var(--ok);
+  color: var(--on-ok);
+  border-radius: 0 0 22px 22px;
+  padding-bottom: 16px;
+  box-shadow: var(--shadow);
+}
+.donescr .dscroll {
+  padding-top: 14px;
+}
+.donescr .dcard {
+  background: var(--surface);
+  color: var(--ink);
+  border: 1px solid var(--line);
+  border-inline-start: 6px solid var(--ok);
+  border-radius: 12px;
+  box-shadow: var(--shadow);
+}
+.donescr .dcard.dng {
+  border-inline-start-color: var(--open);
+}
+.donescr .dcard.dsh {
+  border-inline-start-color: var(--wait);
+}
+.donescr .dcard.dsm {
+  border-inline-start-color: var(--stamp);
+}
+.donescr .dcard li::marker {
+  color: currentColor;
+}
+.donescr .dcard .dsub,
+.donescr .dcard .fxmeta {
+  opacity: 1;
+  color: var(--muted);
+  font-weight: 600;
+}
+.donescr .dfoot {
+  background: var(--surface);
+  border-top: 1px solid var(--line);
+  box-shadow: 0 -4px 16px rgba(18, 28, 45, 0.1);
+}
+.donescr .dbtn {
+  background: var(--ok);
+  color: var(--on-ok);
+}
+
+.donescr .dexp {
+  gap: 8px;
+  border-inline-start-color: var(--stamp);
+}
+.donescr .dexp .exportbar {
+  display: flex;
+  gap: 10px;
+  margin: 0;
+}
+.donescr .dexp .exportbar .btn {
+  flex: 1;
+  min-height: 48px;
+  font-size: 16px;
+}
+
+/* وضعیت‌ها: رنگ + نماد + متن (افزونگی برای کم‌بینا/رنگ‌کور) */
+.sync i {
+  border-radius: 50%;
+}
+.hint {
+  color: var(--muted);
+}
+
+/* قاب مرحله‌ای: ارتفاع با ضریب اندازهٔ متن (zoom) هم‌خوان باشد تا نه فضای خالی بماند و نه زیر نوار پایین برود */
+.wrap {
+  --z: 1;
+}
+html[data-tsz="s"] .wrap {
+  --z: 0.92;
+}
+html[data-tsz="l"] .wrap {
+  --z: 1.12;
+}
+.stepbar.chs {
+  height: calc((100vh - 16px - env(safe-area-inset-bottom, 0px)) / var(--z) - 80px);
+  height: calc((100dvh - 16px - env(safe-area-inset-bottom, 0px)) / var(--z) - 80px);
+}
+
+/* نوار انتخاب بخش: فاصله از لبهٔ بالا و از کارت مشخصات */
+.scopebar {
+  margin-block: 6px 12px;
+}
+.scopebar .pickgrp {
+  gap: 8px;
+}
+
 </style>
 </head>
 <body>
@@ -5553,7 +6119,7 @@ var SUPA_URL = "https://kdpmscvzavrdwwoprkfi.supabase.co",
 /* نشانی سرویس دیتابیس شرکت. خالی = همان Supabase (حالت فعلی)؛ پر = همهٔ خواندن/نوشتن به این سرویس می‌رود. */
 var API_URL = "";
 
-var APP_VER = "v167.30";
+var APP_VER = "v167.38";
 
 var AUTH_FN = "";
 
@@ -6713,14 +7279,25 @@ function WINQ(c) {
   return "";
 }
 
+// شماره‌ها به‌علاوه‌ی شماره‌های هم‌خودرو که تا حالا در حافظه است (شاسی، موتور، اتاق، سریال)
+function withLinkedNumbers(vals) {
+  var out = [];
+  (vals || []).forEach(function (v) {
+    if (!v) return;
+    var I = identity(v);
+    out.push(String(v), I.serial, I.chassis, I.engine, I.room);
+  });
+  return out;
+}
+
 function ensureCar(vals) {
   if (!store || !store.fetchCar) return Promise.resolve();
-  var need = (vals || [])
+  var need = withLinkedNumbers(vals)
     .map(function (v) {
       return String(v || "");
     })
-    .filter(function (v) {
-      return v && !CARF[v];
+    .filter(function (v, i, a) {
+      return v && !CARF[v] && a.indexOf(v) === i;
     });
   if (!need.length) return Promise.resolve();
   return store.fetchCar(need).then(
@@ -8115,8 +8692,7 @@ function password_pwnew(ev, el, a, id, d) {
 }
 
 function clickUsersAndSession(ev, el, a, id, d) {
-  if (a === "scope" && canPickScope(S.user)) return usersAndSession_scope(ev, el, a, id, d);
-  if (a === "pick" && S.user && S.user.station === "chassis") {
+  if (a === "pick" && S.user && hasPick(S.user.station)) {
     changePick(el.getAttribute("data-v"));
     return true;
   }
@@ -8138,20 +8714,6 @@ function clickUsersAndSession(ev, el, a, id, d) {
   if (a === "udelyes" && S.isOwner) return usersAndSession_udelyes(ev, el, a, id, d);
   if (a === "logout") return usersAndSession_logout(ev, el, a, id, d);
   return false;
-}
-
-// اقدام «scope» از clickUsersAndSession
-function usersAndSession_scope(ev, el, a, id, d) {
-  S.user.all = !S.user.all;
-  scopeSave(S.user);
-  S.editing = null;
-  toast(
-    S.user.all
-      ? "اکنون هر دو بخش را بازدید می‌کنید"
-      : "فقط بخش " + S.user.sec.toUpperCase() + " را بازدید می‌کنید",
-  );
-  render();
-  return true;
 }
 
 // اقدام «testsec» از clickUsersAndSession
@@ -8722,7 +9284,7 @@ function totalOpen() {
 /* ---------- views ---------- */
 function whoLines(u) {
   var sec =
-    u.station !== "chassis" && u.sec ? " · بخش " + esc(u.all ? "هر دو" : u.sec.toUpperCase()) : "";
+    u.station === "trim" ? " · بخش " + esc(pickSec(pickOf(u)) ? pickSec(pickOf(u)).toUpperCase() : "هر دو") : "";
   return (
     '<span class="whoin whoin3"><span class="nm">' +
     esc(u.name) +
@@ -10476,6 +11038,13 @@ var PICKS = [
   ["all", "هر سه", ""],
 ];
 
+// تزیینات همان انتخاب را با برچسب خودش دارد
+var PICKS_TRIM = [
+  ["e1", "EWT1", "ewt1"],
+  ["e2", "EWT2", "ewt2"],
+  ["all", "هر دو", ""],
+];
+
 var HIDE = {
   chassis: ["serial", "color", "room"],
   trim: ["chassisNo", "engine"],
@@ -10906,7 +11475,7 @@ function searchCard() {
     h += todayToggleRow(mine.today);
     if (S.todayOpen) h += todayListBox(mine.today);
   }
-  return h + "</div>";
+  return h + "</div>" + (S.sheet === "final2" && !S.key ? awaitingFinal2Card() : "");
 }
 
 /* #33: برگه‌ی بعدی بدون صفحه‌ی «تأیید مشخصات» خودکار باز می‌شود، وقتی چیزی برای پرسیدن نیست */
@@ -12291,13 +12860,19 @@ function doneCards(d) {
   );
 }
 
+// خروجی PDF و Excel آخر صفحه‌ی تأیید نهایی
+function doneExportCard(d) {
+  var bar = exportCard(d);
+  return bar ? '<div class="dcard dexp"><b>خروجی برگه</b>' + bar + "</div>" : "";
+}
+
 function doneOv() {
   var v = S.doneScr,
     d = insp(v.sheet || "chassis", v.key),
     nb = v.sheet === "trim" || isChs(v.sheet);
   return (
     doneHeader(v, doneFuelLabel(v, d), nb) +
-    (d ? doneCards(d) : "") +
+    (d ? doneCards(d) + doneExportCard(d) : "") +
     "</div>" +
     (nb
       ? ""
@@ -12390,9 +12965,29 @@ function wizardStepBack(d) {
 }
 
 // تأیید نهایی بازدید؛ فقط وقتی همه‌ی بخش‌ها امضا شده باشد.
+// بندهای «گاز کولر» نهایی بالا که هنوز نه سالم و نه ایراد خورده‌اند
+function acPending(d) {
+  var ac =
+    d.sheet === "final1" &&
+    secsOf(d.sheet, prodOf(d)).filter(function (x) {
+      return x.choice;
+    })[0];
+  return (
+    !!ac &&
+    visItems(d, ac).some(function (x) {
+      var it = d.items && d.items[secItemId(ac, x.i)];
+      return !(it && it.r);
+    })
+  );
+}
+
 function confirmFinal(d) {
   if (S.editing) {
     toast("یک ایراد در حال ثبت است؛ ابتدا «ثبت در پرونده» یا «انصراف» را بزنید");
+    return;
+  }
+  if (acPending(d)) {
+    toast("گاز کولر انجام نشده است؛ ابتدا بندهای «گاز کولر» را بزنید");
     return;
   }
   var shx = secsOf(S.sheet, prodOf(d)),
@@ -12669,7 +13264,10 @@ function wizardNav_wizback(ev, el, a, id, d) {
 }
 
 function clickCloseAndFiles(ev, el, a, id, d) {
-  if (a === "xclose" && canCloseItem(itemTypeOf(el.getAttribute("data-doc"), id)))
+  if (
+    a === "xclose" &&
+    canCloseItem(itemTypeOf(el.getAttribute("data-doc"), id), sheetOfDoc(el.getAttribute("data-doc")))
+  )
     return closeAndFiles_xclose(ev, el, a, id, d);
   if (a === "markall" && S.isOwner) {
     markAllRecords();
@@ -13693,6 +14291,14 @@ function stepCurCard(d, cur, head) {
   return h + "</div></div>";
 }
 
+// تا قبل از اولین تأیید بخش، چکمن شاسی/تزیینات می‌تواند انتخاب کند یک چکمن همه را بازدید می‌کند یا دو چکمن هستند
+function wizPickBar(d) {
+  var started = d.final || Object.keys(d.signs || {}).length;
+  return !started && (d.sheet === "chassis" || d.sheet === "trim") && S.user && hasPick(S.user.station)
+    ? '<div class="scopebar">' + pickBar(S.user) + "</div>"
+    : "";
+}
+
 // کارت آیتم‌های بازرسی یک مرحله.
 function stepCard(d, edit) {
   STRIP_ID = "";
@@ -13705,7 +14311,7 @@ function stepCard(d, edit) {
   if (!edit) return viewOnlyCard(d);
   if (S.acOpen && d.sheet === "final1" && !d.final) return acPage(d);
   var cur = stepSec(d, true),
-    head = stepBarOpen() + (S.itemsOpen && cur ? "" : stepInfoBlocks(d));
+    head = stepBarOpen() + wizPickBar(d) + (S.itemsOpen && cur ? "" : stepInfoBlocks(d));
   if (S.wizView && wizDone(d, S.wizView)) {
     var vp = viewPanel(d, S.wizView);
     if (vp) return head + vp + "</div>";
@@ -14956,8 +15562,10 @@ function amendHtml(d) {
 function exportCard(d) {
   var st = stat(d);
   if (st.signed < st.secs) return "";
-  var q = 'data-q="' + esc(d.key) + '" data-sh="' + esc(d.sheet) + '"',
-    t = ' title="خروجی ایستگاه ' + esc(stationTitle(d.sheet)) + '"';
+  var pr = d.sheet === "engine" ? chassisPair(d) : null,
+    sh = pr ? "chassis" : d.sheet,
+    q = 'data-q="' + esc(pr ? pr.c.key : d.key) + '" data-sh="' + esc(sh) + '"',
+    t = ' title="خروجی ایستگاه ' + esc(stationTitle(sh)) + '"';
   return (
     '<div class="exportbar"><button class="btn sm" data-act="pdf" ' +
     q +
@@ -15065,11 +15673,10 @@ function makeUser(u) {
       name: u.name,
       station: st,
       sec: u.sec || "",
-      all: scopeLoad(u.id),
       role: u.role || "",
       mgrUnit: u.mgrUnit || "",
     };
-  if (st === "chassis") me.pick = pickLoad(me);
+  if (hasPick(st)) me.pick = pickLoad(me);
   return me;
 }
 
@@ -15088,8 +15695,16 @@ function pickLoad(u) {
   return scopeLoad(u.id) ? "all" : "";
 }
 
+// چکمن شاسی و تزیینات خودش بخش بازدید را انتخاب می‌کند
+function hasPick(station) {
+  return station === "chassis" || station === "trim";
+}
+
+// پیش‌فرض: شاسی با EWT1 شروع می‌شود، تزیینات بدون بخش تعیین‌شده «هر دو» است
 function pickOf(u) {
-  return u.pick || (u.sec === "ewt2" ? "e2" : "e1");
+  if (u.pick) return u.pick;
+  if (u.sec === "ewt2") return "e2";
+  return u.sec === "ewt1" || u.station === "chassis" ? "e1" : "all";
 }
 
 function pickSave(u) {
@@ -15100,16 +15715,15 @@ function pickSave(u) {
 
 function activeSec() {
   if (!S.user) return "";
-  if (S.user.station === "chassis") return pickSec(pickOf(S.user));
-  return S.user.all ? "" : S.user.sec;
+  return hasPick(S.user.station) ? pickSec(pickOf(S.user)) : S.user.sec;
 }
 
-// نوار انتخاب بخش شاسی: «EWT1 + موتور» / «EWT2» / «هر سه».
+// نوار انتخاب بخش: شاسی «EWT1 + موتور / EWT2 / هر سه»، تزیینات «EWT1 / EWT2 / هر دو».
 function pickBar(u) {
   var cur = pickOf(u);
   return (
     '<div class="pickgrp" role="group" aria-label="بخش‌هایی که بازدید می‌کنید">' +
-    PICKS.map(function (p) {
+    (u.station === "trim" ? PICKS_TRIM : PICKS).map(function (p) {
       return (
         '<button class="btn sm" data-act="pick" data-v="' +
         p[0] +
@@ -15124,22 +15738,12 @@ function pickBar(u) {
   );
 }
 
-function canPickScope(u) {
-  return !!(u && u.sec && u.station === "trim");
-}
-
 function scopeLoad(id) {
   try {
     return localStorage.getItem("cm_scope_" + id) === "all";
   } catch (e) {
     return false;
   }
-}
-
-function scopeSave(u) {
-  try {
-    localStorage.setItem("cm_scope_" + u.id, u.all ? "all" : "own");
-  } catch (e) {}
 }
 
 function secOK(id) {
@@ -15253,16 +15857,7 @@ function fuelOf(d) {
 
 /* انتخاب بخش بازدید (EWT1/EWT2/هر دو) داخل صفحه‌ی بازدید، نه در سربرگ */
 function scopeBar(u) {
-  if (u.station === "chassis") return '<div class="scopebar">' + pickBar(u) + "</div>";
-  if (canPickScope(u))
-    return (
-      '<div class="scopebar"><button class="btn sm" data-act="scope" aria-pressed="' +
-      !!u.all +
-      '" title="بازدید همه بخش‌ها در غیاب همکار">' +
-      (u.all ? "بازدید: هر دو بخش" : "بازدید: فقط " + esc(u.sec.toUpperCase())) +
-      "</button></div>"
-    );
-  return "";
+  return hasPick(u.station) ? '<div class="scopebar">' + pickBar(u) + "</div>" : "";
 }
 
 function fuelCons(v) {
@@ -15812,6 +16407,52 @@ function linkPickers() {
     h += pickButton("c_room", x.key, []);
   });
   return h + "</div></div>";
+}
+
+// خودروهای رسیده به نهایی بالا که هنوز برگه‌ی نهایی پایین ندارند، قدیمی‌ترین اول
+function awaitingFinal2() {
+  return cachedByRows("awaitF2", "", function () {
+    var done = {},
+      engineOf = {},
+      since = new Date(Date.now() - PICK_WINDOW_MS).toISOString();
+    S.data.insp.forEach(function (x) {
+      if (x.sheet === "final2") done[x.key] = 1;
+      else if (x.sheet === "chassis" && x.engine) engineOf[x.key] = x.engine;
+    });
+    return S.data.insp
+      .filter(function (x) {
+        return x.sheet === "final1" && !done[x.key] && (x.createdAt || "") >= since;
+      })
+      .sort(function (a, b) {
+        return (a.createdAt || "") < (b.createdAt || "") ? -1 : 1;
+      })
+      .slice(0, PICK_LIMIT)
+      .map(function (x) {
+        return { key: x.key, engine: x.engine || engineOf[x.key], room: x.room, at: x.createdAt };
+      });
+  });
+}
+
+function awaitingFinal2Button(c) {
+  var notes = (c.engine ? ["موتور " + c.engine] : [])
+    .concat(c.room ? ["اتاق " + c.room] : [])
+    .concat(["نهایی بالا " + timeHM(c.at)]);
+  return pickButton("", c.key, notes).replace(
+    'data-act="pickfill" data-f=""',
+    'data-act="open" data-sheet="final2" data-key="' + esc(c.key) + '"'
+  );
+}
+
+// نهایی پایین (داخل چال) به شماره‌ی شیشه دسترسی ندارد؛ ماشین بعدی را از این فهرست باز می‌کند
+function awaitingFinal2Card() {
+  var list = awaitingFinal2();
+  return (
+    '<div class="card lkpick first"><h2>در انتظار نهایی پایین</h2><p class="hint">خودروهایی که نهایی بالا را گذرانده‌اند؛ قدیمی‌ترین اول. برای باز کردن برگه لمس کنید.</p><div class="pickrow col">' +
+    (list.length
+      ? list.map(awaitingFinal2Button).join("")
+      : '<span class="hint">خودرویی در انتظار نیست.</span>') +
+    "</div></div>"
+  );
 }
 
 function corrReasons(tid) {
@@ -16422,9 +17063,29 @@ function permClose(st, type) {
   return !!closeMapOf(type === "shortage" ? "closeSh" : "close")[st === "engine" ? "chassis" : st];
 }
 
+// ایستگاه‌هایی که برگه‌های هم را می‌بینند و می‌بندند: شاسی با موتور، نهایی بالا با نهایی پایین
+var STATION_GROUP = { engine: "chassis", st4: "final", st5: "final" };
+
+function stationGroup(st) {
+  return STATION_GROUP[st] || st;
+}
+
+// چکمن هر بخش ایراد و کسری برگه‌های همان بخش را می‌بندد
+function ownsItemSheet(sheet) {
+  var sh = SHEETS[sheet];
+  return !!(S.user && sh && stationGroup(sh.station) === stationGroup(S.user.station));
+}
+
 // تعیین می‌کند چه کسی اجازه‌ی بستن ایراد/کسری را دارد (حساس: دسترسی).
-function canCloseItem(type) {
-  return !!S.user && (S.user.id === "owner" || permClose(S.user.station, type));
+function canCloseItem(type, sheet) {
+  return !!S.user && (S.user.id === "owner" || permClose(S.user.station, type) || ownsItemSheet(sheet));
+}
+
+function sheetOfDoc(docId) {
+  var r = S.data.insp.filter(function (x) {
+    return x.id === docId;
+  })[0];
+  return r ? r.sheet : "";
 }
 
 function itemTypeOf(docId, itemId) {
@@ -16529,7 +17190,7 @@ function allOpenCard(d) {
   var L = openOnCar(d);
   if (!L.length) return "";
   var can = L.some(function (x) {
-    return canCloseItem(x.it.r);
+    return canCloseItem(x.it.r, x.r.sheet);
   });
   return (
     '<div class="card" style="border:2px solid #c0392b"><h2>ایرادها و کسری‌های باز این خودرو (' +
@@ -16538,7 +17199,7 @@ function allOpenCard(d) {
     (can ? ". برای بستن هر مورد، اقدام انجام‌شده را بنویسید." : ". فقط برای اطلاع است.") +
     '</p><div class="items">' +
     L.map(function (x, i) {
-      return openItemRow(x, String(i), canCloseItem(x.it.r));
+      return openItemRow(x, String(i), canCloseItem(x.it.r, x.r.sheet));
     }).join("") +
     "</div></div>"
   );
@@ -17620,7 +18281,7 @@ function histStageBody(r, H, tok) {
   if (!o.length && !c.length) return h + '<div class="hint">بدون ایراد، کسری یا نمونه</div>';
   h += o
     .map(function (x) {
-      return openItemRow(x, "h" + tok.n++, canCloseItem(x.it.r));
+      return openItemRow(x, "h" + tok.n++, canCloseItem(x.it.r, x.r.sheet));
     })
     .join("");
   return (
@@ -22951,12 +23612,23 @@ function stageRows(k, r) {
   return rows;
 }
 
+// خروجی ایستگاه شاسی بازدید موتور همان خودرو را هم دارد (چکمن EWT1 هر دو را بازدید می‌کند)
+function reportSheets(c, sheet) {
+  if (!sheet) return stagesFor(c.recs);
+  var hasEngine =
+    sheet === "chassis" &&
+    c.recs.some(function (d) {
+      return d.sheet === "engine";
+    });
+  return hasEngine ? ["chassis", "engine"] : [sheet];
+}
+
 function reportData(q, sheet) {
   var c = carRecords(q),
     stages = [],
     rows = [],
     arch = archOf(c.key);
-  (sheet ? [sheet] : stagesFor(c.recs)).forEach(function (k) {
+  reportSheets(c, sheet).forEach(function (k) {
     var r = c.recs.filter(function (d) {
       return d.sheet === k;
     })[0];
@@ -22980,6 +23652,7 @@ function reportData(q, sheet) {
     sheet: sheet || "",
     cpf: cpfRows(c),
     recKey: sheet && stages[0] && stages[0].rec ? stages[0].rec.key : c.key,
+    multi: !sheet || stages.length > 1,
   };
 }
 
@@ -23202,6 +23875,7 @@ function reportInfoRows(rep) {
       ["محصول", PRODF[rep.prod || "padra"]],
       ["کد فرم", FORM_CODE],
     ]);
+    if (I.color) R.push(["رنگ", I.color]);
     if (s0) {
       if (s0.rec) R.push(["سوخت", fuelTxt(fuelOf(s0.rec))]);
       R.push(
@@ -23342,7 +24016,7 @@ function xlsxSummaryRows(rep) {
   section(["بخش تأییدشده", "نام", "تاریخ تأیید", "ساعت تأیید"]);
   rep.stages.forEach(function (st) {
     signRows(st).forEach(function (r) {
-      A.push(rep.sheet ? r : [st.name + " — " + r[0], r[1], r[2], r[3]]);
+      A.push(rep.multi ? [st.name + " — " + r[0], r[1], r[2], r[3]] : r);
     });
   });
   if (!rep.sheet && rep.archHist.length) {
@@ -23857,11 +24531,11 @@ function buildPdf(rep) {
   P.newPage();
   pdfInfoSection(P, rep);
   pdfSummarySection(P, rep);
-  pdfDefectSections(P, rep, whole);
+  pdfDefectSections(P, rep, rep.multi);
   if (rep.cpf.length) pdfCpfSection(P, rep);
   if (whole) pdfStagesSection(P, rep);
   if (whole && rep.archHist.length) pdfArchiveSection(P, rep);
-  pdfSignSection(P, rep, whole);
+  pdfSignSection(P, rep, rep.multi);
   pdfOkSection(P, rep);
   return P.finish(FORM_CODE);
 }
