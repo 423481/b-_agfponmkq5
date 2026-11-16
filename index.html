@@ -6239,7 +6239,7 @@ var SUPA_URL = "https://kdpmscvzavrdwwoprkfi.supabase.co",
 /* نشانی سرویس دیتابیس شرکت. خالی = همان Supabase (حالت فعلی)؛ پر = همهٔ خواندن/نوشتن به این سرویس می‌رود. */
 var API_URL = "";
 
-var APP_VER = "v167.42";
+var APP_VER = "v167.43";
 
 var AUTH_FN = "";
 
@@ -11837,12 +11837,6 @@ function createGo(d) {
 // فرم ثبت خودروی جدید در ایستگاه.
 function createCard() {
   var sh = SHEETS[S.sheet];
-  if (waitsForEwt1())
-    return (
-      '<div class="card"><h2>این شاسی هنوز باز نشده است</h2><p class="hint" style="font-size:17px">شاسی <span class="num">' +
-      esc(S.key) +
-      "</span> هنوز توسط چکمن EWT1 باز نشده است. بعد از باز شدن، دوباره جست‌وجو کنید.</p></div>"
-    );
   var pick = sh.keyKind === "serial" && !identity(S.key).chassis ? linkPickers() : "";
   return (
     pick +
@@ -12201,11 +12195,6 @@ function openNewRecord(rec, tmc) {
 
 // ثبت خودروی جدید: بررسی شماره‌ها (تکراری نباشد)، ساخت برگه.
 function submitCreate() {
-  if (waitsForEwt1()) {
-    S.formErr = "این شاسی هنوز توسط چکمن EWT1 باز نشده است.";
-    render();
-    return;
-  }
   var rec = Object.assign(idVals(S.sheet, "c_"), {
     sheet: S.sheet,
     key: S.key,
@@ -16089,10 +16078,6 @@ function fuelWarns(d) {
 }
 
 /* v159: چکمنِ فقط‌EWT2 شاسی تازه باز نمی‌کند؛ شماره‌ها و سوخت را چکمن EWT1 ثبت می‌کند */
-function waitsForEwt1() {
-  return S.sheet === "chassis" && activeSec() === "ewt2";
-}
-
 /* v159: مرحله‌ی «موتور» داخل ورود شاسی — برگه‌ی موتور همان خودرو (با همان ساختار قبلی) کنار شاسی بازدید می‌شود.
    فقط برای چکمنی که بخش EWT1 را بازدید می‌کند (EWT1 یا هر دو)؛ چکمن فقط‌EWT2 موتور را نمی‌بیند. */
 function mergedOn() {
