@@ -6218,6 +6218,523 @@ html[data-glove="1"] .lgb {
   background: linear-gradient(180deg, rgba(17, 61, 134, 0), #113d86);
 }
 
+
+/* کلید تم: یک دکمه‌ی گرد (حالت فعلی)؛ با لمس، هر سه حالت کنارش باز می‌شود */
+.lgb .thm {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  gap: 6px;
+}
+.lgb .thm .thmcur,
+.lgb .thm .thmopts button {
+  width: 44px;
+  height: 44px;
+  border-radius: 22px;
+  border: 1px solid rgba(14, 42, 102, 0.35);
+  background: rgba(255, 255, 255, 0.7);
+  color: #0e2a66;
+  font-size: 18px;
+  padding: 0;
+  cursor: pointer;
+}
+.lgb .thm.open .thmcur,
+.lgb .thm .thmopts button[aria-pressed="true"] {
+  background: #0e2a66;
+  color: #fff;
+}
+.lgb .thm .thmopts {
+  display: flex;
+  gap: 6px;
+}
+
+﻿/* MOHR v167.57 — chassis / engine workspace. No external assets or dependencies. */
+/* Every selector is bounded by the render-time visual scope. */
+html:has(#app[data-ce-design]:not([data-ce-design=""])) { background: #e9eef3; }
+body:has(#app[data-ce-design]:not([data-ce-design=""])) { margin: 0; padding: 0; background: #e9eef3; overflow: auto; }
+#app[data-ce-design]:not([data-ce-design=""]) {
+  --bg: #edf1f5; --surface: #fff; --surface-2: #f4f7fa; --ink: #172d43;
+  --muted: #62758a; --line: #dce4ec; --stamp: #146d83; --stamp-soft: #e7f3f5;
+  --on-stamp: #fff; --ok: #17734d; --ok-soft: #e8f5ed; --open: #b53136;
+  --open-soft: #fff0ef; --wait: #936111; --wait-soft: #fff6df;
+  --ce-navy: #142c42; --ce-accent: #147b91; --ce-focus: #58b9d0;
+  --shadow: 0 2px 6px #172d4304, 0 10px 32px #172d4306;
+  width: 100%; max-width: none; min-height: 100dvh; margin: 0; padding: 0 24px 24px;
+  display: grid; grid-template-columns: 208px minmax(0, 1fr); grid-auto-rows: min-content;
+  align-content: start; align-items: start; gap: 16px 24px; font-size: 15px; line-height: 1.65;
+}
+@media (prefers-color-scheme: dark) {
+  html:not([data-theme="light"]) #app[data-ce-design]:not([data-ce-design=""]) {
+    --bg:#101e2c; --surface:#1a2c3d; --surface-2:#152536; --ink:#e7eff7; --muted:#a1b2c2;
+    --line:#30475b; --stamp:#70c7d6; --stamp-soft:#173e49; --on-stamp:#112b37;
+    --ok:#7cd6a2; --ok-soft:#173a30; --open:#ff9797; --open-soft:#432c32;
+    --wait:#efc978; --wait-soft:#3e3421; --ce-navy:#0e1e2c; --ce-accent:#70c7d6;
+  }
+}
+html[data-theme="dark"] #app[data-ce-design]:not([data-ce-design=""]) {
+  --bg:#101e2c; --surface:#1a2c3d; --surface-2:#152536; --ink:#e7eff7; --muted:#a1b2c2;
+  --line:#30475b; --stamp:#70c7d6; --stamp-soft:#173e49; --on-stamp:#112b37;
+  --ok:#7cd6a2; --ok-soft:#173a30; --open:#ff9797; --open-soft:#432c32;
+  --wait:#efc978; --wait-soft:#3e3421; --ce-navy:#0e1e2c; --ce-accent:#70c7d6;
+}
+/* #app[data-ce-design]:not([data-ce-design=""]) is expanded by the build preparation script to the bounded selector. */
+#app[data-ce-design]:not([data-ce-design=""]) { background: var(--bg); }
+#app[data-ce-design]:not([data-ce-design=""]) > * { min-width: 0; grid-column: 2; }
+#app[data-ce-design]:not([data-ce-design=""]) > .top {
+  grid-column: 1 / -1; margin: 0 -24px; padding: 16px 24px; min-height: 88px;
+  background: var(--ce-navy); color: #fff; border: 0; box-shadow: 0 3px 14px #10263816;
+  align-items: center; gap: 12px 24px;
+}
+#app[data-ce-design]:not([data-ce-design=""]) .brand { flex: 1 1 340px; gap: 12px; }
+#app[data-ce-design]:not([data-ce-design=""]) .brand h1 { font-size: 22px; color: #fff; line-height: 1.45; }
+#app[data-ce-design]:not([data-ce-design=""]) .proto { color: #c0d8e4; background: #ffffff0c; border: 1px solid #ffffff20; border-radius: 5px; }
+#app[data-ce-design]:not([data-ce-design=""]) .who2, #app[data-ce-design]:not([data-ce-design=""]) .whoin, #app[data-ce-design]:not([data-ce-design=""]) .whoin3 { color: #e3eef5; }
+#app[data-ce-design]:not([data-ce-design=""]) .top .sync { border-color: #ffffff30; color: #dbeaf2; background: #ffffff0c; }
+#app[data-ce-design]:not([data-ce-design=""]) .top .menubtn { background: #ffffff12; color: white; border: 1px solid #ffffff30; border-radius: 10px; }
+#app[data-ce-design]:not([data-ce-design=""]) .top .menu { color: var(--ink); }
+#app[data-ce-design]:not([data-ce-design=""]) > .tabs.main {
+  grid-column: 1; grid-row: 2 / span 40; position: sticky; top: 18px; inset-inline: auto; bottom: auto;
+  display: flex; flex-direction: column; align-items: stretch; overflow: visible; flex-wrap: nowrap;
+  margin: 0; padding: 10px; gap: 6px; background: var(--surface); border: 1px solid var(--line);
+  border-radius: 14px; box-shadow: var(--shadow); min-width: 0;
+}
+#app[data-ce-design]:not([data-ce-design=""]) .tabs.main > .tab {
+  width: 100%; flex: none; display: flex; justify-content: flex-start; align-items: center; gap: 8px;
+  border: 0; border-radius: 8px; min-height: 48px; padding: 10px 14px; background: transparent;
+  color: var(--muted); font-size: 14px; font-weight: 700; text-align: start; white-space: normal;
+}
+#app[data-ce-design]:not([data-ce-design=""]) .tabs.main > .tab[aria-selected="true"] { color: var(--stamp); background: var(--stamp-soft); box-shadow: inset -3px 0 var(--stamp); }
+#app[data-ce-design]:not([data-ce-design=""]) .tabs.main .cnt { margin-inline-start: auto; border-radius: 6px; }
+#app[data-ce-design]:not([data-ce-design=""]) .moresheet { position: relative; inset: auto; width: 100%; padding: 6px; box-shadow: none; border-radius: 10px; }
+#app[data-ce-design]:not([data-ce-design=""]) .moresheet .tab { min-height: 44px; }
+#app[data-ce-design]:not([data-ce-design=""]) > .scopebar { margin: 0; padding: 0; }
+#app[data-ce-design]:not([data-ce-design=""]) .pickgrp { display: flex; flex-wrap: wrap; gap: 6px; padding: 5px; border: 1px solid var(--line); border-radius: 10px; background: var(--surface); }
+#app[data-ce-design]:not([data-ce-design=""]) .pickgrp .btn { flex: 1; min-height: 42px; border: 0; box-shadow: none; border-radius: 7px; background: transparent; }
+#app[data-ce-design]:not([data-ce-design=""]) .pickgrp .btn[aria-pressed="true"] { color: var(--stamp); background: var(--stamp-soft); box-shadow: inset 0 0 0 1px var(--stamp); }
+#app[data-ce-design]:not([data-ce-design=""]) .card { padding: 20px 24px; margin: 0; border: 1px solid var(--line); border-radius: 14px; background: var(--surface); box-shadow: var(--shadow); }
+#app[data-ce-design]:not([data-ce-design=""]) .card h2 { font-size: 20px; line-height: 1.5; margin: 0 0 16px; font-weight: 900; }
+#app[data-ce-design]:not([data-ce-design=""]) .row { gap: 10px 12px; }
+#app[data-ce-design]:not([data-ce-design=""]) .hint { color: var(--muted); line-height: 1.8; }
+#app[data-ce-design]:not([data-ce-design=""]) .btn, #app[data-ce-design]:not([data-ce-design=""]) .tab, #app[data-ce-design]:not([data-ce-design=""]) .fbtn, #app[data-ce-design]:not([data-ce-design=""]) .pick { border-radius: 9px; font-weight: 700; }
+#app[data-ce-design]:not([data-ce-design=""]) .btn { min-height: 46px; border: 1px solid var(--line); background: var(--surface); padding: 9px 16px; box-shadow: none; }
+#app[data-ce-design]:not([data-ce-design=""]) .btn.sm { min-height: 38px; padding: 6px 12px; font-size: 13px; }
+#app[data-ce-design]:not([data-ce-design=""]) .btn.primary { color: var(--on-stamp); background: var(--stamp); border-color: var(--stamp); box-shadow: 0 3px 10px #146d831a; }
+#app[data-ce-design]:not([data-ce-design=""]) .btn.ok { color: var(--ok); background: var(--ok-soft); border-color: color-mix(in srgb, var(--ok) 30%, var(--line)); }
+#app[data-ce-design]:not([data-ce-design=""]) .btn.danger { color: var(--open); background: var(--open-soft); border-color: color-mix(in srgb, var(--open) 25%, var(--line)); }
+#app[data-ce-design]:not([data-ce-design=""]) button:focus-visible, #app[data-ce-design]:not([data-ce-design=""]) summary:focus-visible { outline: 3px solid var(--ce-focus); outline-offset: 3px; }
+#app[data-ce-design]:not([data-ce-design=""]) button:disabled { opacity: .5; cursor: not-allowed; }
+#app[data-ce-design]:not([data-ce-design=""]) .in, #app[data-ce-design]:not([data-ce-design=""]) select, #app[data-ce-design]:not([data-ce-design=""]) textarea { background: var(--surface); border: 1px solid var(--line); border-radius: 9px; min-height: 48px; padding: 10px 12px; box-shadow: inset 0 1px 2px #152d4304; font-size: 16px; }
+#app[data-ce-design]:not([data-ce-design=""]) .in:focus, #app[data-ce-design]:not([data-ce-design=""]) select:focus, #app[data-ce-design]:not([data-ce-design=""]) textarea:focus { border-color: var(--stamp); outline: 3px solid color-mix(in srgb, var(--stamp) 17%, transparent); outline-offset: 0; }
+#app[data-ce-design]:not([data-ce-design=""]) .in.num { font-size: 22px; font-weight: 800; font-variant-numeric: tabular-nums; letter-spacing: .055em; }
+#app[data-ce-design]:not([data-ce-design=""]) .f { gap: 7px; min-width: 0; font-size: 14px; font-weight: 700; }
+#app[data-ce-design]:not([data-ce-design=""]) .f > span { color: var(--muted); }
+#app[data-ce-design]:not([data-ce-design=""]) .fuelpick { display: flex; flex-wrap: wrap; gap: 10px; }
+#app[data-ce-design]:not([data-ce-design=""]) .fuelpick .fbtn { flex: 1 1 160px; min-height: 62px; border-width: 1px; padding: 12px; }
+#app[data-ce-design]:not([data-ce-design=""]) .fuelpick .fbtn[aria-pressed="true"] { outline: 2px solid currentColor; outline-offset: -2px; }
+#app[data-ce-design]:not([data-ce-design=""]) .err { padding: 12px 16px; background: var(--open-soft); border-inline-start: 3px solid var(--open); color: var(--open); border-radius: 8px; }
+#app[data-ce-design]:not([data-ce-design=""]) details.info { border: 1px solid var(--line); background: var(--surface-2); border-radius: 9px; padding: 10px 14px; margin-top: 14px; }
+#app[data-ce-design]:not([data-ce-design=""]) .ce-search-card { padding: 0; overflow: hidden; }
+#app[data-ce-design]:not([data-ce-design=""]) .ce-search-card > .row:first-child { padding: 20px 24px 16px; margin: 0 !important; background: var(--surface-2); border-bottom: 1px solid var(--line); }
+#app[data-ce-design]:not([data-ce-design=""]) .ce-search-card > .row:first-child > b { font-size: 20px; }
+#app[data-ce-design]:not([data-ce-design=""]) .ce-search-card > form[data-form="search"] { display: grid; grid-template-columns: minmax(240px,1fr) auto auto; align-items: end; padding: 28px 24px; margin: 0; }
+#app[data-ce-design]:not([data-ce-design=""]) .ce-search-card > form[data-form="search"] .in { min-height: 62px; font-size: 28px; }
+#app[data-ce-design]:not([data-ce-design=""]) .ce-search-card > form[data-form="search"] .btn { min-height: 62px; }
+#app[data-ce-design]:not([data-ce-design=""]) .ce-search-card > .row:not(:first-child), #app[data-ce-design]:not([data-ce-design=""]) .ce-search-card > div:not(.row), #app[data-ce-design]:not([data-ce-design=""]) .ce-search-card > p { margin: 0 !important; padding: 16px 24px; border-top: 1px solid var(--line); }
+#app[data-ce-design]:not([data-ce-design=""]) #todaylist { display: grid; grid-template-columns: repeat(auto-fill,minmax(180px,1fr)); gap: 8px; }
+#app[data-ce-design]:not([data-ce-design=""]) #todaylist .btn { justify-content: space-between; width: 100%; }
+#app[data-ce-design]:not([data-ce-design=""]) .ce-create-card form[data-form="create"] { gap: 16px; padding-top: 8px; }
+#app[data-ce-design]:not([data-ce-design=""]) .ce-create-card .dots { justify-content: flex-start; gap: 8px; }
+#app[data-ce-design]:not([data-ce-design=""]) .ce-create-card .dots i { width: 32px; height: 4px; border-radius: 4px; }
+/* Inspection canvas: the identity and workflow form a rail; the active task owns the remaining area. */
+#app[data-ce-design]:not([data-ce-design=""]):has(> .stepbar) { display: block; padding: 16px 20px 94px; min-height: 100dvh; }
+html:has(#app[data-ce-design]:not([data-ce-design=""]) > .stepbar), body:has(#app[data-ce-design]:not([data-ce-design=""]) > .stepbar) { overflow: auto; }
+#app[data-ce-design]:not([data-ce-design=""]) > .stepbar.chs {
+  display: grid; grid-template-columns: 264px minmax(0,1fr); grid-template-rows: auto auto auto 1fr;
+  align-content: start; align-items: start; gap: 14px 24px; margin: 0; padding: 0 !important;
+  width: 100%; height: auto; min-height: calc(100dvh - 116px) !important; max-height: none !important;
+  border: 0 !important; border-radius: 0 !important; background: transparent; overflow: visible; box-shadow: none !important;
+}
+#app[data-ce-design]:not([data-ce-design=""]) .stepbar > * { min-width: 0; grid-column: 1; }
+#app[data-ce-design]:not([data-ce-design=""]) .stepbar > .stepcur {
+  grid-column: 2; grid-row: 1 / span 12; width: 100%; min-height: calc(100dvh - 116px); height: auto;
+  max-height: none; overflow: visible; padding: 24px; margin: 0; border: 1px solid var(--line);
+  border-radius: 16px; background: var(--surface); box-shadow: var(--shadow); display: flex; flex-direction: column; gap: 12px;
+}
+#app[data-ce-design]:not([data-ce-design=""]) .carinfo.ch { padding: 20px; border-radius: 14px; border: 1px solid var(--line); border-top: 4px solid var(--stamp); background: var(--surface); box-shadow: var(--shadow); }
+#app[data-ce-design]:not([data-ce-design=""]) .carinfo .ci1 { align-items: start; gap: 8px; flex-wrap: wrap; }
+#app[data-ce-design]:not([data-ce-design=""]) .carinfo .cnum { width: 100%; }
+#app[data-ce-design]:not([data-ce-design=""]) .carinfo .cnum small { font-size: 13px; color: var(--muted); }
+#app[data-ce-design]:not([data-ce-design=""]) .carinfo .cnum b { font-size: clamp(28px,2.7vw,40px); line-height: 1.4; color: var(--ink); letter-spacing: .035em; }
+#app[data-ce-design]:not([data-ce-design=""]) .carinfo .cside { width: 100%; display: flex; flex-wrap: wrap; gap: 6px; }
+#app[data-ce-design]:not([data-ce-design=""]) .carinfo .cfuel { font-size: 12px; border-radius: 5px; padding: 3px 9px; background: var(--stamp-soft); color: var(--stamp); }
+#app[data-ce-design]:not([data-ce-design=""]) .carinfo .ci2 { margin-top: 14px; padding-top: 12px; border-top: 1px solid var(--line); display: flex; flex-wrap: wrap; gap: 6px; }
+#app[data-ce-design]:not([data-ce-design=""]) .carinfo .ci2 > span { border: 0 !important; padding: 3px 0 !important; border-radius: 0; font-size: 12px; color: var(--muted); background: transparent; }
+#app[data-ce-design]:not([data-ce-design=""]) .wiz { display: flex; flex-direction: column; align-items: stretch; justify-content: flex-start; gap: 5px; padding: 8px; margin: 0; border: 1px solid var(--line); border-radius: 14px; background: var(--surface); overflow: visible; }
+#app[data-ce-design]:not([data-ce-design=""]) .wiz::before, #app[data-ce-design]:not([data-ce-design=""]) .wiz::after { display: none; }
+#app[data-ce-design]:not([data-ce-design=""]) .wiz .wst { display: flex; flex: none; flex-direction: row; justify-content: flex-start; align-items: center; gap: 12px; width: 100%; min-height: 52px; padding: 8px 10px; border: 1px solid transparent; border-radius: 9px; background: transparent; color: var(--muted); text-align: start; }
+#app[data-ce-design]:not([data-ce-design=""]) .wiz .wst::before, #app[data-ce-design]:not([data-ce-design=""]) .wiz .wst::after { display: none; }
+#app[data-ce-design]:not([data-ce-design=""]) .wiz .wst i { width: 32px; height: 32px; min-width: 32px; border: 1px solid var(--line); background: var(--surface-2); border-radius: 9px; font-size: 14px; display: grid; place-items: center; font-style: normal; }
+#app[data-ce-design]:not([data-ce-design=""]) .wiz .wst span { font-size: 14px; line-height: 1.4; white-space: normal; }
+#app[data-ce-design]:not([data-ce-design=""]) .wiz .wst.cur, #app[data-ce-design]:not([data-ce-design=""]) .wiz .wst.view { border-color: var(--stamp); background: var(--stamp-soft); color: var(--stamp); }
+#app[data-ce-design]:not([data-ce-design=""]) .wiz .wst.cur i, #app[data-ce-design]:not([data-ce-design=""]) .wiz .wst.view i { background: var(--stamp); border-color: var(--stamp); color: var(--on-stamp); }
+#app[data-ce-design]:not([data-ce-design=""]) .wiz .wst.done, #app[data-ce-design]:not([data-ce-design=""]) .wiz .wst.ng { color: var(--ok); }
+#app[data-ce-design]:not([data-ce-design=""]) .wiz .wst.done i, #app[data-ce-design]:not([data-ce-design=""]) .wiz .wst.ng i { color: var(--ok); background: var(--ok-soft); border-color: color-mix(in srgb,var(--ok) 25%,var(--line)); }
+#app[data-ce-design]:not([data-ce-design=""]) .wiz .wst.sh i { color: var(--wait); background: var(--wait-soft); border-color: var(--wait); }
+#app[data-ce-design]:not([data-ce-design=""]) .stepcur.fillc .steplb, #app[data-ce-design]:not([data-ce-design=""]) .stepcur .steplb { margin: 0 !important; padding: 0 0 14px; font-size: 24px !important; line-height: 1.55; border: 0; border-bottom: 1px solid var(--line); border-radius: 0; background: transparent; box-shadow: none; }
+#app[data-ce-design]:not([data-ce-design=""]) .stepcur.fillc .secsum { margin: 0; padding: 0 0 12px; font-size: 13px; color: var(--muted); border: 0; border-radius: 0; background: transparent; box-shadow: none; }
+#app[data-ce-design]:not([data-ce-design=""]) .secsum::before { display: none; }
+#app[data-ce-design]:not([data-ce-design=""]) .stepcur.fillc .chipsbox.fq { flex: 1 1 auto; min-height: 120px; max-height: none; padding: 16px; border: 1px solid var(--line); border-radius: 12px; background: var(--surface-2); overflow: visible; }
+#app[data-ce-design]:not([data-ce-design=""]) .chipsbox.fq .hint { border: 0; background: transparent; padding: 16px; }
+#app[data-ce-design]:not([data-ce-design=""]) .chips { gap: 8px; }
+#app[data-ce-design]:not([data-ce-design=""]) .chips .pick { min-height: 46px; padding: 9px 14px; border: 1px solid var(--line); background: var(--surface); border-radius: 8px; font-size: 14px; }
+#app[data-ce-design]:not([data-ce-design=""]) .chips .pick[aria-pressed="true"] { border-color: var(--stamp); background: var(--stamp-soft); color: var(--stamp); }
+#app[data-ce-design]:not([data-ce-design=""]) .ngbar, #app[data-ce-design]:not([data-ce-design=""]) .stepng { min-height: 52px; border: 1px solid color-mix(in srgb,var(--open) 35%,var(--line)); background: var(--open-soft); color: var(--open); border-radius: 10px; font-size: 16px; }
+#app[data-ce-design]:not([data-ce-design=""]) .stepitemsbtn { min-height: 50px; padding: 12px 16px; border: 1px solid var(--stamp); background: var(--stamp-soft); color: var(--stamp); border-radius: 10px; font-size: 15px !important; }
+#app[data-ce-design]:not([data-ce-design=""]) .histbar, #app[data-ce-design]:not([data-ce-design=""]) .corrbtn, #app[data-ce-design]:not([data-ce-design=""]) .stepfix { min-height: 44px; padding: 10px 14px; border: 1px solid var(--line); border-radius: 9px; background: var(--surface); font-size: 14px; }
+#app[data-ce-design]:not([data-ce-design=""]) .stepfix { color: var(--wait); border-color: var(--wait); background: var(--wait-soft); }
+#app[data-ce-design]:not([data-ce-design=""]) .idpage .kvs { display: grid; grid-template-columns: repeat(3,minmax(0,1fr)); gap: 0; margin: 0; border: 1px solid var(--line); border-radius: 12px; overflow: hidden; background: var(--surface-2); }
+#app[data-ce-design]:not([data-ce-design=""]) .idpage .kv { padding: 18px; border: 0; border-radius: 0; border-inline-end: 1px solid var(--line); border-bottom: 1px solid var(--line); min-width: 0; }
+#app[data-ce-design]:not([data-ce-design=""]) .idpage .kv small { color: var(--muted); font-size: 12px; margin-bottom: 7px; }
+#app[data-ce-design]:not([data-ce-design=""]) .idpage .kv b { font-size: 20px; line-height: 1.5; overflow-wrap: anywhere; }
+#app[data-ce-design]:not([data-ce-design=""]) .idpage .kv b.num { font-size: 24px; }
+#app[data-ce-design]:not([data-ce-design=""]) .stepdef { padding: 0; margin: 0; list-style: none; }
+#app[data-ce-design]:not([data-ce-design=""]) .stepcur.fillc > ul.stepdef { max-height: none; overflow: visible; }
+#app[data-ce-design]:not([data-ce-design=""]) .stepdef li { margin: 0; padding: 12px 14px; border: 0; border-bottom: 1px solid var(--line); border-radius: 0; font-size: 14px; }
+#app[data-ce-design]:not([data-ce-design=""]) .stepdef li:last-child { border-bottom: 0; }
+#app[data-ce-design]:not([data-ce-design=""]) .items { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); gap: 10px; }
+#app[data-ce-design]:not([data-ce-design=""]) .it { padding: 14px; margin: 0; border: 1px solid var(--line); border-radius: 10px; box-shadow: none; background: var(--surface); min-width: 0; }
+#app[data-ce-design]:not([data-ce-design=""]) .it .top2 { display: flex; align-items: center; flex-wrap: wrap; gap: 12px; }
+#app[data-ce-design]:not([data-ce-design=""]) .it .lb { flex: 1 1 160px; font-size: 14px; line-height: 1.7; }
+#app[data-ce-design]:not([data-ce-design=""]) .it .seg { display: flex; gap: 4px; padding: 3px; border-radius: 8px; background: var(--surface-2); }
+#app[data-ce-design]:not([data-ce-design=""]) .it .seg button { min-height: 40px; min-width: 64px; padding: 6px 10px; border-radius: 6px; border: 1px solid transparent; font-size: 13px; }
+#app[data-ce-design]:not([data-ce-design=""]) .it.ok { border-inline-start: 3px solid var(--ok); }
+#app[data-ce-design]:not([data-ce-design=""]) .it.ng { border-inline-start: 3px solid var(--open); }
+#app[data-ce-design]:not([data-ce-design=""]) .it .seg .k-ok[aria-pressed="true"] { color: var(--ok); background: var(--ok-soft); border-color: var(--ok); }
+#app[data-ce-design]:not([data-ce-design=""]) .it .seg .k-ng[aria-pressed="true"] { color: var(--open); background: var(--open-soft); border-color: var(--open); }
+#app[data-ce-design]:not([data-ce-design=""]) .it .rowx { border-top: 1px solid var(--line); padding-top: 10px; margin-top: 12px; }
+#app[data-ce-design]:not([data-ce-design=""]) .it:has(.editbox), #app[data-ce-design]:not([data-ce-design=""]) .it:has(textarea) { grid-column: 1 / -1; }
+#app[data-ce-design]:not([data-ce-design=""]) .botspace { display: none; }
+#app[data-ce-design]:not([data-ce-design=""]) .botbar.chs { position: fixed; inset-inline: 20px; bottom: 12px; z-index: 20; width: auto; max-width: none; margin: 0; padding: 10px 14px; display: flex; align-items: center; gap: 12px; border: 1px solid var(--line); border-radius: 14px; background: var(--surface); box-shadow: 0 6px 30px #10263820; }
+#app[data-ce-design]:not([data-ce-design=""]) .botbar .btn { flex: 0 1 auto !important; width: auto; min-height: 48px; min-width: 120px; border-radius: 9px; font-size: 15px !important; }
+#app[data-ce-design]:not([data-ce-design=""]) .botbar .btn.confirm { flex: 0 1 320px !important; margin-inline-start: auto; background: var(--ok); border-color: var(--ok); color: var(--surface); }
+#app[data-ce-design]:not([data-ce-design=""]) .botbar .smpbtn { min-width: 48px; width: 48px; }
+/* Full-page task panels share the same dimensions and compact fields. */
+#app[data-ce-design]:not([data-ce-design=""]):has(> .sxpage) { display: block; padding: 20px; }
+#app[data-ce-design]:not([data-ce-design=""]) > .sxpage { min-height: calc(100dvh - 40px); max-height: none; height: auto; padding: 24px; margin: 0; border: 1px solid var(--line); border-radius: 16px; background: var(--surface); overflow: visible; box-shadow: var(--shadow); }
+#app[data-ce-design]:not([data-ce-design=""]) .sxh { margin: 0 0 18px; padding: 0 0 16px; border-bottom: 1px solid var(--line); font-size: 20px; gap: 12px; }
+#app[data-ce-design]:not([data-ce-design=""]) .sxbtns, #app[data-ce-design]:not([data-ce-design=""]) .corrbtns { gap: 10px; padding-top: 16px; }
+#app[data-ce-design]:not([data-ce-design=""]) .corrpick { display: grid; grid-template-columns: repeat(auto-fit,minmax(220px,1fr)); gap: 12px; }
+#app[data-ce-design]:not([data-ce-design=""]) .corrbig { padding: 20px; border: 1px solid var(--line); border-radius: 12px; background: var(--surface-2); min-height: 110px; }
+#app[data-ce-design]:not([data-ce-design=""]) .corrbig span { color: var(--muted); font-size: 13px; }
+#app[data-ce-design]:not([data-ce-design=""]) .corrbig b { color: var(--ink); font-size: 26px; }
+#app[data-ce-design]:not([data-ce-design=""]) .corrform { max-width: 760px; margin-inline: auto; padding: 20px; background: var(--surface-2); border: 1px solid var(--line); border-radius: 12px; }
+#app[data-ce-design]:not([data-ce-design=""]) .histstage { box-shadow: none; }
+#app[data-ce-design]:not([data-ce-design=""]) .histstage > summary { padding-block: 6px; line-height: 1.7; }
+#app[data-ce-design]:not([data-ce-design=""]) .histstage[open] > summary { margin-bottom: 16px; padding-bottom: 12px; border-bottom: 1px solid var(--line); }
+#app[data-ce-design]:not([data-ce-design=""]) .finfo { display: grid; grid-template-columns: repeat(auto-fit,minmax(180px,1fr)); gap: 10px; }
+#app[data-ce-design]:not([data-ce-design=""]) .finfo > div { padding: 12px; border: 1px solid var(--line); border-radius: 8px; background: var(--surface-2); }
+#app[data-ce-design]:not([data-ce-design=""]) .fgrp { border: 1px solid var(--line); border-radius: 10px; overflow: hidden; margin-block: 10px; }
+#app[data-ce-design]:not([data-ce-design=""]) .fgrp h4 { padding: 12px 14px; margin: 0; background: var(--surface-2); }
+#app[data-ce-design]:not([data-ce-design=""]) .chip, #app[data-ce-design]:not([data-ce-design=""]) .badge, #app[data-ce-design]:not([data-ce-design=""]) .tchip { border-radius: 5px; font-size: 12px; }
+#app[data-ce-design]:not([data-ce-design=""]) .tblwrap, #app[data-ce-design]:not([data-ce-design=""]) .tablewrap { width: 100%; overflow-x: auto; border: 1px solid var(--line); border-radius: 10px; }
+#app[data-ce-design]:not([data-ce-design=""]) table { width: 100%; border-collapse: separate; border-spacing: 0; border: 1px solid var(--line); border-radius: 10px; background: var(--surface); font-size: 13px; }
+#app[data-ce-design]:not([data-ce-design=""]) th { padding: 12px 14px; color: var(--muted); background: var(--surface-2); font-size: 12px; font-weight: 800; border-bottom: 1px solid var(--line); }
+#app[data-ce-design]:not([data-ce-design=""]) td { padding: 12px 14px; border-bottom: 1px solid var(--line); vertical-align: middle; }
+#app[data-ce-design]:not([data-ce-design=""]) tbody tr:last-child td { border-bottom: 0; }
+#app[data-ce-design]:not([data-ce-design=""]) tbody tr:nth-child(even) { background: color-mix(in srgb,var(--surface-2) 55%,var(--surface)); }
+#app[data-ce-design]:not([data-ce-design=""]) .subtabs, #app[data-ce-design]:not([data-ce-design=""]) .tabs:not(.main) { padding: 5px; gap: 5px; border: 1px solid var(--line); border-radius: 10px; background: var(--surface-2); }
+#app[data-ce-design]:not([data-ce-design=""]) .subtab { min-height: 42px; border: 0; border-radius: 7px; background: transparent; padding: 8px 14px; }
+#app[data-ce-design]:not([data-ce-design=""]) .subtab[aria-selected="true"] { background: var(--surface); color: var(--stamp); box-shadow: 0 1px 4px #142c4212; }
+#app[data-ce-design]:not([data-ce-design=""]) .menu { padding: 12px; gap: 6px; border-radius: 12px; border-color: var(--line); box-shadow: var(--shadow); }
+#app[data-ce-design]:not([data-ce-design=""]) .menurow { padding: 12px 0; }
+#app[data-ce-design]:not([data-ce-design=""]) .menu .btn { min-height: 44px; }
+#app[data-ce-design]:not([data-ce-design=""]) > p.hint:last-child { font-size: 11px; margin: 0 !important; color: var(--muted); }
+#app[data-ce-design]:not([data-ce-design=""]) .donescr { background: var(--ce-navy); color: #fff; }
+#app[data-ce-design]:not([data-ce-design=""]) .donescr .dchk { color: #7ee1b0; }
+#app[data-ce-design]:not([data-ce-design=""]) .donescr .dk { color: #fff; }
+@media (min-width: 1600px) {
+  #app[data-ce-design]:not([data-ce-design=""]) { grid-template-columns: 232px minmax(0,1fr); gap: 20px 32px; padding-inline: 32px; }
+  #app[data-ce-design]:not([data-ce-design=""]) > .top { margin-inline: -32px; padding-inline: 32px; }
+  #app[data-ce-design]:not([data-ce-design=""]) > .stepbar.chs { grid-template-columns: 300px minmax(0,1fr); gap: 24px 32px; }
+  #app[data-ce-design]:not([data-ce-design=""]) .items { grid-template-columns: repeat(3,minmax(0,1fr)); }
+}
+@media (min-width: 1000px) {
+  #app[data-ce-design]:not([data-ce-design=""]) .sxpage:not(.corrpage) .sxmain { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+  #app[data-ce-design]:not([data-ce-design=""]) form[data-form="ids"] { display: grid; grid-template-columns: repeat(2,minmax(0,1fr)); align-items: end; }
+  #app[data-ce-design]:not([data-ce-design=""]) form[data-form="ids"] > .grow, #app[data-ce-design]:not([data-ce-design=""]) form[data-form="ids"] > .fuelpick { grid-column: 1/-1; }
+}
+@media (max-width: 1100px) {
+  #app[data-ce-design]:not([data-ce-design=""]) { grid-template-columns: 180px minmax(0,1fr); gap: 14px; padding-inline: 16px; }
+  #app[data-ce-design]:not([data-ce-design=""]) > .top { margin-inline: -16px; padding-inline: 16px; }
+  #app[data-ce-design]:not([data-ce-design=""]) > .stepbar.chs { grid-template-columns: 230px minmax(0,1fr); gap: 14px; }
+  #app[data-ce-design]:not([data-ce-design=""]) .items { grid-template-columns: 1fr; }
+  #app[data-ce-design]:not([data-ce-design=""]) .idpage .kvs { grid-template-columns: repeat(2,minmax(0,1fr)); }
+  #app[data-ce-design]:not([data-ce-design=""]) .ce-search-card > form[data-form="search"] { grid-template-columns: minmax(180px,1fr) auto; }
+  #app[data-ce-design]:not([data-ce-design=""]) .ce-search-card > form[data-form="search"] .f { grid-column: 1/-1; }
+}
+@media (max-width: 760px) {
+  #app[data-ce-design]:not([data-ce-design=""]) { display: flex; flex-direction: column; gap: 12px; padding: 0 12px 20px; min-height: 100dvh; }
+  #app[data-ce-design]:not([data-ce-design=""]) > * { width: 100%; }
+  #app[data-ce-design]:not([data-ce-design=""]) > .top { margin: 0 -12px; width: calc(100% + 24px); padding: 14px 16px; min-height: 0; gap: 12px; }
+  #app[data-ce-design]:not([data-ce-design=""]) .brand { flex: 1 1 100%; flex-wrap: wrap; gap: 7px 12px; }
+  #app[data-ce-design]:not([data-ce-design=""]) .brand h1 { font-size: 19px; }
+  #app[data-ce-design]:not([data-ce-design=""]) .proto { font-size: 10px; }
+  #app[data-ce-design]:not([data-ce-design=""]) > .tabs.main { position: static; display: flex; flex-direction: row; flex-wrap: wrap; width: 100%; gap: 4px; padding: 5px; border-radius: 10px; box-shadow: none; }
+  #app[data-ce-design]:not([data-ce-design=""]) .tabs.main > .tab { width: auto; flex: 1 1 auto; min-height: 44px; padding: 8px 10px; font-size: 12px; justify-content: center; }
+  #app[data-ce-design]:not([data-ce-design=""]) .tabs.main > .tab[aria-selected="true"] { box-shadow: inset 0 -2px var(--stamp); }
+  #app[data-ce-design]:not([data-ce-design=""]) .moresheet { flex: 1 1 100%; }
+  #app[data-ce-design]:not([data-ce-design=""]) .card { padding: 16px; border-radius: 12px; }
+  #app[data-ce-design]:not([data-ce-design=""]) .card h2 { font-size: 18px; }
+  #app[data-ce-design]:not([data-ce-design=""]) .ce-search-card { padding: 0; }
+  #app[data-ce-design]:not([data-ce-design=""]) .ce-search-card > .row:first-child { padding: 16px; }
+  #app[data-ce-design]:not([data-ce-design=""]) .ce-search-card > .row:first-child > b { font-size: 18px; }
+  #app[data-ce-design]:not([data-ce-design=""]) .ce-search-card > form[data-form="search"] { grid-template-columns: 1fr 1fr; padding: 20px 16px; gap: 10px; }
+  #app[data-ce-design]:not([data-ce-design=""]) .ce-search-card > form[data-form="search"] .f { grid-column: 1/-1; }
+  #app[data-ce-design]:not([data-ce-design=""]) .ce-search-card > form[data-form="search"] .btn { min-height: 48px; padding: 10px; font-size: 13px; }
+  #app[data-ce-design]:not([data-ce-design=""]) .ce-search-card > form[data-form="search"] .in { min-height: 58px; }
+  #app[data-ce-design]:not([data-ce-design=""]) .ce-search-card > .row:not(:first-child), #app[data-ce-design]:not([data-ce-design=""]) .ce-search-card > div:not(.row), #app[data-ce-design]:not([data-ce-design=""]) .ce-search-card > p { padding: 14px 16px; }
+  #app[data-ce-design]:not([data-ce-design=""]):has(> .stepbar) { padding: 10px 10px calc(90px + env(safe-area-inset-bottom,0px)); }
+  #app[data-ce-design]:not([data-ce-design=""]) > .stepbar.chs { display: flex; flex-direction: column; gap: 10px; min-height: 0 !important; }
+  #app[data-ce-design]:not([data-ce-design=""]) .stepbar > * { width: 100%; }
+  #app[data-ce-design]:not([data-ce-design=""]) .stepbar > .stepcur { padding: 16px; min-height: 0; border-radius: 12px; gap: 10px; }
+  #app[data-ce-design]:not([data-ce-design=""]) .carinfo.ch { padding: 12px 14px; border-top-width: 3px; border-radius: 12px; }
+  #app[data-ce-design]:not([data-ce-design=""]) .carinfo .ci1 { flex-wrap: nowrap; align-items: center; }
+  #app[data-ce-design]:not([data-ce-design=""]) .carinfo .cnum { flex: 1; width: auto; }
+  #app[data-ce-design]:not([data-ce-design=""]) .carinfo .cnum b { font-size: 28px; }
+  #app[data-ce-design]:not([data-ce-design=""]) .carinfo .cside { width: auto; max-width: 48%; }
+  #app[data-ce-design]:not([data-ce-design=""]) .carinfo .ci2 { margin-top: 8px; padding-top: 8px; gap: 6px 12px; }
+  #app[data-ce-design]:not([data-ce-design=""]) .wiz { flex-direction: row; flex-wrap: nowrap; justify-content: flex-start; overflow-x: auto; padding: 6px; gap: 6px; scroll-snap-type: x proximity; }
+  #app[data-ce-design]:not([data-ce-design=""]) .wiz .wst { flex: 0 0 auto; width: auto; min-width: 94px; min-height: 48px; padding: 6px 8px; gap: 6px; scroll-snap-align: center; }
+  #app[data-ce-design]:not([data-ce-design=""]) .wiz .wst i { min-width: 26px; width: 26px; height: 26px; border-radius: 7px; font-size: 12px; }
+  #app[data-ce-design]:not([data-ce-design=""]) .wiz .wst span { font-size: 12px; }
+  #app[data-ce-design]:not([data-ce-design=""]) .stepcur .steplb, #app[data-ce-design]:not([data-ce-design=""]) .stepcur.fillc .steplb { font-size: 20px !important; padding-bottom: 10px; }
+  #app[data-ce-design]:not([data-ce-design=""]) .stepcur.fillc .chipsbox.fq { min-height: 100px; padding: 12px; }
+  #app[data-ce-design]:not([data-ce-design=""]) .idpage .kvs { grid-template-columns: repeat(2,minmax(0,1fr)); border-radius: 9px; }
+  #app[data-ce-design]:not([data-ce-design=""]) .idpage .kv { padding: 12px; }
+  #app[data-ce-design]:not([data-ce-design=""]) .idpage .kv b, #app[data-ce-design]:not([data-ce-design=""]) .idpage .kv b.num { font-size: 20px; }
+  #app[data-ce-design]:not([data-ce-design=""]) .items { grid-template-columns: 1fr; }
+  #app[data-ce-design]:not([data-ce-design=""]) .it { padding: 12px; }
+  #app[data-ce-design]:not([data-ce-design=""]) .it .seg button { min-height: 44px; }
+  #app[data-ce-design]:not([data-ce-design=""]) .botbar.chs { inset-inline: 8px; bottom: 6px; padding: 8px; gap: 6px; border-radius: 12px; padding-bottom: calc(8px + env(safe-area-inset-bottom,0px)); }
+  #app[data-ce-design]:not([data-ce-design=""]) .botbar .btn { min-width: 70px; padding: 8px 10px; font-size: 13px !important; }
+  #app[data-ce-design]:not([data-ce-design=""]) .botbar .btn.confirm { flex: 1 1 auto !important; min-width: 0; }
+  #app[data-ce-design]:not([data-ce-design=""]) .botbar .smpbtn { min-width: 44px; }
+  #app[data-ce-design]:not([data-ce-design=""]):has(> .sxpage) { padding: 10px; }
+  #app[data-ce-design]:not([data-ce-design=""]) > .sxpage { padding: 16px; border-radius: 12px; min-height: calc(100dvh - 20px); }
+  #app[data-ce-design]:not([data-ce-design=""]) .sxh { font-size: 17px; flex-wrap: wrap; }
+  #app[data-ce-design]:not([data-ce-design=""]) .corrform { padding: 14px; }
+  #app[data-ce-design]:not([data-ce-design=""]) .corrpick { grid-template-columns: repeat(2,minmax(0,1fr)); gap: 8px; }
+  #app[data-ce-design]:not([data-ce-design=""]) .corrbig { padding: 14px; min-height: 100px; }
+  #app[data-ce-design]:not([data-ce-design=""]) .corrbig b { font-size: 20px; overflow-wrap: anywhere; }
+  #app[data-ce-design]:not([data-ce-design=""]) table { font-size: 12px; }
+  #app[data-ce-design]:not([data-ce-design=""]) td, #app[data-ce-design]:not([data-ce-design=""]) th { padding: 10px 8px; }
+}
+@media (max-width: 380px) {
+  #app[data-ce-design]:not([data-ce-design=""]) .ce-search-card > form[data-form="search"] { grid-template-columns: 1fr; }
+  #app[data-ce-design]:not([data-ce-design=""]) .ce-search-card > form[data-form="search"] .f { grid-column: auto; }
+  #app[data-ce-design]:not([data-ce-design=""]) .it .seg { width: 100%; }
+  #app[data-ce-design]:not([data-ce-design=""]) .it .seg button { flex: 1; }
+  #app[data-ce-design]:not([data-ce-design=""]) .botbar .btn { min-width: 56px; padding-inline: 7px; }
+}
+@media (hover: hover) {
+  #app[data-ce-design]:not([data-ce-design=""]) .btn:not(:disabled):hover, #app[data-ce-design]:not([data-ce-design=""]) .pick:not(:disabled):hover { filter: brightness(.97); border-color: var(--stamp); }
+  #app[data-ce-design]:not([data-ce-design=""]) .tabs.main > .tab:hover { background: var(--surface-2); }
+  #app[data-ce-design]:not([data-ce-design=""]) tbody tr:hover { background: var(--stamp-soft); }
+  #app[data-ce-design]:not([data-ce-design=""]) .corrbig:hover { border-color: var(--stamp); background: var(--stamp-soft); }
+}
+@media (prefers-reduced-motion: no-preference) {
+  #app[data-ce-design]:not([data-ce-design=""]) .btn, #app[data-ce-design]:not([data-ce-design=""]) .tab, #app[data-ce-design]:not([data-ce-design=""]) .pick, #app[data-ce-design]:not([data-ce-design=""]) .wst { transition: background-color .14s ease, border-color .14s ease; }
+}
+@media print {
+  #app[data-ce-design]:not([data-ce-design=""]) { display: block; padding: 0; background: #fff; }
+  #app[data-ce-design]:not([data-ce-design=""]) > .tabs.main, #app[data-ce-design]:not([data-ce-design=""]) .botbar { display: none; }
+  #app[data-ce-design]:not([data-ce-design=""]) > .stepbar.chs { display: block; }
+  #app[data-ce-design]:not([data-ce-design=""]) .stepbar > .stepcur { min-height: 0; }
+}
+/* Explicit resets for legacy fullscreen and column layouts. */
+#app[data-ce-design]:not([data-ce-design=""]) > .top { flex-direction: row; flex-wrap: wrap; }
+#app[data-ce-design]:not([data-ce-design=""]) .brand { flex-direction: row; align-items: center; }
+#app[data-ce-design]:not([data-ce-design=""]) .proto { flex: 0 0 auto; }
+#app[data-ce-design]:not([data-ce-design=""]) .top .who2 { flex: 0 1 auto; flex-direction: row; flex-wrap: wrap; margin-inline-start: auto; }
+#app[data-ce-design]:not([data-ce-design=""]) .top .whoin { flex: 0 1 auto; }
+#app[data-ce-design]:not([data-ce-design=""]) > .tabs.main { grid-row: 2 / span 3; }
+#app[data-ce-design]:not([data-ce-design=""]) .stepbar > .scopebar, #app[data-ce-design]:not([data-ce-design=""]) .stepbar > .carinfo, #app[data-ce-design]:not([data-ce-design=""]) .stepbar > .histbar { margin: 0; }
+#app[data-ce-design]:not([data-ce-design=""]) .stepbar > .scopebar .pickgrp .btn { font-size: 11px; min-height: 36px; padding: 5px 6px; }
+#app[data-ce-design]:not([data-ce-design=""]) .carinfo.ch { padding: 12px 14px; }
+#app[data-ce-design]:not([data-ce-design=""]) .carinfo .ci1 { flex-wrap: nowrap; align-items: center; }
+#app[data-ce-design]:not([data-ce-design=""]) .carinfo .cnum { width: auto; flex: 1; }
+#app[data-ce-design]:not([data-ce-design=""]) .carinfo .cnum b { font-size: 30px; }
+#app[data-ce-design]:not([data-ce-design=""]) .carinfo .cside { width: auto; max-width: 82px; }
+#app[data-ce-design]:not([data-ce-design=""]) .carinfo .cfuel { min-height: 0; padding: 4px 6px; border: 0; font-size: 11px; }
+#app[data-ce-design]:not([data-ce-design=""]) .carinfo .ci2 { margin-top: 8px; padding-top: 8px; gap: 2px 8px; }
+#app[data-ce-design]:not([data-ce-design=""]) .carinfo .ci2 > span { font-size: 11px; }
+#app[data-ce-design]:not([data-ce-design=""]) .wiz { gap: 3px; padding: 6px; }
+#app[data-ce-design]:not([data-ce-design=""]) .wiz .wst { min-height: 40px; padding: 4px 8px; }
+#app[data-ce-design]:not([data-ce-design=""]) .wiz .wst i { width: 28px; min-width: 28px; height: 28px; }
+#app[data-ce-design]:not([data-ce-design=""]) .stepcur .steplb, #app[data-ce-design]:not([data-ce-design=""]) .stepcur.fillc .steplb { position: static; display: block; width: auto; height: auto; clip: auto; clip-path: none; overflow: visible; white-space: normal; }
+#app[data-ce-design]:not([data-ce-design=""]) .stepcur.fillc .secsum { display: flex; }
+#app[data-ce-design]:not([data-ce-design=""]) .stepcur.fillc .chipsbox.fq { flex: 0 0 auto; min-height: 150px; }
+#app[data-ce-design]:not([data-ce-design=""]) .stepbar > .stepcur { min-height: 0; }
+#app[data-ce-design]:not([data-ce-design=""]) > .stepbar:has(> .stepbar.chs) { display: contents; }
+#app[data-ce-design]:not([data-ce-design=""]) .stepbar.chs { display: grid; grid-template-columns: 264px minmax(0,1fr); gap: 14px 24px; padding: 0 !important; margin: 0; border: 0 !important; background: transparent; height: auto; min-height: 0 !important; max-height: none !important; overflow: visible; }
+#app[data-ce-design]:not([data-ce-design=""]) .itemlist { display: grid; grid-template-columns: repeat(3,minmax(0,1fr)); align-content: start; gap: 8px; max-height: none; overflow: visible; }
+#app[data-ce-design]:not([data-ce-design=""]) .itemlist .irow { width: 100%; min-height: 64px; height: auto; margin: 0; padding: 12px 14px; border: 1px solid var(--line); border-radius: 9px; background: var(--surface-2); color: var(--ink); font-size: 14px; line-height: 1.65; text-align: start; box-shadow: none; }
+#app[data-ce-design]:not([data-ce-design=""]) .itemlist .irow:hover { border-color: var(--stamp); background: var(--stamp-soft); }
+#app[data-ce-design]:not([data-ce-design=""]) .regsum { gap: 10px; margin: 0; }
+#app[data-ce-design]:not([data-ce-design=""]) .regsum button { min-height: 46px; border-radius: 9px; font-size: 13px; border: 1px solid var(--line); box-shadow: none; }
+#app[data-ce-design]:not([data-ce-design=""]) .histbar { font-size: 12px; }
+@media (max-width: 1100px) {
+  #app[data-ce-design]:not([data-ce-design=""]) .stepbar.chs { grid-template-columns: 230px minmax(0,1fr); gap: 14px; }
+  #app[data-ce-design]:not([data-ce-design=""]) .itemlist { grid-template-columns: repeat(2,minmax(0,1fr)); }
+}
+@media (max-width: 760px) {
+  #app[data-ce-design]:not([data-ce-design=""]) > .top { flex-direction: row; }
+  #app[data-ce-design]:not([data-ce-design=""]) .brand { flex-basis: 100%; }
+  #app[data-ce-design]:not([data-ce-design=""]) .top .who2 { flex: 1 1 100%; justify-content: space-between; }
+  #app[data-ce-design]:not([data-ce-design=""]) .stepbar.chs { display: flex; flex-direction: column; gap: 10px; }
+  #app[data-ce-design]:not([data-ce-design=""]) .wiz .wst { min-height: 44px; }
+  #app[data-ce-design]:not([data-ce-design=""]) .itemlist { grid-template-columns: repeat(2,minmax(0,1fr)); gap: 7px; }
+  #app[data-ce-design]:not([data-ce-design=""]) .itemlist .irow { min-height: 64px; padding: 10px; font-size: 13px; }
+  #app[data-ce-design]:not([data-ce-design=""]) .carinfo .cside { max-width: 40%; }
+  #app[data-ce-design]:not([data-ce-design=""]) .carinfo .ci2 { flex-wrap: wrap; }
+}
+@media (max-width: 380px) {
+  #app[data-ce-design]:not([data-ce-design=""]) .itemlist { grid-template-columns: 1fr; }
+}
+#app[data-ce-design]:not([data-ce-design=""]) .carinfo .cside { flex: 0 1 auto; min-width: 0; }
+#app[data-ce-design]:not([data-ce-design=""]) .carinfo .cfuel { width: auto; min-width: 0; max-width: 100%; white-space: normal; }
+#app[data-ce-design]:not([data-ce-design=""]) .carinfo .cnum { min-width: 0; }
+#app[data-ce-design]:not([data-ce-design=""]) .carinfo .cnum b { max-width: 100%; overflow-wrap: anywhere; }
+@media print {
+  #app[data-ce-design]:not([data-ce-design=""]) .stepbar.chs { display: block; }
+}
+#app[data-ce-design]:not([data-ce-design=""]) .top { border-radius: 0; }
+#app[data-ce-design]:not([data-ce-design=""]) .fuelpick .fbtn { flex: 1 1 120px; min-width: 0; font-size: 17px; color: var(--ink); background: var(--surface-2); border-color: var(--line); }
+#app[data-ce-design]:not([data-ce-design=""]) .fuelpick .fbtn[aria-pressed="true"] { background: var(--stamp-soft); color: var(--stamp); border-color: var(--stamp); }
+#app[data-ce-design]:not([data-ce-design=""]) .regchips { margin: 0; gap: 10px; }
+#app[data-ce-design]:not([data-ce-design=""]) .regchips .regchip { min-height: 44px; border-radius: 9px; border: 1px solid var(--line); padding: 8px 12px; font-size: 13px; }
+#app[data-ce-design]:not([data-ce-design=""]) .regchips .regchip .cnt { border-radius: 5px; }
+#app[data-ce-design]:not([data-ce-design=""]) .stepcur .stepitemsbtn { margin: 0; }
+#app[data-ce-design]:not([data-ce-design=""]) .sxpage textarea#sx { min-height: clamp(240px,40dvh,420px); resize: vertical; }
+@media (max-width: 760px) {
+  #app[data-ce-design]:not([data-ce-design=""]) .wiz { display: grid; grid-template-columns: repeat(3,minmax(0,1fr)); overflow: visible; gap: 4px; }
+  #app[data-ce-design]:not([data-ce-design=""]) .wiz .wst { min-width: 0; width: 100%; padding: 5px; gap: 5px; min-height: 44px; }
+  #app[data-ce-design]:not([data-ce-design=""]) .wiz .wst span { font-size: 11px; }
+  #app[data-ce-design]:not([data-ce-design=""]) .stepcur.fillc .chipsbox.fq { min-height: 70px; padding: 8px; }
+  #app[data-ce-design]:not([data-ce-design=""]) .chipsbox.fq .hint { margin: 0; padding: 8px; font-size: 13px; }
+  #app[data-ce-design]:not([data-ce-design=""]) .fuelpick .fbtn { min-height: 54px; font-size: 16px; }
+  #app[data-ce-design]:not([data-ce-design=""]) .regchips { gap: 8px; }
+}
+#app[data-ce-design]:not([data-ce-design=""]):has(> .histstage) { grid-template-columns: repeat(2,minmax(0,1fr)); padding: 20px; gap: 14px; }
+#app[data-ce-design]:not([data-ce-design=""]):has(> .histstage) > .card:first-child { grid-column: 1/-1; }
+#app[data-ce-design]:not([data-ce-design=""]):has(> .histstage) > .histstage { grid-column: auto; margin: 0; }
+#app[data-ce-design]:not([data-ce-design=""]):has(> .histstage) .carinfo.ch { margin-top: 14px; }
+body:has(#app[data-ce-design]:not([data-ce-design=""])) #scanmodal { background: #102638; }
+body:has(#app[data-ce-design]:not([data-ce-design=""])) #scanclose { min-height: 48px; border-radius: 10px; border: 1px solid #ffffff40; padding: 10px 20px; }
+html[data-glove="1"] #app[data-ce-design]:not([data-ce-design=""]) .btn, html[data-glove="1"] #app[data-ce-design]:not([data-ce-design=""]) .tab, html[data-glove="1"] #app[data-ce-design]:not([data-ce-design=""]) .pick, html[data-glove="1"] #app[data-ce-design]:not([data-ce-design=""]) .fbtn, html[data-glove="1"] #app[data-ce-design]:not([data-ce-design=""]) .in, html[data-glove="1"] #app[data-ce-design]:not([data-ce-design=""]) .wst, html[data-glove="1"] #app[data-ce-design]:not([data-ce-design=""]) .irow, html[data-glove="1"] #app[data-ce-design]:not([data-ce-design=""]) .it .seg button { min-height: 60px; }
+html[data-glove="1"] #app[data-ce-design]:not([data-ce-design=""]) .btn.sm { min-height: 52px; }
+@media (max-width: 760px) {
+  #app[data-ce-design]:not([data-ce-design=""]):has(> .histstage) { display: flex; padding: 10px; }
+}
+/* Checklist-only screens use the complete canvas instead of reserving an empty rail. */
+#app[data-ce-design]:not([data-ce-design=""]) .stepbar.chs:not(:has(> .carinfo)) { grid-template-columns: minmax(0,1fr); }
+#app[data-ce-design]:not([data-ce-design=""]) .stepbar.chs:not(:has(> .carinfo)) > .stepcur { grid-column: 1; grid-row: auto; }
+#app[data-ce-design]:not([data-ce-design=""]) .stepbar.chs:not(:has(> .carinfo)) > .scopebar { max-width: 420px; justify-self: start; }
+@media (min-width: 1101px) {
+  #app[data-ce-design]:not([data-ce-design=""]) .stepbar.chs:not(:has(> .carinfo)) .itemlist { grid-template-columns: repeat(auto-fit,minmax(240px,1fr)); }
+}
+#app[data-ce-design]:not([data-ce-design=""]) .stepcur.shs .ngbar, #app[data-ce-design]:not([data-ce-design=""]) .stepcur.shs .stepng, #app[data-ce-design]:not([data-ce-design=""]) .stepng.sh { color: var(--wait); background: var(--wait-soft); border-color: color-mix(in srgb,var(--wait) 35%,var(--line)); }
+#app[data-ce-design]:not([data-ce-design=""]) .stepcur.shs .chips { display: grid; grid-template-columns: repeat(auto-fit,minmax(180px,1fr)); gap: 10px; }
+#app[data-ce-design]:not([data-ce-design=""]) .stepcur.shs .chips .pick { width: 100%; min-height: 54px; font-size: 14px !important; text-align: start; padding: 12px 14px; }
+#app[data-ce-design]:not([data-ce-design=""]) .stepcur.shs .chips .pick[aria-pressed="true"] { color: var(--wait); background: var(--wait-soft); border-color: var(--wait); box-shadow: inset 0 0 0 1px var(--wait); }
+#app[data-ce-design]:not([data-ce-design=""]) .sxpage .editbox { border: 0; background: transparent; padding: 0; box-shadow: none; }
+#app[data-ce-design]:not([data-ce-design=""]) .sxtop { margin-bottom: 16px; }
+@media (max-width: 760px) {
+  #app[data-ce-design]:not([data-ce-design=""]) .stepcur.shs .chips { grid-template-columns: repeat(2,minmax(0,1fr)); gap: 7px; }
+  #app[data-ce-design]:not([data-ce-design=""]) .stepcur.shs .chips .pick { padding: 10px; font-size: 13px !important; }
+}
+/* The settings menu floats beside its trigger and leaves the workspace in place. */
+#app[data-ce-design]:not([data-ce-design=""]) > .top { position: relative; }
+#app[data-ce-design]:not([data-ce-design=""]) .top > .menu { position: absolute; inset-inline-end: 24px; top: calc(100% - 8px); width: min(420px,calc(100vw - 32px)); z-index: 40; display: grid; grid-template-columns: 1fr 1fr; align-self: auto; gap: 8px; padding: 14px; box-shadow: 0 12px 36px #10263826; max-height: calc(100dvh - 140px); overflow-y: auto; }
+#app[data-ce-design]:not([data-ce-design=""]) .top > .menu .menurow, #app[data-ce-design]:not([data-ce-design=""]) .top > .menu .danger { grid-column: 1/-1; }
+#app[data-ce-design]:not([data-ce-design=""]) .top > .menu .btn { text-align: start; font-size: 13px; }
+@media (max-width: 760px) {
+  #app[data-ce-design]:not([data-ce-design=""]) .top > .menu { inset-inline-end: 12px; top: calc(100% - 4px); width: calc(100% - 24px); max-height: calc(100dvh - 170px); }
+}
+
+/* MOHR — تنظیمات نهایی روی طراحی فضای کار (شاسی و موتور):
+   بی‌حاشیه روی گوشی، نوار مرحله در یک ردیف، دکمه‌های ایرادات/کسری‌ها و صفحه‌های فهرست. */
+#app[data-ce-design]:not([data-ce-design=""]) .stepbar[data-v2] .stepcur.fillc .steplb { position: absolute; width: 1px; height: 1px; margin: 0 !important; padding: 0; overflow: hidden; clip-path: inset(50%); border: 0; }
+#app[data-ce-design]:not([data-ce-design=""]) .stepbar[data-v2] .stepcur.fillc .secsum { display: none; }
+#app[data-ce-design]:not([data-ce-design=""]) .regchips { display: flex; flex-wrap: nowrap; gap: 8px; }
+#app[data-ce-design]:not([data-ce-design=""]) .regchips .regchip { flex: 1 1 0; display: inline-flex; align-items: center; justify-content: space-between; gap: 6px; font: inherit; font-size: 14px; font-weight: 800; }
+#app[data-ce-design]:not([data-ce-design=""]) .regchip i { font-style: normal; }
+#app[data-ce-design]:not([data-ce-design=""]) .regchip b { min-width: 26px; padding: 1px 7px; border-radius: 999px; background: currentColor; font-size: 13px; text-align: center; -webkit-text-fill-color: var(--surface); }
+#app[data-ce-design]:not([data-ce-design=""]) .regchip.ng { color: var(--open); background: var(--open-soft); border-color: var(--open); }
+#app[data-ce-design]:not([data-ce-design=""]) .regchip.short { color: var(--wait); background: var(--wait-soft); border-color: var(--wait); }
+#app[data-ce-design]:not([data-ce-design=""]) .regchip.zero { color: var(--muted); background: var(--surface-2); border-color: var(--line); }
+#app[data-ce-design]:not([data-ce-design=""]) .reglist { margin: 0; padding: 0; list-style: none; }
+#app[data-ce-design]:not([data-ce-design=""]) .reglist li { display: flex; flex-direction: column; align-items: stretch; gap: 8px; margin: 0 0 8px; padding: 10px 12px; border: 1px solid var(--line); border-radius: 12px; background: var(--surface); }
+#app[data-ce-design]:not([data-ce-design=""]) .reglist .fxmeta { display: flex; flex-wrap: wrap; gap: 2px 12px; margin-top: 4px; color: var(--muted); font-size: 12.5px; font-weight: 600; }
+#app[data-ce-design]:not([data-ce-design=""]) .reglist .rmbtns { display: flex; }
+#app[data-ce-design]:not([data-ce-design=""]) .reglist .rmbtns .btn, #app[data-ce-design]:not([data-ce-design=""]) .reglist .rmbtns button { flex: 1; min-height: 44px; }
+#app[data-ce-design]:not([data-ce-design=""]) .regpage h4 { margin: 16px 0 6px; color: var(--ok); font-size: 15px; }
+#app[data-ce-design]:not([data-ce-design=""]) .shhint { flex: 1; padding: 14px; border: 1.5px dashed var(--line); border-radius: 12px; background: var(--surface-2); color: var(--muted); text-align: center; font-size: 14px; }
+#app[data-ce-design]:not([data-ce-design=""]) .botbar.closebar .btn.back { flex: 1 1 auto !important; font-size: 16px; }
+@media (max-width: 760px) {
+  #app[data-ce-design]:not([data-ce-design=""]), #app[data-ce-design]:not([data-ce-design=""]):has(> .stepbar), #app[data-ce-design]:not([data-ce-design=""]):has(> .sxpage) { padding-inline: 0; }
+  #app[data-ce-design]:not([data-ce-design=""]):has(> .stepbar) { padding-top: 0; padding-bottom: calc(72px + env(safe-area-inset-bottom, 0px)); }
+  #app[data-ce-design]:not([data-ce-design=""]) > .stepbar.chs { gap: 8px; }
+  #app[data-ce-design]:not([data-ce-design=""]) .stepbar > .stepcur, #app[data-ce-design]:not([data-ce-design=""]) .carinfo.ch, #app[data-ce-design]:not([data-ce-design=""]) .wiz, #app[data-ce-design]:not([data-ce-design=""]) .stepbar > .histbar, #app[data-ce-design]:not([data-ce-design=""]) > .sxpage { border-radius: 0; border-inline: 0; }
+
+  #app[data-ce-design]:not([data-ce-design=""]) .botbar.chs { inset-inline: 0; bottom: 0; border-radius: 0; border-width: 1px 0 0; padding-bottom: calc(8px + env(safe-area-inset-bottom, 0px)); }
+  #app[data-ce-design]:not([data-ce-design=""]) .wiz { display: grid; grid-auto-flow: column; grid-auto-columns: minmax(0, 1fr); grid-template-columns: none; overflow: visible; gap: 3px; }
+  #app[data-ce-design]:not([data-ce-design=""]) .wiz .wst { flex-direction: column; justify-content: center; text-align: center; gap: 3px; min-height: 56px; padding: 5px 2px; }
+  #app[data-ce-design]:not([data-ce-design=""]) .wiz .wst span { font-size: 11px; line-height: 1.3; }
+}
+
+/* خلاصه‌ی تأیید نهایی: هر بخش یک ردیف بزرگ و خوانا؛ جزئیات با لمس باز می‌شود */
+#app .stepbar.chsx .fsum .finfo { gap: 10px; margin: 10px 0 18px; }
+#app .stepbar.chsx .fsum .finfo dt { font-size: 15px; min-width: 84px; }
+#app .stepbar.chsx .fsum .finfo dd { font-size: 18px; font-weight: 800; }
+#app .stepbar.chsx .fsum .fsumcnt { font-size: 21px; font-weight: 900; margin: 8px 0 12px; }
+#app .stepbar.chsx .fgrp { margin: 10px 0; border: 1px solid var(--line); border-radius: 12px; overflow: hidden; background: var(--card, #fff); }
+#app .stepbar.chsx .fgrp .fgh {
+  display: flex; align-items: center; gap: 12px; width: 100%; min-height: 56px; padding: 10px 14px;
+  border: 0; background: transparent; color: inherit; font: inherit; text-align: start; cursor: pointer;
+}
+#app .stepbar.chsx .fgrp .fgh b { flex: 1 1 auto; min-width: 0; font-size: 18px; font-weight: 900; }
+#app .stepbar.chsx .fgrp .fgn { font-size: 16px; font-weight: 800; padding: 4px 12px; border-radius: 10px; background: #fde8e8; color: #b42318; }
+#app .stepbar.chsx .fgrp .fgh i { font-style: normal; font-size: 16px; color: var(--muted); }
+#app .stepbar.chsx .fgrp .stepdef { margin: 0; padding: 4px 14px 12px; list-style: none; border-top: 1px solid var(--line); }
+#app .stepbar.chsx .fgrp .stepdef li { font-size: 16px; font-weight: 700; line-height: 1.8; padding: 10px 0; border-bottom: 1px solid var(--line); }
+#app .stepbar.chsx .fgrp .stepdef li:last-child { border-bottom: 0; }
+#app .stepbar.chsx .fgrp .stepdef li .who,
+#app .stepbar.chsx .fgrp .stepdef li small { font-size: 14px; color: var(--muted); display: block; line-height: 1.7; }
+
+/* نوار پایین: «＋ ایراد» ردیف بالا، برگشت و تأیید ردیف پایین */
+#app[data-ce-design]:not([data-ce-design=""]) .botbar.withadd { flex-wrap: wrap; }
+#app[data-ce-design]:not([data-ce-design=""]) .botbar.withadd .btn.addng {
+  flex: 1 1 100% !important; order: -1; min-height: 50px; font-size: 18px !important; font-weight: 800;
+  border: 2px solid var(--open); background: var(--open-soft); color: var(--open);
+}
+#app[data-ce-design]:not([data-ce-design=""]) .botbar.chs .btn { font-size: 15px !important; font-weight: 800; }
+
+/* وقتی صفحه‌ی «تأیید نهایی شد» باز است، صفحه‌ی زیرین نباید از کنار دیده یا اسکرول شود */
+html:has(.donescr), body:has(.donescr) { overflow: hidden !important; background: #0e1e2c !important; }
+.donescr { width: 100%; }
+.donescr .dcard .drow.fold { background: transparent !important; border: 0 !important; box-shadow: none !important; border-radius: 0 !important; }
+.donescr .dcard .drow.fold b { color: var(--ink); font-size: 20px; }
+.donescr .dcard .drow.fold span {
+  font-size: 16px; font-weight: 900; padding: 5px 12px; border-radius: 999px; color: #fff !important; background: var(--ok);
+}
+.donescr .dcard.dng .drow.fold span { background: #d92d20; }
+.donescr .dcard.dsh .drow.fold span { background: #b54708; }
+.donescr .dcard.dsm .drow.fold span { background: #175cd3; }
+.donescr .dcard { border-inline-start-width: 8px; }
+.donescr .dcard .dbody li, .donescr .dcard .fxmeta { color: var(--ink); }
+.donescr .dcard .fxmeta { font-weight: 800; }
+
 </style>
 </head>
 <body>
@@ -6239,7 +6756,7 @@ var SUPA_URL = "https://kdpmscvzavrdwwoprkfi.supabase.co",
 /* نشانی سرویس دیتابیس شرکت. خالی = همان Supabase (حالت فعلی)؛ پر = همهٔ خواندن/نوشتن به این سرویس می‌رود. */
 var API_URL = "";
 
-var APP_VER = "v167.43";
+var APP_VER = "v167.61";
 
 var AUTH_FN = "";
 
@@ -8275,7 +8792,6 @@ function viewSnapshot() {
     key: S.key,
     wv: S.wizView || "",
     se: S.shEdit || "",
-    io: !!S.itemsOpen,
     si: S.sitem || "",
     sx: S.sxOpen || "",
     st: S.sxType || "",
@@ -8321,7 +8837,6 @@ function viewRestore(v) {
     S.wizFor = d.id;
     S.wizView = v.wv || "";
     S.shEdit = v.se || "";
-    S.itemsOpen = !!v.io;
     S.sitem = v.si || "";
     S.sxOpen = v.sx || "";
     S.sxType = v.st || "ng";
@@ -8404,26 +8919,31 @@ function navBack() {
 var LG_SEAL =
   '<svg role="img" aria-label="مُهر زامیاد" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 240 240"><defs><path id="sealT" d="M37,120 A83,83 0 0 1 203,120"/><path id="sealB" d="M30,120 A90,90 0 0 0 210,120"/><radialGradient id="sealD" cx=".5" cy=".35" r=".8"><stop offset="0" stop-color="#1c4aa8"/><stop offset="1" stop-color="#0d2f7a"/></radialGradient></defs><path d="M227.0,121.9 L235.9,125.7 L234.2,140.2 L224.7,141.9 L223.9,145.7 L231.7,151.4 L226.9,165.1 L217.2,164.7 L215.6,168.1 L221.9,175.4 L214.2,187.8 L204.8,185.2 L202.4,188.2 L207.0,196.7 L196.7,207.0 L188.2,202.4 L185.2,204.8 L187.8,214.2 L175.4,221.9 L168.1,215.6 L164.7,217.2 L165.1,226.9 L151.4,231.7 L145.7,223.9 L141.9,224.7 L140.2,234.2 L125.7,235.9 L121.9,227.0 L118.1,227.0 L114.3,235.9 L99.8,234.2 L98.1,224.7 L94.3,223.9 L88.6,231.7 L74.9,226.9 L75.3,217.2 L71.9,215.6 L64.6,221.9 L52.2,214.2 L54.8,204.8 L51.8,202.4 L43.3,207.0 L33.0,196.7 L37.6,188.2 L35.2,185.2 L25.8,187.8 L18.1,175.4 L24.4,168.1 L22.8,164.7 L13.1,165.1 L8.3,151.4 L16.1,145.7 L15.3,141.9 L5.8,140.2 L4.1,125.7 L13.0,121.9 L13.0,118.1 L4.1,114.3 L5.8,99.8 L15.3,98.1 L16.1,94.3 L8.3,88.6 L13.1,74.9 L22.8,75.3 L24.4,71.9 L18.1,64.6 L25.8,52.2 L35.2,54.8 L37.6,51.8 L33.0,43.3 L43.3,33.0 L51.8,37.6 L54.8,35.2 L52.2,25.8 L64.6,18.1 L71.9,24.4 L75.3,22.8 L74.9,13.1 L88.6,8.3 L94.3,16.1 L98.1,15.3 L99.8,5.8 L114.3,4.1 L118.1,13.0 L121.9,13.0 L125.7,4.1 L140.2,5.8 L141.9,15.3 L145.7,16.1 L151.4,8.3 L165.1,13.1 L164.7,22.8 L168.1,24.4 L175.4,18.1 L187.8,25.8 L185.2,35.2 L188.2,37.6 L196.7,33.0 L207.0,43.3 L202.4,51.8 L204.8,54.8 L214.2,52.2 L221.9,64.6 L215.6,71.9 L217.2,75.3 L226.9,74.9 L231.7,88.6 L223.9,94.3 L224.7,98.1 L234.2,99.8 L235.9,114.3 L227.0,118.1Z" fill="#0d2f7a"/><circle cx="120" cy="120" r="104" fill="#ffffff"/><circle cx="120" cy="120" r="100" fill="none" stroke="#0d2f7a" stroke-width="1.6"/><circle cx="120" cy="120" r="70" fill="none" stroke="#0d2f7a" stroke-width="1.6"/><text font-family="Arial Black,Impact,sans-serif" font-size="19" font-weight="900" fill="#0d2f7a"><textPath href="#sealT" startOffset="50%" text-anchor="middle" textLength="118" lengthAdjust="spacing">ZAMYAD</textPath></text><text font-family="Arial,sans-serif" font-size="12.5" font-weight="800" fill="#0d2f7a" dy="-1"><textPath href="#sealB" startOffset="50%" text-anchor="middle" textLength="150" lengthAdjust="spacing">QUALITY AT SOURCE</textPath></text><g fill="#f2b01e"><path d="M26 114l6 6-6 6-6-6z"/><path d="M214 114l6 6-6 6-6-6z"/></g><circle cx="120" cy="120" r="67" fill="url(#sealD)"/><text x="120" y="100" text-anchor="middle" font-family="Vazirmatn,Tahoma,sans-serif" font-size="24" font-weight="900" fill="#f2b01e">زامیاد</text><text x="120" y="139" text-anchor="middle" font-family="Arial Black,Impact,sans-serif" font-size="31" font-weight="900" fill="#fff" textLength="96" lengthAdjust="spacingAndGlyphs">MOHR</text><rect x="82" y="156" width="30" height="2.4" rx="1.2" fill="#f2b01e"/><rect x="128" y="156" width="30" height="2.4" rx="1.2" fill="#f2b01e"/><path d="M113.5 157l4.5 4.5 9-10" fill="none" stroke="#f2b01e" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"/></svg>';
 
+var THEME_OPTS = [
+  ["", "🌓", "خودکار"],
+  ["light", "☀", "روشن"],
+  ["dark", "🌙", "تاریک"],
+];
+
+var THM_OPEN = false;
+
+// یک دکمه‌ی گرد با نشان حالت فعلی؛ با لمس آن، سه حالت (خودکار/روشن/تاریک) باز می‌شود
 function lgTheme() {
+  var cur = THEME_OPTS.filter(function (o) {
+    return o[0] === THEME;
+  })[0];
   return (
-    '<div class="thm" role="group" aria-label="حالت نمایش">' +
-    [
-      ["", "🌓"],
-      ["light", "☀"],
-      ["dark", "🌙"],
-    ]
-      .map(function (o) {
-        return (
-          '<button type="button" data-act="thmset" data-v="' +
-          o[0] +
-          '" aria-label="حالت نمایش" aria-pressed="' +
-          (THEME === o[0]) +
-          '">' +
-          o[1] +
-          "</button>"
-        );
-      })
-      .join("") +
+    '<div class="thm' + (THM_OPEN ? " open" : "") + '"><button type="button" class="thmcur" data-act="thmopen" aria-expanded="' +
+    THM_OPEN + '" aria-label="حالت نمایش: ' + cur[2] + '">' + cur[1] + "</button>" +
+    (THM_OPEN
+      ? '<div class="thmopts" role="group" aria-label="حالت نمایش">' +
+        THEME_OPTS.map(function (o) {
+          return (
+            '<button type="button" data-act="thmset" data-v="' + o[0] + '" aria-label="' + o[2] +
+            '" aria-pressed="' + (THEME === o[0]) + '">' + o[1] + "</button>"
+          );
+        }).join("") + "</div>"
+      : "") +
     "</div>"
   );
 }
@@ -10027,6 +10547,7 @@ function render() {
     return;
   }
   root.innerHTML = out;
+  root.setAttribute("data-ce-design", S.user && (S.sheet === "chassis" || S.sheet === "engine") && ["inspect", "list", "short", "car", "report"].indexOf(S.tab) >= 0 ? S.sheet : "");
   Object.keys(keep).forEach(function (id) {
     var e = document.getElementById(id);
     if (e && keep[id] !== "") e.value = keep[id];
@@ -10132,7 +10653,13 @@ function clickPanelToggles(ev, el, a, id, d) {
 }
 
 function clickPreferences(ev, el, a, id, d) {
+  if (a === "thmopen") {
+    THM_OPEN = !THM_OPEN;
+    render();
+    return true;
+  }
   if (a === "thmset") {
+    THM_OPEN = false;
     THEME = el.getAttribute("data-v") || "";
     try {
       localStorage.setItem("thm", THEME);
@@ -11475,7 +12002,7 @@ function keyPlaceholder() {
 
 function searchHeader(sh, mine) {
   var h =
-    '<div class="card"><div class="row" style="margin-bottom:10px"><b>برگه: ' +
+    '<div class="card ce-search-card"><div class="row" style="margin-bottom:10px"><b>برگه: ' +
     esc(sh.name) +
     "</b>";
   if (mine.length > 1 && S.user.station !== "chassis")
@@ -11840,7 +12367,7 @@ function createCard() {
   var pick = sh.keyKind === "serial" && !identity(S.key).chassis ? linkPickers() : "";
   return (
     pick +
-    '<div class="card"><div class="row"><h2 class="grow" style="margin:0">بازدید جدید · ' +
+    '<div class="card ce-create-card"><div class="row"><h2 class="grow" style="margin:0">بازدید جدید · ' +
     esc(sh.keyLabel) +
     ' <span class="num">' +
     esc(S.key) +
@@ -12500,16 +13027,31 @@ function stepConfirm(d) {
 
 // نوار ثابت پایین ویزارد: برگشت و دکمه‌ی سبز تأیید.
 function botBar(d) {
+  if (d && regOn(d) && (S.itemsOpen || S.regList)) {
+    var np = S.regList === "shnew" ? Object.keys(S.shSel || {}).length : 0;
+    return chIcons(
+      '<div class="botspace"></div><div class="botbar chs chsx closebar"><button class="btn back" data-act="wizprev">▶ بستن</button>' +
+        (np ? '<button class="btn confirm ok" data-act="shsel">✓ ثبت ' + faDigits(np) + " کسری</button>" : "") +
+        "</div>",
+    );
+  }
   var c = stepConfirm(d);
   if (!c && d && !d.final && S.wizView && wizDone(d, S.wizView))
     c = { act: "wizback", label: "ادامه — مرحله‌ی فعلی ◀" };
   if (!c && d && d.sheet === "engine" && chassisPair(d)) c = { act: "wizback", label: "ادامه ◀" };
   var ch = d && isChs(d.sheet),
+    addNg =
+      c && c.act === "sign"
+        ? '<button class="btn addng" data-act="sxopen" data-t="ng" data-sec="' + esc(c.sec) + '">＋ ایراد</button>'
+        : "",
     bar =
       '<div class="botspace"></div><div class="botbar' +
       (ch ? " chs" : "") +
       (d && isChs(d.sheet) ? " chsx" : "") +
-      '"><button class="btn back" data-act="wizprev">▶ برگشت</button>' +
+      (addNg ? " withadd" : "") +
+      '">' +
+      addNg +
+      '<button class="btn back" data-act="wizprev">▶ برگشت</button>' +
       (d ? sampleBtn(d) : "") +
       (c
         ? '<button class="btn ok confirm" data-act="' +
@@ -12584,6 +13126,18 @@ function openGroups(d) {
   return g;
 }
 
+// هر گروه یک ردیف خلاصه (عنوان + تعداد) است؛ با لمس، موارد باز می‌شود
+function fgroupHtml(x) {
+  var open = !!(S.fgOpen && S.fgOpen[x.title]);
+  return (
+    '<section class="fgrp' + (open ? " open" : "") + '"><button type="button" class="fgh" data-act="fgtog" data-g="' +
+    esc(x.title) + '" aria-expanded="' + open + '"><b><bdi>' + esc(x.title) + '</bdi></b><span class="fgn">' +
+    faDigits(x.rows.length) + " مورد</span><i>" + (open ? "▴" : "▾") + "</i></button>" +
+    (open ? '<ul class="stepdef">' + x.rows.join("") + "</ul>" : "") +
+    "</section>"
+  );
+}
+
 function finalSummaryWiz(d) {
   var groups = openGroups(d),
     total = groups.reduce(function (n, x) {
@@ -12596,19 +13150,7 @@ function finalSummaryWiz(d) {
     '<p class="fsumcnt">' +
     (total ? faDigits(total) + " مورد باز در پرونده" : "بدون ایراد و کسری باز") +
     "</p>";
-  h += groups
-    .map(function (x) {
-      return (
-        '<section class="fgrp"><h4><bdi>' +
-        esc(x.title) +
-        "</bdi><small>" +
-        faDigits(x.rows.length) +
-        '</small></h4><ul class="stepdef">' +
-        x.rows.join("") +
-        "</ul></section>"
-      );
-    })
-    .join("");
+  h += groups.map(fgroupHtml).join("");
   if (S.sxOpen === "short") {
     S.sxType = "shortage";
     h += sxEditBox("short");
@@ -12870,33 +13412,37 @@ function doneIdentCard(d) {
   );
 }
 
+// کارت تاشو: ردیف بزرگ (عنوان + وضعیت)؛ با لمس، نام/تاریخ/ساعت و فهرست باز می‌شود
+function doneFold(key, cls, title, status, body) {
+  var open = !!(S.fgOpen && S.fgOpen[key]);
+  return (
+    '<div class="dcard ' + cls + (open ? " open" : "") + '"><button type="button" class="drow fold" data-act="fgtog" data-g="' +
+    esc(key) + '" aria-expanded="' + open + '"><b>' + title + "</b><span>" + status + "</span><i>" + (open ? "▴" : "▾") +
+    "</i></button>" + (open ? '<div class="dbody">' + body + "</div>" : "") + "</div>"
+  );
+}
+
 function doneSectionCard(d, sc) {
   var sg = d.signs && d.signs[sc.id],
     df = secDefects(d, sc),
     nOpen = df.filter(function (e) {
       return !e.it.closedAt;
-    }).length;
-  return (
-    '<div class="dcard' +
-    (nOpen ? " dng" : "") +
-    '"><div class="drow"><b>بخش ' +
-    esc(sc.name) +
-    "</b><span>" +
-    (nOpen ? "✗ " + faDigits(nOpen) + " ایراد" : "✓ سالم") +
-    "</span></div>" +
-    (sg ? dsub(d, sg.by, sg.at) : "") +
-    (df.length
+    }).length,
+    list = df.length
       ? "<ul>" +
         df
           .map(function (e) {
-            return (
-              "<li>" + esc(e.l) + (e.it.custom ? "" : e.it.note ? " — " + esc(e.it.note) : "") + "</li>"
-            );
+            return "<li>" + esc(e.l) + (e.it.custom ? "" : e.it.note ? " — " + esc(e.it.note) : "") + "</li>";
           })
           .join("") +
         "</ul>"
-      : "") +
-    "</div>"
+      : "";
+  return doneFold(
+    "sec:" + sc.id,
+    nOpen ? "dng" : "",
+    "بخش " + esc(sc.name),
+    nOpen ? "✗ " + faDigits(nOpen) + " ایراد" : "✓ سالم",
+    (sg ? dsub(d, sg.by, sg.at) : "") + list,
   );
 }
 
@@ -12938,21 +13484,15 @@ function doneBulletList(list, mark) {
 
 function doneShortSampleCards(d) {
   var o = openShortSample(d),
-    h =
-      '<div class="dcard' +
-      (o.shl.length ? " dsh" : "") +
-      '"><div class="drow"><b>کسری</b><span>' +
-      (o.shl.length ? faDigits(o.shl.length) + " مورد" : "ندارد") +
-      "</span></div>" +
-      (o.shl.length ? doneBulletList(o.shl, "⚠ ") : "") +
-      "</div>";
+    h = doneFold(
+      "short",
+      o.shl.length ? "dsh" : "",
+      "کسری",
+      o.shl.length ? "⚠ " + faDigits(o.shl.length) + " مورد" : "✓ ندارد",
+      o.shl.length ? doneBulletList(o.shl, "⚠ ") : '<p class="hint">کسری ثبت نشده است.</p>',
+    );
   if (o.smp.length)
-    h +=
-      '<div class="dcard dsm"><div class="drow"><b>نمونه</b><span>' +
-      faDigits(o.smp.length) +
-      " مورد</span></div>" +
-      doneBulletList(o.smp, "◇ ") +
-      "</div>";
+    h += doneFold("smp", "dsm", "نمونه", "◇ " + faDigits(o.smp.length) + " مورد", doneBulletList(o.smp, "◇ "));
   return h;
 }
 
@@ -13012,6 +13552,12 @@ function wizardStepBack(d) {
     render();
     return;
   }
+  if (S.regList) {
+    S.regList = "";
+    render();
+    window.scrollTo(0, 0);
+    return;
+  }
   if (S.itemsOpen) {
     S.itemsOpen = false;
     render();
@@ -13021,6 +13567,7 @@ function wizardStepBack(d) {
   S.sxOpen = "";
   S.sxErr = "";
   S.sitem = "";
+  S.regList = "";
   S.itemsOpen = false;
   S.editing = null;
   var pr = chassisPair(d);
@@ -14141,9 +14688,7 @@ function fqBlock(d, cur) {
         faDigits(n) +
         " ایراد انتخاب‌شده</button>"
       : "") +
-    '<button type="button" class="ngbar" data-act="sxopen" data-t="ng" data-sec="' +
-    esc(cur.id) +
-    '">＋ ایراد</button></div>'
+    "</div>"
   );
 }
 
@@ -14215,6 +14760,7 @@ function chipPartial(el, kind) {
 // وقتی چکمن به خودروی دیگری می‌رود، وضعیت صفحه‌ی ویزارد (بازبودن‌ها و انتخاب‌ها) را پاک می‌کند.
 function resetWizardState(d) {
   S.wizFor = d.id;
+  S.fgOpen = {};
   S.histPage = false;
   S.acOpen = false;
   S.corrOpen = "";
@@ -14224,6 +14770,7 @@ function resetWizardState(d) {
   S.sxOpen = "";
   S.sitem = "";
   S.itemsOpen = false;
+  S.regList = "";
   S.shTab = "";
   S.sxErr = "";
 }
@@ -14237,25 +14784,12 @@ function openShortageIds(d) {
 }
 
 // فهرست کسری‌های بازِ این برگه (برای نمایش بالای مرحله‌ی تأیید نهایی).
-function openShortagesHtml(d, openIds) {
-  if (!openIds.length) return "";
-  return (
-    '<ul class="stepdef">' +
-    openIds
-      .map(function (i) {
-        return rmLi(d, i, "⚠ کسری: " + esc(d.items[i].part || d.items[i].note || ""));
-      })
-      .join("") +
-    "</ul>"
-  );
-}
-
 // کارت «تأیید نهایی»: تعداد موارد باز و یادداشت انتظار برای بخش دیگر.
-function finalConfirmCard(d, openShortagesHtmlText) {
+function finalConfirmCard(d, chipsHtml) {
   var openCount = stat(d).open;
   return (
     '<div class="stepcur"><div class="steplb">تأیید نهایی</div>' +
-    openShortagesHtmlText +
+    chipsHtml +
     '<p class="hint" style="margin:8px 0">' +
     (openCount
       ? faDigits(openCount) + " مورد باز در پرونده هست و همراه تأیید ثبت می‌شود."
@@ -14268,8 +14802,8 @@ function finalConfirmCard(d, openShortagesHtmlText) {
 
 // قاب بالای ویزارد؛ وقتی فهرست بندها یا یک کار تک‌صفحه‌ای باز است چسبان نیست.
 function stepBarOpen() {
-  var busy = S.itemsOpen || S.sitem || S.editing || S.sxOpen || S.pwFor || S.shTab || S.more || S.wizView;
-  return '<div class="stepbar chs chsx' + (busy ? " nostick" : "") + '">';
+  var busy = S.itemsOpen || S.regList || S.sitem || S.editing || S.sxOpen || S.pwFor || S.shTab || S.more || S.wizView;
+  return '<div class="stepbar chs chsx' + (busy ? " nostick" : "") + '" data-v2>';
 }
 
 function stepInfoBlocks(d) {
@@ -14279,7 +14813,7 @@ function stepInfoBlocks(d) {
 // وقتی هیچ بخشی باز نیست: مرحله‌ی کسری یا تأیید نهایی
 function stepNoSection(d) {
   if (hasShortStep(d.sheet) && (!d.shDone || S.shEdit === d.id)) return shortStep(d);
-  return finalConfirmCard(d, openShortagesHtml(d, openShortageIds(d)));
+  return finalConfirmCard(d, finalChips(d));
 }
 
 function stepCurOpen(cur, d, vi, df2) {
@@ -14300,7 +14834,104 @@ function stepCurOpen(cur, d, vi, df2) {
         faDigits(vi.length) +
         " بند · " +
         (open.length ? faDigits(open.length) + " ایراد ثبت‌شده" : "ایرادی ثبت نشده") +
-        "</div>")
+        "</div>" +
+        regChips(d, df2))
+  );
+}
+
+/* ---- فهرست کامل ایراد/کسری‌های ثبت‌شده (فعلاً فقط شاسی) ----
+   روی صفحه‌ی بخش و کسری فقط یک دکمه با شمارنده می‌ماند؛ لمس آن، صفحه‌ی کامل را باز می‌کند. */
+function regOn(d) {
+  return !!SHEETS[d.sheet];
+}
+
+function shortageEntries(d) {
+  return Object.keys(d.items || {})
+    .filter(function (id) {
+      return d.items[id] && d.items[id].r === "shortage";
+    })
+    .map(function (id) {
+      var it = d.items[id];
+      return { id: id, it: it, bare: true, l: "⚠ کسری: " + (it.part || it.note || "").trim() };
+    });
+}
+
+function allDefects(d) {
+  return SHEETS[d.sheet].sections.reduce(function (acc, sc) {
+    return acc.concat(secDefects(d, sc));
+  }, []);
+}
+
+function regEntries(d, kind, cur) {
+  if (kind === "short") return shortageEntries(d);
+  return cur ? secDefects(d, cur) : allDefects(d);
+}
+
+function openOnly(list) {
+  return list.filter(function (e) {
+    return !e.it.closedAt;
+  });
+}
+
+function regChip(kind, list, word) {
+  var n = openOnly(list).length;
+  return (
+    '<button type="button" class="regchip ' +
+    kind +
+    (n ? "" : " zero") +
+    '" data-act="reglist" data-v="' +
+    kind +
+    '"><span>' +
+    word +
+    "</span><b>" +
+    faDigits(n) +
+    "</b><i>◂</i></button>"
+  );
+}
+
+function finalChips(d) {
+  return regChips(d, allDefects(d));
+}
+
+function regChips(d, df2) {
+  if (!regOn(d)) return "";
+  return '<div class="regchips">' + regChip("ng", df2, "ایرادات") + (hasShortStep(d.sheet) ? regChip("short", shortageEntries(d), "کسری‌ها") : "") + "</div>";
+}
+
+// دکمه‌ی کسری‌ها در مرحله‌ی کسری (فهرست کامل در صفحه‌ی جدا)
+function shortChipHtml(d) {
+  return '<div class="regchips">' + regChip("short", shortageEntries(d), "کسری‌ها") + "</div>";
+}
+
+function regItemHtml(d, e) {
+  return rmLi(d, e.id, entryTxt(e) + whoWhen(e.it.by, e.it.at));
+}
+
+// صفحه‌ی کامل: اول موارد باز، بعد رفع‌شده‌ها
+function regListPage(d, cur) {
+  if (S.regList === "shnew") return shortPickPage(d);
+  var kind = S.regList,
+    list = regEntries(d, kind, cur),
+    open = openOnly(list),
+    done = list.filter(function (e) {
+      return e.it.closedAt;
+    }),
+    ul = function (arr) {
+      return '<ul class="stepdef reglist">' + arr.map(function (e) { return regItemHtml(d, e); }).join("") + "</ul>";
+    };
+  return (
+    '<div class="stepcur regpage"><div class="sxh"><b>' +
+    (kind === "short" ? "کسری‌های ثبت‌شده" : "ایرادهای ثبت‌شده" + (cur ? " — " + esc(cur.name) : "")) +
+    '</b><span class="num">' +
+    esc(d.key) +
+    '</span></div><div class="secsum">' +
+    faDigits(open.length) +
+    " باز · " +
+    faDigits(done.length) +
+    " رفع‌شده</div>" +
+    (open.length ? ul(open) : '<p class="hint">مورد بازی نیست.</p>') +
+    (done.length ? "<h4>رفع‌شده</h4>" + ul(done) : "") +
+    "</div>"
   );
 }
 
@@ -14357,12 +14988,16 @@ function itemListHtml(d, cur, vi) {
   );
 }
 
+function entryTxt(e) {
+  return esc(e.l) + (e.bare || e.it.custom ? "" : e.it.note ? " — " + esc(e.it.note) : "");
+}
+
 function sectionDefectsHtml(d, defects) {
   return (
     '<ul class="stepdef">' +
     defects
       .map(function (e) {
-        return rmLi(d, e.id, esc(e.l) + (e.it.custom ? "" : e.it.note ? " — " + esc(e.it.note) : ""));
+        return rmLi(d, e.id, entryTxt(e));
       })
       .join("") +
     "</ul>"
@@ -14395,7 +15030,7 @@ function stepCurCard(d, cur, head) {
       ") ◀</button>" +
       acButton(d);
   else h += itemListHtml(d, cur, vi);
-  if (df2.length) h += sectionDefectsHtml(d, df2);
+  if (df2.length && !regOn(d)) h += sectionDefectsHtml(d, df2);
   if (!pgI) h += S.sxOpen === cur.id ? sxEditBox(cur.id) : fqBlock(d, cur);
   return h + "</div></div>";
 }
@@ -14419,8 +15054,9 @@ function stepCard(d, edit) {
   if (!all.length) return "";
   if (!edit) return viewOnlyCard(d);
   if (S.acOpen && d.sheet === "final1" && !d.final) return acPage(d);
-  var cur = stepSec(d, true),
-    head = stepBarOpen() + wizPickBar(d) + (S.itemsOpen && cur ? "" : stepInfoBlocks(d));
+  var cur = stepSec(d, true);
+  if (S.regList && regOn(d) && !d.final) return stepBarOpen() + regListPage(d, cur) + "</div>";
+  var head = stepBarOpen() + wizPickBar(d) + (S.itemsOpen && cur ? "" : stepInfoBlocks(d));
   if (S.wizView && wizDone(d, S.wizView)) {
     var vp = viewPanel(d, S.wizView);
     if (vp) return head + vp + "</div>";
@@ -14869,6 +15505,12 @@ function clickItemPanels(ev, el, a, id, d) {
     window.scrollTo(0, 0);
     return true;
   }
+  if (a === "reglist") {
+    S.regList = el.getAttribute("data-v") || "";
+    render();
+    window.scrollTo(0, 0);
+    return true;
+  }
   if (a === "sitem") return itemPanels_sitem(ev, el, a, id, d);
   if (a === "sitemx") {
     S.sitem = "";
@@ -14995,6 +15637,13 @@ function itemPanels_sitem(ev, el, a, id, d) {
 }
 
 function clickQuickAdd(ev, el, a, id, d) {
+  if (a === "fgtog") {
+    var g = el.getAttribute("data-g");
+    S.fgOpen = S.fgOpen || {};
+    S.fgOpen[g] = !S.fgOpen[g];
+    render();
+    return true;
+  }
   if (a === "sxopen") {
     S.sxOpen = el.getAttribute("data-sec");
     S.sxType = el.getAttribute("data-t") || "ng";
@@ -15668,9 +16317,19 @@ function amendHtml(d) {
   );
 }
 
+// خروجی وقتی آمده که همه‌ی بخش‌های همین کاربر امضا شده باشند (بخش همکار می‌تواند هنوز باز باشد).
+function ownSectionsSigned(d) {
+  var any = false,
+    all = SHEETS[d.sheet].sections.every(function (s) {
+      var sg = d.signs && d.signs[s.id];
+      if (sg) any = true;
+      return sg || s.choice || !secOK(s.id);
+    });
+  return any && all;
+}
+
 function exportCard(d) {
-  var st = stat(d);
-  if (st.signed < st.secs) return "";
+  if (!ownSectionsSigned(d)) return "";
   var pr = d.sheet === "engine" ? chassisPair(d) : null,
     sh = pr ? "chassis" : d.sheet,
     q = 'data-q="' + esc(pr ? pr.c.key : d.key) + '" data-sh="' + esc(sh) + '"',
@@ -16907,21 +17566,19 @@ function ngPresets() {
   return S.lists && S.lists.ng && S.lists.ng.length ? S.lists.ng.slice() : NG_PRESETS.slice();
 }
 
-function shortStep(d) {
+// جمع‌آوری وضعیت کسری‌های باز و گزینه‌های قطعه‌ی قابل انتخاب
+function shortState(d) {
   var have = {},
     sel = S.shSel || {},
     shl = [],
-    shi = [],
-    smp = [];
+    shi = [];
   Object.keys(d.items || {}).forEach(function (id) {
     var it = d.items[id];
-    if (!it || it.closedAt) return;
-    if (it.r === "shortage") {
-      var p = (it.part || it.note || "").trim();
-      have[p] = 1;
-      shl.push(p);
-      shi.push(id);
-    } else if (it.r === "sample" && it.custom) smp.push((it.note || "").trim());
+    if (!it || it.closedAt || it.r !== "shortage") return;
+    var p = (it.part || it.note || "").trim();
+    have[p] = 1;
+    shl.push(p);
+    shi.push(id);
   });
   var opts = shortParts(d.sheet);
   Object.keys(sel).forEach(function (p) {
@@ -16938,25 +17595,20 @@ function shortStep(d) {
       return (ia < 0 ? 999 : ia) - (ib < 0 ? 999 : ib);
     });
   }
-  var h = '<div class="stepcur' + (isChs(d.sheet) ? " fillc shs" : "") + '">';
-  if (shl.length)
-    h +=
-      '<ul class="stepdef">' +
-      shl
-        .map(function (p, ix) {
-          return rmLi(d, shi[ix], "⚠ کسری: " + esc(p));
-        })
-        .join("") +
-      "</ul>";
-  h +=
+  return { sel: sel, shl: shl, shi: shi, opts: opts };
+}
+
+// فهرست قطعه‌ها + ثبت + «قطعه‌ی دیگر»
+function shortPickHtml(d, st) {
+  var h =
     '<button type="button" class="btn sm" data-act="shprev" style="margin:4px 0 8px">⟲ کسری‌های خودروی قبلی</button><div class="chipsbox"><div class="chips">' +
-    opts
+    st.opts
       .map(function (p) {
         return (
           '<button type="button" class="pick" data-act="shtoggle" data-p="' +
           esc(p) +
           '" aria-pressed="' +
-          !!sel[p] +
+          !!st.sel[p] +
           '">' +
           esc(p) +
           "</button>"
@@ -16964,7 +17616,7 @@ function shortStep(d) {
       })
       .join("") +
     '</div></div><div class="shbtm">';
-  var n = Object.keys(sel).length;
+  var n = Object.keys(st.sel).length;
   if (n)
     h +=
       '<button class="btn primary stepok2" data-act="shsel">ثبت ' +
@@ -16976,7 +17628,39 @@ function shortStep(d) {
       '<button class="btn stepng sh" data-act="sxopen" data-t="shortage" data-sec="short" style="margin-top:8px">＋ قطعه‌ی دیگر' +
       (isChs(d.sheet) ? "" : " (بنویس یا بگو)") +
       "</button>";
-  return h + "</div></div>";
+  return h + "</div>";
+}
+
+// صفحه‌ی «ثبت کسری» (جدا از مرحله‌ی کسری تا گزینه‌ها صفحه را پر نکنند)
+function shortPickPage(d) {
+  return (
+    '<div class="stepcur fillc shs regpage"><div class="sxh"><b>ثبت کسری</b><span class="num">' +
+    esc(d.key) +
+    "</span></div>" +
+    shortPickHtml(d, shortState(d)) +
+    "</div>"
+  );
+}
+
+function shortStep(d) {
+  var st = shortState(d),
+    h = '<div class="stepcur' + (isChs(d.sheet) ? " fillc shs" : "") + '">';
+  if (regOn(d))
+    return (
+      h +
+      shortChipHtml(d) +
+      '<div class="shhint">برای افزودن کسری جدید، دکمه‌ی زیر را بزن.</div><div class="shbtm"><button type="button" class="btn stepng sh" data-act="reglist" data-v="shnew">＋ ثبت کسری</button></div></div>'
+    );
+  if (st.shl.length)
+    h +=
+      '<ul class="stepdef">' +
+      st.shl
+        .map(function (p, ix) {
+          return rmLi(d, st.shi[ix], "⚠ کسری: " + esc(p));
+        })
+        .join("") +
+      "</ul>";
+  return h + shortPickHtml(d, st) + "</div>";
 }
 
 function canShort() {
@@ -17392,6 +18076,7 @@ function clickShortageStep(ev, el, a, id, d) {
       };
     });
     S.shSel = {};
+    if (S.regList === "shnew") S.regList = "";
     writeItems(m5, faDigits(ps2.length) + " کسری ثبت شد");
     return true;
   }
