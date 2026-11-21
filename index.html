@@ -10647,7 +10647,7 @@ var SUPA_URL = "https://kdpmscvzavrdwwoprkfi.supabase.co",
 /* نشانی سرویس دیتابیس شرکت. خالی = همان Supabase (حالت فعلی)؛ پر = همهٔ خواندن/نوشتن به این سرویس می‌رود. */
 var API_URL = "";
 
-var APP_VER = "v167.97";
+var APP_VER = "v167.98";
 
 var AUTH_FN = "";
 
@@ -16822,7 +16822,7 @@ function hasShortStep(sheet) {
 function wizSteps(d) {
   var pr = chassisPair(d),
     st = baseSteps(pr ? pr.c : d);
-  if (!pr && !engineNumberNeeded(d)) return st;
+  if (!pr && !engineHold(d)) return st;
   var withEngine = addEngineStep(st, d, pr ? engineStepState(pr.e) : "todo");
   return withEngine || (pr ? baseSteps(d) : st);
 }
@@ -16971,6 +16971,7 @@ function stepConfirm(d) {
   )
     return null;
   var cur = stepSec(d, true);
+  if (!cur && engineHold(d)) return null;
   if (cur) {
     var n = secDefects(d, cur).filter(function (e) {
       return !e.it.closedAt;
@@ -17680,6 +17681,7 @@ function acPending(d) {
 
 // پیامی که مانع تأیید است (یا رشته‌ی خالی)
 function confirmBlocker(d) {
+  if (engineHold(d)) return engineGate(d);
   if (S.editing) return "یک ایراد در حال ثبت است؛ ابتدا «ثبت در پرونده» یا «انصراف» را بزنید";
   if (acPending(d)) return "گاز کولر انجام نشده است؛ ابتدا بندهای «گاز کولر» را بزنید";
   return "";
@@ -17833,6 +17835,11 @@ function clickWizardNav(ev, el, a, id, d) {
     engineNumberSave();
     return true;
   }
+  if (a === "engretry") {
+    engineRetry();
+    toast("در حال آماده‌سازی برگه‌ی موتور…");
+    return true;
+  }
   if (a === "wizgo" && d) return wizardNav_wizgo(ev, el, a, id, d);
   if (
     a === "donecl" &&
@@ -17869,6 +17876,14 @@ function wizardNav_wizgo(ev, el, a, id, d) {
   }
   if (pr && d.sheet === "chassis" && wk === "eng") {
     openEngineStep(pr);
+    return true;
+  }
+  if (d.sheet === "chassis" && wk === "eng" && engineHold(d)) {
+    engineRetry();
+    return true;
+  }
+  if (d.sheet === "chassis" && (wk === "short" || wk === "final") && engineHold(d)) {
+    toast(engineGate(d));
     return true;
   }
   if (pr && d.sheet === "engine") {
@@ -18908,6 +18923,7 @@ function stepInfoBlocks(d) {
 
 // وقتی هیچ بخشی باز نیست: مرحله‌ی کسری یا تأیید نهایی
 function stepNoSection(d) {
+  if (engineHold(d)) return engineHoldCard(d);
   if (hasShortStep(d.sheet) && (!d.shDone || S.shEdit === d.id)) return shortStep(d);
   return finalConfirmCard(d, finalChips(d));
 }
@@ -21000,6 +21016,45 @@ function engineNumberNeeded(d) {
   return !!d && d.sheet === "chassis" && !d.engine && !d.final && mergedOn();
 }
 
+/* موتور همراه EWT2 است: تا برگه‌ی موتور ساخته و بازدید نشود، تأیید نهایی شاسی بسته می‌ماند (آنلاین و آفلاین) */
+function engineGate(d) {
+  if (!d || d.sheet !== "chassis" || d.final || !mergedOn()) return "";
+  if (!d.engine) return "شماره موتور هنوز ثبت نشده است.";
+  var pr = chassisPair(d);
+  if (!pr) return "برگه‌ی موتور در حال آماده‌سازی است؛ چند لحظه صبر کنید.";
+  return engineStepState(pr.e) === "todo" ? "بازدید موتور هنوز انجام نشده است." : "";
+}
+
+function engineHold(d) {
+  return engineGate(d) !== "";
+}
+
+// صفحه‌ی انتظار: شماره‌ی موتور ثبت شده ولی بازدید موتور شروع یا تمام نشده است
+function engineHoldCard(d) {
+  var pr = chassisPair(d);
+  if (!pr && S.engHeal !== d.id) {
+    S.engHeal = d.id;
+    setTimeout(engineRetry, 0);
+  }
+  return (
+    '<div class="card"><div class="sxh"><b>موتور</b></div><p class="hint">' +
+    esc(engineGate(d)) +
+    "</p>" +
+    (pr
+      ? '<button type="button" class="btn primary" data-act="wizgo" data-k="eng">رفتن به بازدید موتور</button>'
+      : '<button type="button" class="btn primary" data-act="engretry">تلاش دوباره</button>') +
+    "</div>"
+  );
+}
+
+// برگه‌ی موتور را (اگر ساخته نشده) می‌سازد و منتظر می‌ماند تا بازدید موتور باز شود
+function engineRetry() {
+  var d = insp(S.sheet, S.key);
+  if (!d || d.sheet !== "chassis" || !d.engine) return;
+  startEngineSheet(d);
+  openEngineWhenReady(d.key, 60);
+}
+
 function engineEntryCard() {
   return (
     '<div class="card"><div class="sxh"><b>شماره موتور</b></div>' +
@@ -21011,15 +21066,17 @@ function engineEntryCard() {
   );
 }
 
-// بعد از ثبت شماره، به بندهای موتور می‌رود؛ تا برگه‌ی موتور برسد چند بار دوباره تلاش می‌کند
+// بعد از ثبت شماره، به بندهای موتور می‌رود؛ تا برگه‌ی موتور برسد هر ثانیه دوباره تلاش می‌کند (و هر ۳ ثانیه برگه را دوباره می‌سازد)
 function openEngineWhenReady(chassisKey, tries) {
   if (S.sheet !== "chassis" || S.key !== chassisKey) return;
-  var pr = chassisPair(insp("chassis", chassisKey));
+  var d = insp("chassis", chassisKey),
+    pr = chassisPair(d);
   if (pr) return openEngineStep(pr);
-  if (tries > 0)
-    setTimeout(function () {
-      openEngineWhenReady(chassisKey, tries - 1);
-    }, 300);
+  if (tries <= 0 || !d) return;
+  if (tries % 3 === 0) startEngineSheet(d);
+  setTimeout(function () {
+    openEngineWhenReady(chassisKey, tries - 1);
+  }, 1000);
 }
 
 function engineNumberSave() {
@@ -21042,10 +21099,11 @@ function engineNumberSave() {
       "شماره موتور ثبت شد",
     ).then(function (ok) {
       if (!ok) return;
-      createEngineSheet(Object.assign({}, d, { engine: v }));
-      S.wizView = "";
-      render();
-      openEngineWhenReady(d.key, 10);
+      startEngineSheet(Object.assign({}, d, { engine: v })).done.then(function () {
+        S.wizView = "";
+        render();
+        openEngineWhenReady(d.key, 60);
+      });
     });
   });
 }
@@ -21153,8 +21211,13 @@ function changePick(v) {
 /* v159: با باز شدن شاسی، برگه‌ی موتور همان خودرو هم باز می‌شود تا شماره‌ها یک بار وارد شوند؛ اگر از قبل هست دست نمی‌خورد. شناسه‌ی برگه‌ی ساخته‌شده را برمی‌گرداند */
 // با باز شدن شاسی، برگه‌ی موتور همان خودرو را خودکار می‌سازد.
 function createEngineSheet(chassisRec) {
+  return startEngineSheet(chassisRec).id;
+}
+
+// برگه‌ی موتور را می‌سازد؛ done وقتی تمام می‌شود که ذخیره (یا صف آفلاین) انجام شده باشد
+function startEngineSheet(chassisRec) {
   var k = chassisRec.engine;
-  if (!k || insp("engine", k) || !canEdit("engine", k)) return "";
+  if (!k || insp("engine", k) || !canEdit("engine", k)) return { id: "", done: Promise.resolve(false) };
   var id = docId("engine", k),
     rec = {
       sheet: "engine",
@@ -21168,15 +21231,17 @@ function createEngineSheet(chassisRec) {
     };
   if (chassisRec.product) rec.product = chassisRec.product;
   if (chassisRec.test) rec.test = true;
-  saveOnce(
-    "open_" + id,
-    function () {
-      return store.create("inspections", id, rec);
-    },
-    "",
-    true,
-  );
-  return id;
+  return {
+    id: id,
+    done: saveOnce(
+      "open_" + id,
+      function () {
+        return store.create("inspections", id, rec);
+      },
+      "",
+      true,
+    ),
+  };
 }
 
 function submitFuelCorrection() {
@@ -23317,6 +23382,10 @@ function clickShortageStep(ev, el, a, id, d) {
     S.shSel = {};
     if (S.regList === "shnew") S.regList = "";
     writeItems(m5, faDigits(ps2.length) + " کسری ثبت شد");
+    return true;
+  }
+  if (a === "shdone" && d && engineHold(d)) {
+    toast(engineGate(d));
     return true;
   }
   if (a === "shdone" && d && canEdit(S.sheet, S.key)) {
