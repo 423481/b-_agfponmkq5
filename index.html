@@ -3118,6 +3118,12 @@ button.btn[data-act="livescan"] {
   width: min(80vw, 440px);
   height: min(30vw, 150px);
 }
+#scanmodal .sc-tools {
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
 #scanmodal p {
   color: #fff;
   font-size: 16px;
@@ -6735,6 +6741,12 @@ body:has(#app[data-ce-design]:not([data-ce-design=""]) > .stepbar) {
   border-color: var(--ok);
   color: var(--surface);
 }
+/* Save-confirmation screen: the "continue" button uses the same green as the confirm button. */
+#app[data-ce-design]:not([data-ce-design=""]) .donescr .dbtn {
+  background: var(--ok);
+  border-color: var(--ok);
+  color: var(--surface);
+}
 #app[data-ce-design]:not([data-ce-design=""]) .botbar .smpbtn {
   min-width: 48px;
   width: 48px;
@@ -8086,6 +8098,41 @@ body:has(.donescr) {
 .donescr .dcard .drow.fold span {
   text-align: center;
   white-space: nowrap;
+}
+
+/* فرم حفاظت از مشتری: مجوز دائمی تاریخ پایان ندارد */
+form[data-form="cpfadd"]:has(#cf_kind option[value="perm"]:checked) .cf-end {
+  display: none;
+}
+form[data-form="cpfadd"] .cf-end {
+  flex: 1 1 0;
+  min-width: 0;
+}
+.cpfunits {
+  gap: 8px;
+}
+
+/* یادآوری پایان اعتبار فرم حفاظت از مشتری */
+.cpfwarn {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  align-items: flex-start;
+  margin: 0 0 12px;
+  padding: 12px 14px;
+  border: 1.5px solid var(--wait);
+  border-radius: 12px;
+  background: var(--wait-soft);
+  color: var(--wait);
+}
+
+/* کارت وضعیت خودرو بعد از اسکن */
+.alertcard .histbar {
+  margin-top: 8px;
+}
+.alertcard > .btn.primary {
+  width: 100%;
+  margin-top: 14px;
 }
 
 /* v167.62 — پالت پررنگ‌تر و سلسله‌مراتب فونت (شاسی و موتور؛ یک‌دست برای همه‌ی ایستگاه‌ها) */
@@ -10448,6 +10495,137 @@ body:has(.mohr-cmd) .wrap {
   }
 }
 
+/* موبایل: مرکز فرماندهی تمام عرض صفحه است؛ حاشیه‌ی بدنه (16) و قاب برنامه (8) با margin منفی خنثی می‌شود
+   اگر حاشیه‌ی بدنه یا .wrap عوض شد، همین مقدار را هم عوض کنید. */
+@media (max-width: 700px) {
+  .mohr-cmd {
+    --cmd-edge: 24px;
+    margin-inline: calc(-1 * var(--cmd-edge));
+    padding-inline: 0;
+    border-inline: 0;
+    border-radius: 0;
+  }
+  .mohr-cmd .cmd-brand {
+    padding-inline: 12px;
+  }
+  .mohr-cmd
+    :is(
+      .cmd-modes,
+      .cmd-filter,
+      .cmd-ribbon,
+      .cmd-factory,
+      .cmd-decision,
+      .cmd-operations,
+      .cmd-model-matrix,
+      .cmd-patterns,
+      .cmd-trend,
+      .cmd-resolution,
+      .cmd-shifts,
+      .cmd-ai-brief,
+      .cmd-ai-assurance,
+      .cmd-ai-status,
+      .cmd-question,
+      .cmd-detail,
+      .cmd-analysis-intro,
+      .cmd-existing-tools,
+      .cmd-hourly
+    ) {
+    border-inline: 0;
+    border-radius: 0;
+  }
+  .mohr-cmd .cmd-factory {
+    padding: 12px 8px;
+  }
+  .mohr-cmd .cmd-rail {
+    gap: 8px;
+  }
+  .mohr-cmd
+    :is(
+      .cmd-decision,
+      .cmd-operations,
+      .cmd-model-matrix,
+      .cmd-patterns,
+      .cmd-trend,
+      .cmd-resolution,
+      .cmd-shifts,
+      .cmd-ai-brief,
+      .cmd-question,
+      .cmd-detail
+    ) {
+    padding: 12px 10px;
+  }
+}
+
+/* AI-only 167.90 */
+.mohr-cmd[data-mode="ai"] .ai90-panel {
+  grid-column: 1/-1;
+  border: 1px solid var(--cmd-line, #64748b);
+  padding: clamp(16px, 2vw, 28px);
+  border-radius: 20px;
+  min-width: 0;
+  background: var(--cmd-panel, transparent);
+  line-height: 1.9;
+}
+.mohr-cmd[data-mode="ai"] .ai90-panel header {
+  border-inline-start: 4px solid #329bdf;
+  padding-inline-start: 16px;
+  margin-bottom: 20px;
+}
+.mohr-cmd[data-mode="ai"] .ai90-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 24px;
+}
+.mohr-cmd[data-mode="ai"] .ai90-panel article {
+  min-width: 0;
+}
+.mohr-cmd[data-mode="ai"] .ai90-panel dl {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 10px;
+  margin: 0;
+}
+.mohr-cmd[data-mode="ai"] .ai90-panel dd {
+  margin: 0;
+  font-variant-numeric: tabular-nums;
+}
+.mohr-cmd[data-mode="ai"] .ai90-panel details {
+  border-top: 1px solid #64748b66;
+  padding-block: 16px;
+  margin-top: 16px;
+}
+.mohr-cmd[data-mode="ai"] .ai90-panel summary {
+  cursor: pointer;
+  font-weight: 700;
+  min-height: 44px;
+}
+.mohr-cmd[data-mode="ai"] .ai90-panel input,
+.mohr-cmd[data-mode="ai"] .ai90-panel select {
+  display: block;
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
+  margin: 8px 0 16px;
+  min-height: 44px;
+}
+.mohr-cmd[data-mode="ai"] .ai90-panel p {
+  overflow-wrap: anywhere;
+}
+.mohr-cmd[data-mode="ai"] .ai90-panel:focus-within {
+  outline-offset: 4px;
+}
+@media (max-width: 700px) {
+  .mohr-cmd[data-mode="ai"] .ai90-grid {
+    grid-template-columns: 1fr;
+  }
+  .mohr-cmd[data-mode="ai"] .ai90-panel dl {
+    grid-template-columns: 1fr;
+  }
+  .mohr-cmd[data-mode="ai"] .ai90-panel dd {
+    font-weight: 700;
+  }
+}
+
 </style>
 </head>
 <body>
@@ -10469,7 +10647,7 @@ var SUPA_URL = "https://kdpmscvzavrdwwoprkfi.supabase.co",
 /* نشانی سرویس دیتابیس شرکت. خالی = همان Supabase (حالت فعلی)؛ پر = همهٔ خواندن/نوشتن به این سرویس می‌رود. */
 var API_URL = "";
 
-var APP_VER = "v167.84";
+var APP_VER = "v167.97";
 
 var AUTH_FN = "";
 
@@ -13161,13 +13339,24 @@ function usersAndSession_teststation(ev, el, a, id, d) {
 
 // اقدام «udelyes» از clickUsersAndSession
 function usersAndSession_udelyes(ev, el, a, id, d) {
+  var reason = fieldValue("udel_reason");
+  if (!reason) {
+    toast("دلیل حذف را بنویسید.");
+    return true;
+  }
+  var u = S.data.users.filter(function (x) {
+    return x.id === id;
+  })[0];
   S.confirmUser = null;
   save(function () {
-    return srvAdmin()
+    var del = srvAdmin()
       ? adminCall("deluser", { id: id }).then(function () {
           return store.del("users", id);
         })
       : store.del("users", id);
+    return del.then(function () {
+      return adminLog("حذف کاربر " + id + " · " + (u ? u.name : ""), reason);
+    });
   }, "کاربر حذف شد");
   return true;
 }
@@ -13564,8 +13753,8 @@ function newTestCar() {
     chassis: uq(),
     room: uq(),
     engine: uq(),
-    fuel: o.fuel || "dual",
-    product: o.product || "padra",
+    fuel: o.fuel || "",
+    product: o.product || "",
   };
 }
 
@@ -14098,10 +14287,6 @@ function carTabAllowed() {
   return isCom() || rolePerm("car") || (!!S.user && mySheets().length > 0);
 }
 
-function carLineTab() {
-  return carReadOnly() && carTabAllowed() ? tabBtn("car", "پرونده خودرو") : "";
-}
-
 function ownerHome() {
   return !!S.user && S.user.id === "owner" && S.user.station === "owner";
 }
@@ -14176,7 +14361,7 @@ function tabsBar0() {
         '">پرونده خودرو</button><button class="tab" role="tab" data-act="tab" data-t="archive" aria-selected="' +
         (S.tab === "archive") +
         '">بایگانی</button>'
-      : carLineTab()) +
+      : "") +
     corrPendTab() +
     (S.isOwner
       ? '<button class="tab" role="tab" data-act="tab" data-t="admin" aria-selected="' +
@@ -14218,6 +14403,8 @@ function html0() {
   if (smpWizOn() && S.user) return smpWiz() + smpBot();
   if (focusOn()) {
     var fd = insp(S.sheet, S.key);
+    var alert = carAlertScreen();
+    if (alert) return alert;
     if (S.histPage && fd) return histPageView(fd);
     if (S.corrOpen && fd && isChs(fd.sheet) && canEdit(S.sheet, S.key) && !S.doneScr)
       return corrPage(fd);
@@ -14229,7 +14416,7 @@ function html0() {
   if (S.user && S.pwOpen && S.user.id !== "owner" && S.user.station === "chassis") h += pwCard();
   var credit = '<p class="hint" style="text-align:center;margin-top:8px">A.B</p>';
   if (!S.user) return h + loginView() + credit;
-  h += tabsBar();
+  h += tabsBar() + cpfReminderBar();
   if (S.tab === "inspect" && S.user.station !== "owner") h += scopeBar(S.user);
   var mg = S.isOwner && MGMT_VIEWS.indexOf(S.tab) >= 0;
   if (mg) h += '<div class="mgpage">' + mgmtBar();
@@ -14267,7 +14454,7 @@ function html0() {
                               ? reportView()
                               : S.tab === "archive" && isCom()
                                 ? archiveView()
-                                : inspectView()) +
+                                : carAlertScreen() || inspectView()) +
     (mg ? "</div>" : "") +
     credit
   );
@@ -14306,11 +14493,17 @@ function showFatal(e) {
 function render() {
   var root = elById("#app"),
     keep = {},
+    checks = {},
+    fresh = S.cpfFresh,
     act = document.activeElement && document.activeElement.id,
     out;
   root.querySelectorAll("input[id],select[id],textarea[id]").forEach(function (e) {
     keep[e.id] = e.value;
   });
+  root.querySelectorAll("input[type=checkbox][id^=cf_]").forEach(function (e) {
+    checks[e.id] = e.checked;
+  });
+  S.cpfFresh = false;
   try {
     out = html();
   } catch (e) {
@@ -14320,9 +14513,14 @@ function render() {
   root.innerHTML = out;
   root.setAttribute("data-ce-design", ceDesignName());
   root.setAttribute("data-ce-ui", ceUiOn() ? "1" : "");
+  // فرم حفاظت از مشتری بعد از ثبت/ویرایش خالی یا با مقدار تازه شروع می‌شود (cpfFresh)
   Object.keys(keep).forEach(function (id) {
     var e = document.getElementById(id);
-    if (e && keep[id] !== "") e.value = keep[id];
+    if (e && keep[id] !== "" && !(fresh && id.indexOf("cf_") === 0)) e.value = keep[id];
+  });
+  Object.keys(checks).forEach(function (id) {
+    var e = document.getElementById(id);
+    if (e && !fresh) e.checked = checks[id];
   });
   root.querySelectorAll(".fuelpick").forEach(function (g) {
     var hh = g.parentNode.querySelector("input[type=hidden]");
@@ -14385,6 +14583,7 @@ function open_(sheet, key) {
     S.searchErr = "";
     S.formErr = "";
     S.editing = null;
+    carAlertArm();
     render();
     var sbx = document.querySelector(".stepbar");
     if (sbx) sbx.scrollIntoView();
@@ -14397,6 +14596,7 @@ function clickPanelToggles(ev, el, a, id, d) {
     stopEnd(id);
     return true;
   }
+  if (clickCarAlert(a, el)) return true;
   if (a === "histtoggle") {
     S.histPage = true;
     render();
@@ -15450,10 +15650,10 @@ var SINGLE_HIDE_X = {
 };
 
 /* v161: چکمن شاسی خودش انتخاب می‌کند چه بخش‌هایی را بازدید کند؛ انتخاب روی همان دستگاه می‌ماند.
-   «بخش» تعیین‌شده توسط مدیر فقط حالت پیش‌فرض است. موتور همیشه همراه EWT1 است. */
+   «بخش» تعیین‌شده توسط مدیر فقط حالت پیش‌فرض است. ترتیب: اول EWT1، بعد EWT2 و موتور باهم. */
 var PICKS = [
-  ["e1", "EWT1 + موتور", "ewt1"],
-  ["e2", "EWT2", "ewt2"],
+  ["e1", "EWT1", "ewt1"],
+  ["e2", "EWT2 + موتور", "ewt2"],
   ["all", "هر سه", ""],
 ];
 
@@ -15633,6 +15833,10 @@ var LISTK = {
   cpfQual: {
     title: "بخش‌های مجاز امضای «نماینده کیفیت» (فرم حفاظت از مشتری؛ ایستگاه کیفیت هم مجاز است)",
     def: ["کیفیت"],
+  },
+  cpfRemind: {
+    title: "یادآوری فرم حفاظت از مشتری: چند روز مانده به پایان اعتبار (فقط یک عدد)",
+    def: ["3"],
   },
   relCodes: {
     title: "کدهای تحویل با کسری (کد — شرح؛ مثلاً 46 — شرح کسری)",
@@ -15869,8 +16073,7 @@ function todayToggleRow(today) {
 }
 
 function todayListBox(today) {
-  var h =
-    '<div style="margin-top:10px"><input class="in num ltr" id="tq" inputmode="numeric" autocomplete="off" placeholder="جست‌وجو در بازدیدهای امروز من" style="max-width:320px"><div class="row" id="todaylist" style="margin-top:8px">';
+  var h = '<div style="margin-top:10px"><div class="row" id="todaylist">';
   today.slice(0, 60).forEach(function (d) {
     h += openKeyButton(d, d.final ? " ✓" : "", true);
   });
@@ -16144,7 +16347,7 @@ function createCard() {
     esc(sh.keyLabel) +
     ' <span class="num">' +
     esc(S.key) +
-    '</span></h2><button type="button" class="btn sm" data-act="cclear">تغییر شماره</button></div><details class="info"><summary>ⓘ راهنما</summary><p class="hint">برگه‌ای با این شماره هنوز باز نشده است. مشخصات خودرو در صورت ثبت‌شدن در برگه‌های دیگر خودکار پر شده است؛ در غیر این صورت اگر می‌دانید بنویسید.</p></details>' +
+    '</span></h2><button type="button" class="btn sm" data-act="cclear">تغییر شماره</button></div>' +
     '<form data-form="create" class="row" style="margin-top:12px">' +
     idFields(S.sheet, "c_", mergedFor(S.sheet, S.key)) +
     (pick && labelCheckNeeded(S.sheet)
@@ -16437,6 +16640,7 @@ function submitSearch() {
     S.searchErr = "";
     S.formErr = "";
     S.editing = null;
+    carAlertArm();
     render();
     autoOpen();
   });
@@ -16555,7 +16759,7 @@ function stepSec(d, edit) {
   var secs = secsOf(d.sheet, prodOf(d));
   for (var i = 0; i < secs.length; i++) {
     var sc = secs[i];
-    if (sc.choice || (d.signs && d.signs[sc.id]) || !secOK(sc.id)) continue;
+    if (sc.choice || (d.signs && d.signs[sc.id]) || !secOK(sc.id, d.sheet)) continue;
     return sc;
   }
   return null;
@@ -16617,14 +16821,19 @@ function hasShortStep(sheet) {
 // مراحل ویزارد ایستگاه را می‌سازد (شناسایی، بخش‌ها، کسری، تأیید نهایی).
 function wizSteps(d) {
   var pr = chassisPair(d),
-    st = baseSteps(pr ? pr.c : d),
-    at = -1;
-  if (!pr) return st;
+    st = baseSteps(pr ? pr.c : d);
+  if (!pr && !engineNumberNeeded(d)) return st;
+  var withEngine = addEngineStep(st, d, pr ? engineStepState(pr.e) : "todo");
+  return withEngine || (pr ? baseSteps(d) : st);
+}
+
+// مرحله‌ی «موتور» را بعد از EWT2 می‌گذارد؛ اگر بخش EWT2 در کار نباشد null برمی‌گرداند
+function addEngineStep(st, d, es) {
+  var at = -1;
   st.forEach(function (x, i) {
-    if (x.k === "ewt1") at = i;
+    if (x.k === "ewt2") at = i;
   });
-  if (at < 0) return baseSteps(d);
-  var es = engineStepState(pr.e);
+  if (at < 0) return null;
   st.splice(at + 1, 0, { k: "eng", label: "موتور", state: es });
   st.forEach(function (x) {
     if (x.state === "cur") x.state = "todo";
@@ -16640,7 +16849,7 @@ function wizSteps(d) {
 
 function baseSteps(d) {
   var secs = secsOf(d ? d.sheet : S.sheet, d ? prodOf(d) : "padra").filter(function (x) {
-      return !x.choice && secOK(x.id);
+      return !x.choice && secOK(x.id, d ? d.sheet : S.sheet);
     }),
     st = [];
   st.push({ k: "id", label: "شناسایی", state: d ? "done" : "cur" });
@@ -16742,7 +16951,7 @@ function waitNote(d) {
 function pendingOthers(d) {
   return secsOf(d.sheet, prodOf(d))
     .filter(function (x) {
-      return !x.choice && !secOK(x.id) && !(d.signs && d.signs[x.id]);
+      return !x.choice && !secOK(x.id, d.sheet) && !(d.signs && d.signs[x.id]);
     })
     .map(function (x) {
       return x.name;
@@ -16867,7 +17076,7 @@ function openGroups(d) {
   }
   secsOf(d.sheet, prodOf(d))
     .filter(function (x) {
-      return !x.choice && secOK(x.id);
+      return !x.choice && secOK(x.id, d.sheet);
     })
     .forEach(function (sc) {
       var rows = secDefects(d, sc)
@@ -16997,7 +17206,7 @@ function acPage(d) {
   var ac = secsOf(d.sheet, prodOf(d)).filter(function (x) {
     return x.choice;
   })[0];
-  var edit = canEdit(d.sheet, d.key) && secOK(ac.id);
+  var edit = canEdit(d.sheet, d.key) && secOK(ac.id, d.sheet);
   return (
     '<div class="stepbar chs chsx nostick"><div class="stepcur"><div class="sxh"><b>' +
     esc(ac.name) +
@@ -17256,7 +17465,7 @@ function doneSectionCard(d, sc) {
 function doneSectionCards(d) {
   return secsOf(d.sheet, prodOf(d))
     .filter(function (x) {
-      return !x.choice && secOK(x.id);
+      return !x.choice && secOK(x.id, d.sheet);
     })
     .map(function (sc) {
       return doneSectionCard(d, sc);
@@ -17481,7 +17690,7 @@ function finalFillDocs(d, secs, stamp) {
   var items = {},
     signs = {};
   secs.forEach(function (sc) {
-    if (!secOK(sc.id)) return;
+    if (!secOK(sc.id, d.sheet)) return;
     visItems(d, sc).forEach(function (x) {
       var iid = secItemId(sc, x.i);
       if (!(d.items && d.items[iid] && d.items[iid].r)) items[iid] = itemMark("ok", "", stamp.at);
@@ -17620,6 +17829,10 @@ function signSection(el, d) {
 }
 
 function clickWizardNav(ev, el, a, id, d) {
+  if (a === "engsave") {
+    engineNumberSave();
+    return true;
+  }
   if (a === "wizgo" && d) return wizardNav_wizgo(ev, el, a, id, d);
   if (
     a === "donecl" &&
@@ -17648,6 +17861,12 @@ function clickWizardNav(ev, el, a, id, d) {
 function wizardNav_wizgo(ev, el, a, id, d) {
   var wk = el.getAttribute("data-k"),
     pr = chassisPair(d);
+  if (d.sheet === "chassis" && wk === "eng" && engineNumberNeeded(d)) {
+    S.wizView = S.wizView === "eng" ? "" : "eng";
+    S.engErr = "";
+    render();
+    return true;
+  }
   if (pr && d.sheet === "chassis" && wk === "eng") {
     openEngineStep(pr);
     return true;
@@ -19002,12 +19221,14 @@ function stepCard(d, edit) {
   if (!d || !isChs(d.sheet)) return "";
   if (S.wizFor !== d.id) resetWizardState(d);
   var all = secsOf(d.sheet, prodOf(d)).filter(function (x) {
-    return !x.choice && secOK(x.id);
+    return !x.choice && secOK(x.id, d.sheet);
   });
   if (!all.length) return "";
   if (!edit) return viewOnlyCard(d);
   if (S.acOpen && d.sheet === "final1" && !d.final) return acPage(d);
   var cur = stepSec(d, true);
+  if (engineNumberNeeded(d) && (S.wizView === "eng" || (!cur && !S.wizView)))
+    return stepBarOpen() + wizPickBar(d) + engineEntryCard() + "</div>";
   foldItemsOnStepChange(cur);
   if (S.regList && regOn(d)) return stepBarOpen() + regListPage(d, viewedSec(d, cur)) + "</div>";
   var head = stepBarOpen() + wizPickBar(d) + (S.itemsOpen && cur ? "" : stepInfoBlocks(d));
@@ -19163,6 +19384,7 @@ function templateAction(el, a) {
     return;
   }
   if (a === "tcfill") {
+    if (!S.tcar.fuel || !S.tcar.product) return toast("اول نوع سوخت و محصول را انتخاب کنید.");
     tcFillAll();
     return;
   }
@@ -19199,8 +19421,8 @@ function templateAction_tmtoggle(el, a) {
 // اقدام «tcnew» از templateAction
 function templateAction_tcnew(el, a) {
   S.tcar = Object.assign(newTestCar(), {
-    fuel: (S.tcar || {}).fuel || "dual",
-    product: (S.tcar || {}).product || "padra",
+    fuel: (S.tcar || {}).fuel || "",
+    product: (S.tcar || {}).product || "",
   });
   S.key = "";
   render();
@@ -19221,6 +19443,10 @@ function templateAction_tcopen(el, a) {
           : tk === "engine"
             ? c0.engine
             : c0.room;
+  if (!c0.fuel || !c0.product) {
+    toast("اول نوع سوخت و محصول خودروی تستی را انتخاب کنید.");
+    return;
+  }
   var rs = [];
   if (!insp(sh0, k0) && !(sh0 === "gas" && c0.fuel === "single")) rs.push(tcRec(sh0));
   if (sh0 === "chassis" && !insp("engine", c0.engine)) rs.push(tcRec("engine"));
@@ -20301,7 +20527,7 @@ function ownSectionsSigned(d) {
     all = SHEETS[d.sheet].sections.every(function (s) {
       var sg = d.signs && d.signs[s.id];
       if (sg) any = true;
-      return sg || s.choice || !secOK(s.id);
+      return sg || s.choice || !secOK(s.id, d.sheet);
     });
   return any && all;
 }
@@ -20517,7 +20743,9 @@ function scopeLoad(id) {
   }
 }
 
-function secOK(id) {
+// برگه‌ی موتور تنها بخش خودش را دارد و همیشه برای چکمنی که به آن رسیده باز است
+function secOK(id, sheet) {
+  if (sheet === "engine") return true;
   var sc = activeSec();
   return !sc || (id !== "ewt1" && id !== "ewt2") || sc === id;
 }
@@ -20739,11 +20967,10 @@ function fuelWarns(d) {
   return w;
 }
 
-/* v159: چکمنِ فقط‌EWT2 شاسی تازه باز نمی‌کند؛ شماره‌ها و سوخت را چکمن EWT1 ثبت می‌کند */
 /* v159: مرحله‌ی «موتور» داخل ورود شاسی — برگه‌ی موتور همان خودرو (با همان ساختار قبلی) کنار شاسی بازدید می‌شود.
-   فقط برای چکمنی که بخش EWT1 را بازدید می‌کند (EWT1 یا هر دو)؛ چکمن فقط‌EWT2 موتور را نمی‌بیند. */
+   موتور همراه EWT2 است: برای چکمنی که بخش EWT2 را بازدید می‌کند (EWT2 یا هر سه)؛ چکمن فقط‌EWT1 موتور را نمی‌بیند. */
 function mergedOn() {
-  return !!S.user && S.user.station === "chassis" && secOK("ewt1");
+  return !!S.user && S.user.station === "chassis" && secOK("ewt2");
 }
 
 function chassisOfEngine(engineKey) {
@@ -20766,6 +20993,61 @@ function chassisPair(d) {
     return c ? { c: c, e: d } : null;
   }
   return null;
+}
+
+/* شماره‌ی موتور هنگام ثبت اولیه‌ی شاسی معلوم نیست؛ چکمن EWT2 + موتور آن را از روی برگه‌ی موتور وارد می‌کند */
+function engineNumberNeeded(d) {
+  return !!d && d.sheet === "chassis" && !d.engine && !d.final && mergedOn();
+}
+
+function engineEntryCard() {
+  return (
+    '<div class="card"><div class="sxh"><b>شماره موتور</b></div>' +
+    '<p class="hint">شماره‌ی موتور را از روی برگه‌ی کاغذیِ موتور وارد یا اسکن کنید.</p>' +
+    '<div class="row" style="gap:8px;flex-wrap:wrap"><input class="in num ltr" id="eng_no" inputmode="numeric" autocomplete="off" placeholder="شماره موتور" style="max-width:220px">' +
+    '<button type="button" class="btn" data-act="livescan" data-scan="eng_no">اسکن بارکد</button></div>' +
+    (S.engErr ? '<p class="err">' + esc(S.engErr) + "</p>" : "") +
+    '<button type="button" class="btn primary" data-act="engsave">ثبت شماره و ادامه</button></div>'
+  );
+}
+
+// بعد از ثبت شماره، به بندهای موتور می‌رود؛ تا برگه‌ی موتور برسد چند بار دوباره تلاش می‌کند
+function openEngineWhenReady(chassisKey, tries) {
+  if (S.sheet !== "chassis" || S.key !== chassisKey) return;
+  var pr = chassisPair(insp("chassis", chassisKey));
+  if (pr) return openEngineStep(pr);
+  if (tries > 0)
+    setTimeout(function () {
+      openEngineWhenReady(chassisKey, tries - 1);
+    }, 300);
+}
+
+function engineNumberSave() {
+  var d = insp(S.sheet, S.key),
+    v = digits(fieldValue("eng_no"));
+  if (!engineNumberNeeded(d)) return;
+  ensureCar([v]).then(function () {
+    var err = !v
+      ? "شماره موتور را وارد کنید."
+      : withP(d.product || "", function () {
+          return numErr("engine", v);
+        }) || conflictFor("chassis", S.key, { engine: v });
+    S.engErr = err;
+    if (err) return render();
+    saveOnce(
+      "eng_" + d.id,
+      function () {
+        return store.update("inspections", d.id, { engine: v });
+      },
+      "شماره موتور ثبت شد",
+    ).then(function (ok) {
+      if (!ok) return;
+      createEngineSheet(Object.assign({}, d, { engine: v }));
+      S.wizView = "";
+      render();
+      openEngineWhenReady(d.key, 10);
+    });
+  });
 }
 
 function engineStepState(e) {
@@ -20806,7 +21088,7 @@ function openChassisStep(pr, view) {
   switchDoc("chassis", pr.c.key, view);
 }
 
-/* بعد از تأیید یک بخش: EWT1 شاسی ← موتور، تأیید موتور ← برگشت به شاسی؛ اگر همکار هم‌زمان همان بخش را زودتر تأیید کرده بود خبر می‌دهیم */
+/* بعد از تأیید یک بخش: EWT2 شاسی ← موتور، تأیید موتور ← برگشت به شاسی؛ اگر همکار هم‌زمان همان بخش را زودتر تأیید کرده بود خبر می‌دهیم */
 // بعد از امضای یک بخش شاسی، به مرحله‌ی بعد می‌رود.
 function afterSectionSigned(sheet, key, sid) {
   var d = insp(sheet, key),
@@ -20815,9 +21097,12 @@ function afterSectionSigned(sheet, key, sid) {
     toast("این بخش هم‌زمان توسط " + sg.by + " تأیید شده بود؛ تأیید او باقی ماند.");
   if (S.sheet !== sheet || S.key !== key || !d) return;
   var pr = chassisPair(d);
-  if (!pr) return;
+  if (!pr) {
+    if (sid === "ewt2" && engineNumberNeeded(d)) S.wizView = "eng";
+    return;
+  }
   if (sheet === "engine") openChassisStep(pr, "");
-  else if (sid === "ewt1" && engineStepState(pr.e) === "todo") openEngineStep(pr);
+  else if (sid === "ewt2" && engineStepState(pr.e) === "todo") openEngineStep(pr);
 }
 
 function mergedFor(sheet, key, d) {
@@ -23744,7 +24029,6 @@ function typedErr(sheet, vals) {
     vals.product !== "ex"
   )
     e = "محصول (پادرا یا اکستند) را انتخاب کنید.";
-  if (!e && sheet === "chassis" && !vals.engine) e = "شماره موتور الزامی است.";
   if (!e && sheet === "chassis" && vals.fuel !== "dual" && vals.fuel !== "single")
     e = "نوع سوخت (دوگانه‌سوز یا تک‌سوز) را انتخاب کنید.";
   return e;
@@ -23797,8 +24081,9 @@ function idFields(sheet, pre, d) {
     L = sheet === "chassis" ? [] : [["color", "رنگ", d.color, 0]];
   if (sheet !== "chassis" && kind !== "serial") L.unshift(["serial", "شماره سریال", d.serial, 0]);
   if (sheet === "chassis") L.push(["fuel", "نوع سوخت", d.fuel, 0]);
-  if (sheet === "chassis") L.push(["engine", "شماره موتور", d.engine, 1]);
-  else {
+  if (sheet === "chassis") {
+    if (pre !== "c_") L.push(["engine", "شماره موتور", d.engine, 1]);
+  } else {
     if (kind !== "chassis") L.push(["chassisNo", "شماره شاسی", d.chassisNo, 1]);
     if (SHEETS[sheet].keyKind !== "room") L.push(["room", "شماره اتاق", d.room, 1]);
     if (SHEETS[sheet].keyKind !== "engine") L.push(["engine", "شماره موتور", d.engine, 1]);
@@ -23809,7 +24094,11 @@ function idFields(sheet, pre, d) {
   });
   var prodPre = pre === "c_" && PSHEETS.indexOf(sheet) >= 0 && !d.product ? lastProduct() : "";
   if (pre === "c_" && PSHEETS.indexOf(sheet) >= 0)
-    out += prodPicker(pre + "product", d.product || prodPre, "این خودرو پادرا است یا اکستند؟ (الزامی)");
+    out += prodPicker(
+      pre + "product",
+      d.product || prodPre,
+      "این خودرو پادرا است یا اکستند؟ (الزامی)",
+    );
   L.forEach(function (f) {
     if (f[0] === "fuel") {
       var pf = pre === "c_" && !f[2] ? lastFuel() : "",
@@ -23820,7 +24109,7 @@ function idFields(sheet, pre, d) {
           (pf || prodPre
             ? '<p class="hint" style="flex:1 1 100%;font-size:15px;margin:0">' +
               (pf && prodPre ? "محصول و نوع سوخت" : pf ? "نوع سوخت" : "محصول") +
-              " از آخرین انتخاب شما پر شده است؛ اگر عوض شده، عوضش کنید.</p>"
+              " از خودروی قبلیِ شما پر شده است؛ اگر این خودرو فرق دارد، گزینه‌ی دیگر را بزنید.</p>"
             : "") +
           '<p class="hint" id="fuelcons" style="flex:1 1 100%;font-size:15px;margin:0">' +
           fuelCons(curFuel) +
@@ -23833,7 +24122,7 @@ function idFields(sheet, pre, d) {
         pre +
         'engine">' +
         f[1] +
-        ' (الزامی)</label><div class="row"><input class="in num ltr grow" id="' +
+        ' (اختیاری)</label><div class="row"><input class="in num ltr grow" id="' +
         pre +
         'engine" inputmode="numeric" autocomplete="off" value="' +
         esc(f[2] || "") +
@@ -24271,6 +24560,224 @@ function listView() {
       "</td></tr>";
   });
   return h + "</tbody></table></div></div>";
+}
+
+/* ════════════════════════════════════════════════════════════
+   فصل 26 — کارت وضعیت خودرو بعد از اسکن
+   وقتی سریال اسکن (یا انتخاب) می‌شود، اگر برای خودرو ایراد باز، کسری، نمونه یا فرم حفاظت از مشتری
+   ثبت شده باشد، اول همین کارت دیده می‌شود؛ هر ردیف به صفحه‌ی همان مورد می‌رود.
+   چکمن‌های خط فقط موارد ایستگاه خودشان را می‌بینند؛ کیفیت، تجاری، برنامه‌ریزی، مدیران و مالک همه را.
+   توابع اصلی: carAlertScreen، alertItems، clickCarAlert
+   ════════════════════════════════════════════════════════════ */
+
+var ALERT_LINE_STATIONS = ["chassis", "engine", "trim", "st4", "st5", "gas", "mech", "roll"];
+
+// نام ایستگاه در فهرست «ایستگاه‌های خط (نمونه‌زنی)» ← حوزه (کلیدهای AREAS)
+var ALERT_SMP_AREA = {
+  "شاسی و موتور": "chassis",
+  تزیینات: "trim",
+  "نهایی بالا": "final",
+  "نهایی پایین": "final",
+  مکانیکی: "mech",
+};
+
+// ردیف‌های کارت به ترتیب اهمیت؛ hot یعنی پررنگ (قرمز/نارنجی)
+var ALERT_KINDS = [
+  { k: "cpf", title: "حفاظت از مشتری", hot: true },
+  { k: "ng", title: "ایرادهای باز", hot: true },
+  { k: "shortage", title: "کسری‌های باز", hot: true },
+  { k: "psh", title: "کسری‌های برنامه‌ریزی", hot: true },
+  { k: "sample", title: "نمونه‌ها", hot: false },
+];
+
+function alertRestricted() {
+  var u = S.user;
+  return !!u && u.id !== "owner" && !u.role && ALERT_LINE_STATIONS.indexOf(u.station) >= 0;
+}
+
+// آیا یکی از حوزه‌ها مربوط به ایستگاه کاربر است؟ فهرست خالی = نامشخص = برای همه
+function alertAreaMine(areaKeys) {
+  if (!areaKeys.length) return true;
+  return areaKeys.some(function (k) {
+    var area = AREAS[k];
+    return (
+      !!area &&
+      (area.sheets || []).some(function (sheet) {
+        return ownsItemSheet(sheet);
+      })
+    );
+  });
+}
+
+function alertSmpForCar(c) {
+  var ids = [c.key, c.I.serial, c.I.chassis, c.I.engine, c.I.room].filter(Boolean);
+  return (S.smp || []).filter(function (r) {
+    return smpCars(r).some(function (n) {
+      return ids.indexOf(n) >= 0;
+    });
+  });
+}
+
+// موارد این خودرو که کاربر باید ببیند، دسته‌بندی‌شده
+function alertItems(d) {
+  var c = carRecords(d.key),
+    H = memoFor("hist", d.id, function () {
+      return carHistoryItems(d);
+    }),
+    all = !alertRestricted(),
+    mine = function (x) {
+      return all || ownsItemSheet(x.r.sheet);
+    },
+    open = H.open.filter(mine),
+    ofType = function (t) {
+      return open.filter(function (x) {
+        return x.it.r === t;
+      });
+    };
+  return {
+    cpf: cpfForCar(c, true).filter(function (f) {
+      return all || alertAreaMine(cpfAreaKeysOf(f));
+    }),
+    ng: ofType("ng"),
+    shortage: ofType("shortage"),
+    psh: pshForCar(c).filter(function (x) {
+      return !x.closedAt && (all || !x.st || stationGroup(x.st) === stationGroup(S.user.station));
+    }),
+    sample: ofType("sample"),
+    smp: alertSmpForCar(c).filter(function (r) {
+      return all || alertAreaMine(ALERT_SMP_AREA[r.line] ? [ALERT_SMP_AREA[r.line]] : []);
+    }),
+  };
+}
+
+function alertCount(kind, I) {
+  return I[kind.k].length + (kind.k === "sample" ? I.smp.length : 0);
+}
+
+function alertSummary(kind, I) {
+  var n = alertCount(kind, I);
+  if (kind.k === "cpf") {
+    var late = I.cpf.filter(function (f) {
+      return cpfStatus(f) === "expired";
+    }).length;
+    return faDigits(n) + " فرم" + (late ? " — " + faDigits(late) + " منقضی" : "");
+  }
+  return faDigits(n) + " مورد";
+}
+
+function alertHome(d, kinds, I) {
+  return (
+    '<div class="card alertcard"><h2>وضعیت خودرو</h2>' +
+    carInfo(d) +
+    '<p class="hint">برای این خودرو موارد زیر ثبت شده است. هر کدام را بزنید تا ببینید.</p>' +
+    kinds
+      .map(function (kind) {
+        return (
+          '<button type="button" class="histbar' +
+          (kind.hot ? " hot" : "") +
+          '" data-act="alertopen" data-v="' +
+          kind.k +
+          '"><b>' +
+          kind.title +
+          "</b><span>" +
+          alertSummary(kind, I) +
+          "</span><i>◂</i></button>"
+        );
+      })
+      .join("") +
+    '<button type="button" class="btn primary" data-act="alertgo">ادامه‌ی بازدید</button></div>'
+  );
+}
+
+function alertSmpRow(r) {
+  return (
+    '<div class="it"><div class="row"><b class="grow">نمونه‌زنی ' +
+    esc(r.line || "") +
+    '</b><span class="chip">' +
+    esc(r.status || "") +
+    "</span></div>" +
+    '<div class="m">قطعه‌ها: ' +
+    esc(
+      (r.parts || [])
+        .map(function (p) {
+          return p.n;
+        })
+        .join("، "),
+    ) +
+    "</div>" +
+    (r.desc ? '<div class="m">' + esc(r.desc) + "</div>" : "") +
+    '<div class="m">' +
+    whoWhen(r.by, r.at, "ثبت‌کننده") +
+    "</div></div>"
+  );
+}
+
+// ردیف‌های یک دسته؛ ایراد/کسری/نمونه همان دکمه‌ی «بستن» و اختیار هر ایستگاه را دارند
+function alertRows(kind, I) {
+  var token = 0,
+    items = function (list) {
+      return list
+        .map(function (x) {
+          return openItemRow(x, "al" + token++, canCloseItem(x.it.r, x.r.sheet));
+        })
+        .join("");
+    };
+  if (kind.k === "cpf") return I.cpf.map(cpfBrief).join("");
+  if (kind.k === "psh") return I.psh.map(pshRow).join("");
+  if (kind.k === "sample") return items(I.sample) + I.smp.map(alertSmpRow).join("");
+  return items(I[kind.k]);
+}
+
+function alertListPage(d, kind, I) {
+  return (
+    '<div class="card alertcard"><div class="row"><button type="button" class="btn sm" data-act="alertback">▶ بازگشت</button><b class="grow">' +
+    kind.title +
+    "</b></div>" +
+    carInfo(d) +
+    alertRows(kind, I) +
+    "</div>"
+  );
+}
+
+// صفحه‌ی کارت یا صفحه‌ی یک دسته؛ اگر مورد نمایشی نیست "" برمی‌گرداند و بازدید ادامه پیدا می‌کند
+function carAlertScreen() {
+  if (!S.alertPending || !S.user || S.tab !== "inspect" || !S.key) return "";
+  // ایستگاهی که برگه‌ی این خودرو را هنوز باز نکرده، از سوابق همان خودرو اطلاعات می‌گیرد
+  var d = insp(S.sheet, S.key) || carRecords(S.key).recs[0];
+  if (!d) return "";
+  var I = alertItems(d),
+    kinds = ALERT_KINDS.filter(function (kind) {
+      return alertCount(kind, I) > 0;
+    });
+  if (!kinds.length) {
+    S.alertPending = false;
+    return "";
+  }
+  var shown = kinds.filter(function (kind) {
+    return kind.k === S.alertView;
+  })[0];
+  return shown ? alertListPage(d, shown, I) : alertHome(d, kinds, I);
+}
+
+// برای خودرویی که تازه باز شده، کارت وضعیت را در نوبت نمایش می‌گذارد
+function carAlertArm() {
+  S.alertPending = true;
+  S.alertView = "";
+}
+
+function clickCarAlert(a, el) {
+  if (a === "alertopen") S.alertView = el.getAttribute("data-v") || "";
+  else if (a === "alertback") S.alertView = "";
+  else if (a === "alertgo") carAlertDone();
+  else return false;
+  render();
+  window.scrollTo(0, 0);
+  return true;
+}
+
+function carAlertDone() {
+  S.alertPending = false;
+  S.alertView = "";
 }
 
 /* ════════════════════════════════════════════════════════════
@@ -27103,7 +27610,7 @@ function cpfRows(c) {
       CPF_STATUS[cpfStatus(f)][0],
       f.defect || "—",
       f.action || "—",
-      f.vtxt || "—",
+      cpfValidity(f),
       sigs,
       f.closedAt
         ? (f.corrective || "—") +
@@ -27163,10 +27670,26 @@ function cpfTab() {
   );
 }
 
+// واحدهای امضاکننده؛ فرم‌های قدیمی (بدون units) چهار امضای ثابت + «سایر» اگر انتخاب شده باشد
 function cpfSlots(f) {
   return CPF_SLOTS.filter(function (x) {
-    return x.k !== "oth" || f.otherUnit;
+    return f.units ? f.units.indexOf(x.k) >= 0 : x.k !== "oth" || f.otherUnit;
   });
+}
+
+// واحد ثبت‌کننده‌ی فرم: «sup» سرپرست تولید یا «qual» کیفیت؛ امضایش هنگام ثبت خودکار زده می‌شود
+function cpfRegSlot(f) {
+  return f.regSlot || "sup";
+}
+
+// واحد نقش کاربر برای فرم حفاظت (در «نقش‌ها» تنظیم می‌شود): تولید یا کیفیت
+function cpfRoleUnit() {
+  var d = roleDefOf(S.user);
+  return d && d.cpfUnit === "qual" ? "qual" : "prod";
+}
+
+function cpfMySlot() {
+  return cpfRoleUnit() === "qual" ? "qual" : "sup";
 }
 
 function cpfSigned(f, k) {
@@ -27186,22 +27709,19 @@ function cpfStatus(f) {
     })
   )
     return "pending";
+  if (f.perm) return "active";
   var t = toJalali(nowIso());
   return t && cpfDateKey(t.y, t.m, t.d) > f.vk ? "expired" : "active";
 }
 
 function cpfCanSign(f, k) {
   var u = S.user;
-  if (
-    !u ||
-    cpfSigned(f, k) ||
-    f.closedAt ||
-    (u.role !== "mgr" && !(k === "qual" && u.station === "quality"))
-  )
-    return false;
+  if (!u || cpfSigned(f, k) || f.closedAt) return false;
+  if (k === "sup") return canCpfCreate() && cpfRoleUnit() === "prod";
+  if (k === "qual" && (u.station === "quality" || (canCpfCreate() && cpfRoleUnit() === "qual")))
+    return true;
+  if (u.role !== "mgr") return false;
   if (k === "oth") return mgrUnitOf(u) === f.otherUnit;
-  if (k === "sup") return false;
-  if (k === "qual" && u.station === "quality") return true;
   var slot = CPF_SLOTS.filter(function (x) {
     return x.k === k;
   })[0];
@@ -27219,21 +27739,34 @@ function cpfWaiting() {
   });
 }
 
+function cpfDateObj(y, m, d) {
+  return {
+    y: y,
+    m: m,
+    d: d,
+    k: cpfDateKey(y, m, d),
+    txt: y + "/" + (m < 10 ? "0" : "") + m + "/" + (d < 10 ? "0" : "") + d,
+  };
+}
+
 function cpfParseDate(txt) {
   var t = digits(txt).replace(/[\/\-.]/g, "");
   if (!/^\d{8}$/.test(t)) return null;
   var y = +t.slice(0, 4),
     m = +t.slice(4, 6),
     d = +t.slice(6);
-  return y < 1300 || y > 1500 || m < 1 || m > 12 || d < 1 || d > 31
-    ? null
-    : {
-        y: y,
-        m: m,
-        d: d,
-        k: cpfDateKey(y, m, d),
-        txt: y + "/" + (m < 10 ? "0" : "") + m + "/" + (d < 10 ? "0" : "") + d,
-      };
+  return y < 1300 || y > 1500 || m < 1 || m > 12 || d < 1 || d > 31 ? null : cpfDateObj(y, m, d);
+}
+
+function cpfToday() {
+  var t = toJalali(nowIso());
+  return t ? cpfDateObj(t.y, t.m, t.d) : null;
+}
+
+// متن اعتبار فرم: «از … تا …»، «دائمی» یا (فرم‌های قدیمی) «تا …»
+function cpfValidity(f) {
+  if (f.perm) return "دائمی" + (f.vstxt ? " — از " + f.vstxt : "");
+  return (f.vstxt ? "از " + f.vstxt + " " : "") + "تا " + f.vtxt;
 }
 
 function cpfCars(txt) {
@@ -27255,56 +27788,153 @@ function cpfSignature() {
   return { by: S.user.name, byId: S.user.id, at: nowIso() };
 }
 
-// ثبت «فرم حفاظت از مشتری» توسط سرپرست تولید.
-function cpfAdd() {
-  var date = cpfParseDate(fieldValue("cf_valid")),
-    cars = cpfCars(fieldValue("cf_cars")),
-    defect = fieldValue("cf_defect"),
-    action = fieldValue("cf_action");
-  if (!defect || !action) {
-    toast("شرح ایراد و شرح اقدام حفاظت از مشتری را بنویسید");
-    return;
-  }
-  if (!date) {
-    toast("تاریخ اعتبار را مثل ۱۴۰۵/۰۸/۲۰ بنویسید");
-    return;
-  }
-  var t = toJalali(nowIso());
-  if (t && date.k < cpfDateKey(t.y, t.m, t.d)) {
-    toast("تاریخ اعتبار گذشته است");
-    return;
-  }
-  if (!cars.length) {
-    toast("شماره‌ی دست‌کم یک خودرو را بنویسید");
-    return;
-  }
-  var f = {
-    kind: "cpf",
-    no: fieldValue("cf_no"),
-    line: fieldValue("cf_line"),
-    area: fieldValue("cf_area"),
-    qrci: fieldValue("cf_qrci"),
-    defect: defect,
-    cause: fieldValue("cf_cause"),
-    informed: !!(document.getElementById("cf_informed") || {}).checked,
-    action: action,
-    vk: date.k,
-    vtxt: date.txt,
-    cars: cars,
-    otherUnit: fieldValue("cf_other"),
-    sig_sup: cpfSignature(),
-    createdAt: nowIso(),
-    closedAt: "",
-  };
-  ["cf_no", "cf_qrci", "cf_defect", "cf_cause", "cf_action", "cf_valid", "cf_cars"].forEach(
-    function (i) {
-      var e = document.getElementById(i);
-      if (e) e.value = "";
-    },
+// حوزه‌های فرم: کلیدهای AREAS (فرم‌های قدیمی فقط نام یک حوزه را داشتند)
+function cpfAreaKeys() {
+  return Object.keys(AREAS).filter(function (k) {
+    return k !== "all";
+  });
+}
+
+function cpfAreaKeysOf(f) {
+  if (f.areas) return f.areas;
+  return cpfAreaKeys().filter(function (k) {
+    return AREAS[k].label === f.area;
+  });
+}
+
+function cpfAreaChecks(F) {
+  var on = cpfAreaKeysOf(F);
+  return cpfAreaKeys()
+    .map(function (k) {
+      return (
+        '<label class="chk"><input type="checkbox" id="cf_a_' +
+        k +
+        '"' +
+        (on.indexOf(k) >= 0 ? " checked" : "") +
+        "> " +
+        esc(AREAS[k].label) +
+        "</label>"
+      );
+    })
+    .join("");
+}
+
+function cpfById(id) {
+  return (
+    (S.cpfs || []).filter(function (r) {
+      return r.id === id;
+    })[0] || null
   );
+}
+
+function cpfChecked(id) {
+  return !!(document.getElementById(id) || {}).checked;
+}
+
+// واحدهای امضاکننده: ثبت‌کننده همیشه هست + هر واحدی که تیک خورده
+function cpfPickedUnits(reg) {
+  return [reg].concat(
+    CPF_SLOTS.map(function (x) {
+      return x.k;
+    }).filter(function (k) {
+      return k !== reg && cpfChecked("cf_u_" + k);
+    }),
+  );
+}
+
+// تاریخ‌های مجوز را می‌خواند؛ پیام خطا برمی‌گرداند یا فیلدهای اعتبار را
+function cpfReadValidity() {
+  var perm = fieldValue("cf_kind") === "perm",
+    today = cpfToday(),
+    start = fieldValue("cf_start") ? cpfParseDate(fieldValue("cf_start")) : today,
+    end = perm ? null : cpfParseDate(fieldValue("cf_valid"));
+  if (!start) return { err: "تاریخ شروع را مثل ۱۴۰۵/۰۸/۲۰ بنویسید" };
+  if (!perm && !end) return { err: "تاریخ پایان را مثل ۱۴۰۵/۰۹/۳۰ بنویسید" };
+  if (!perm && today && end.k < today.k) return { err: "تاریخ پایان گذشته است" };
+  if (!perm && end.k < start.k) return { err: "تاریخ پایان قبل از تاریخ شروع است" };
+  return {
+    perm: perm,
+    vs: start.k,
+    vstxt: start.txt,
+    vk: perm ? 0 : end.k,
+    vtxt: perm ? "دائمی" : end.txt,
+  };
+}
+
+// فیلدهای فرم را می‌خواند و بررسی می‌کند؛ اگر خطایی بود پیام می‌دهد و null برمی‌گرداند
+function cpfReadForm(reg) {
+  var defect = fieldValue("cf_defect"),
+    action = fieldValue("cf_action"),
+    cars = cpfCars(fieldValue("cf_cars")),
+    units = cpfPickedUnits(reg),
+    areas = cpfAreaKeys().filter(function (k) {
+      return cpfChecked("cf_a_" + k);
+    }),
+    valid = cpfReadValidity();
+  var err = !defect || !action ? "شرح ایراد و شرح اقدام حفاظت از مشتری را بنویسید" : valid.err;
+  if (!err && !areas.length) err = "دست‌کم یک حوزه‌ی مربوط را انتخاب کنید";
+  if (!err && !cars.length) err = "شماره‌ی دست‌کم یک خودرو را بنویسید";
+  if (!err && units.length < 2) err = "دست‌کم یک واحد دیگر را برای امضا انتخاب کنید";
+  if (!err && units.indexOf("oth") >= 0 && !fieldValue("cf_other"))
+    err = "واحد «سایر واحدهای ذیربط» را انتخاب کنید";
+  if (err) {
+    S.stpSent = ""; // بعد از خطا در همان مرحله بماند
+    toast(err);
+    return null;
+  }
+  return Object.assign(
+    {
+      kind: "cpf",
+      no: fieldValue("cf_no"),
+      line: fieldValue("cf_line"),
+      areas: areas,
+      area: areas
+        .map(function (k) {
+          return AREAS[k].label;
+        })
+        .join("، "),
+      qrci: fieldValue("cf_qrci"),
+      defect: defect,
+      cause: fieldValue("cf_cause"),
+      informed: cpfChecked("cf_informed"),
+      action: action,
+      cars: cars,
+      units: units,
+      regSlot: reg,
+      otherUnit: units.indexOf("oth") >= 0 ? fieldValue("cf_other") : "",
+    },
+    valid,
+  );
+}
+
+// بعد از ذخیره: فرم خالی (یا بدون حالت ویرایش) و از مرحله‌ی اول
+function cpfFormReset() {
+  S.cpfEdit = "";
+  S.cpfFresh = true;
+  S.cstep = 0;
+  render();
+}
+
+// ثبت «فرم حفاظت از مشتری» توسط سرپرست تولید یا کیفیت.
+function cpfAdd() {
+  var edit = S.cpfEdit ? cpfById(S.cpfEdit) : null;
+  if (S.cpfEdit && !(edit && cpfCanEdit(edit))) return cpfFormReset();
+  var f = cpfReadForm(edit ? cpfRegSlot(edit) : cpfMySlot());
+  if (!f) return;
+  if (edit)
+    return save(function () {
+      return store.update("users", edit.id, f);
+    }, "تغییرات فرم ذخیره شد").then(function (ok) {
+      if (ok) cpfFormReset();
+    });
+  f["sig_" + f.regSlot] = cpfSignature();
+  f.createdAt = nowIso();
+  f.closedAt = "";
   save(function () {
     return store.set("users", "cpf_" + uid(), f);
-  }, "فرم ثبت شد و امضای سرپرست تولید به نام شما ثبت شد");
+  }, "فرم ثبت شد و امضای شما به‌عنوان ثبت‌کننده ثبت شد").then(function (ok) {
+    if (ok) cpfFormReset();
+  });
 }
 
 // امضای واحدها (مهندسی، مهندسی تولید، کیفیت، واحد دیگر).
@@ -27392,8 +28022,8 @@ function cpfSummary(f) {
     cpfRow("شرح ایراد", f.defect) +
     cpfRow("علت ایجاد ایراد", f.cause) +
     cpfRow("اقدام حفاظت از مشتری", f.action) +
-    '<div class="m"><b>معتبر تا:</b> <span class="num">' +
-    esc(f.vtxt) +
+    '<div class="m"><b>اعتبار:</b> <span class="num">' +
+    esc(cpfValidity(f)) +
     "</span></div>" +
     (f.informed ? '<div class="m">به اطلاع چکمن و اپراتورهای مرتبط رسیده است ✓</div>' : "")
   );
@@ -27428,15 +28058,21 @@ function cpfCloseForm(f) {
   );
 }
 
+// ثبت‌کننده تا وقتی واحد دیگری امضا نکرده می‌تواند فرم را ویرایش یا حذف کند
+function cpfOthersSigned(f) {
+  return CPF_SLOTS.some(function (x) {
+    return x.k !== cpfRegSlot(f) && cpfSigned(f, x.k);
+  });
+}
+
+function cpfCanEdit(f) {
+  var sg = f["sig_" + cpfRegSlot(f)];
+  return canCpfCreate() && !!sg && sg.byId === S.user.id && !f.closedAt && !cpfOthersSigned(f);
+}
+
 function cpfDelBtns(f) {
-  if (
-    !(
-      S.user &&
-      (S.user.id === "owner" ||
-        (canCpfCreate() && f.sig_sup && f.sig_sup.byId === S.user.id && cpfStatus(f) === "pending"))
-    )
-  )
-    return "";
+  var isOwner = S.user && S.user.id === "owner";
+  if (!isOwner && !cpfCanEdit(f)) return "";
   if (S.cpfDel === f.id)
     return (
       '<div class="row" style="margin-top:8px"><button class="btn sm" data-act="cpfdelyes" data-id="' +
@@ -27444,7 +28080,11 @@ function cpfDelBtns(f) {
       '">تأیید حذف</button><button class="btn sm" data-act="cpfdelno">انصراف</button></div>'
     );
   return (
-    '<div class="row" style="margin-top:8px"><button class="btn sm" data-act="cpfdelask" data-id="' +
+    '<div class="row" style="margin-top:8px">' +
+    (cpfCanEdit(f)
+      ? '<button class="btn sm" data-act="cpfedit" data-id="' + esc(f.id) + '">ویرایش فرم</button>'
+      : "") +
+    '<button class="btn sm" data-act="cpfdelask" data-id="' +
     esc(f.id) +
     '">حذف فرم</button></div>'
   );
@@ -27469,33 +28109,133 @@ function cpfCard(f) {
   );
 }
 
-function cpfAddForm() {
+function cpfInput(id, label, value, cls, attrs) {
   return (
-    '<div class="card"><h2>ثبت فرم حفاظت از مشتری</h2><form data-form="cpfadd" data-stp="1" class="mgform">' +
-    '<div class="mgrow" data-step="شماره‌ها و خط"><label class="f">شماره‌ی فرم<input class="in" id="cf_no" autocomplete="off"></label><label class="f">شماره‌ی پرونده QRCI<input class="in" id="cf_qrci" autocomplete="off"></label></div>' +
+    '<label class="f">' +
+    label +
+    '<input class="in ' +
+    cls +
+    '" id="' +
+    id +
+    '" value="' +
+    esc(value || "") +
+    '" autocomplete="off" ' +
+    attrs +
+    "></label>"
+  );
+}
+
+function cpfSelectOptions(list, cur) {
+  return list
+    .map(function (v) {
+      return (
+        '<option value="' +
+        esc(v) +
+        '"' +
+        (v === cur ? " selected" : "") +
+        ">" +
+        esc(v) +
+        "</option>"
+      );
+    })
+    .join("");
+}
+
+// تیک واحدهای امضاکننده؛ ثبت‌کننده همیشه امضا می‌کند و تیکش قفل است
+function cpfUnitChecks(F, reg) {
+  var on = F
+    ? cpfSlots(F).map(function (x) {
+        return x.k;
+      })
+    : ["eng", "peng", "qual", "sup"];
+  return CPF_SLOTS.map(function (x) {
+    if (x.k === reg)
+      return (
+        '<label class="chk"><input type="checkbox" checked disabled> ' +
+        esc(x.label) +
+        " — امضای ثبت‌کننده</label>"
+      );
+    return (
+      '<label class="chk"><input type="checkbox" id="cf_u_' +
+      x.k +
+      '"' +
+      (on.indexOf(x.k) >= 0 ? " checked" : "") +
+      "> " +
+      esc(x.label) +
+      "</label>"
+    );
+  }).join("");
+}
+
+function cpfAddForm() {
+  var F = S.cpfEdit ? cpfById(S.cpfEdit) : null;
+  if (F && !cpfCanEdit(F)) F = null;
+  F = F || {};
+  var reg = F.id ? cpfRegSlot(F) : cpfMySlot();
+  return (
+    '<div class="card"><h2>' +
+    (F.id ? "ویرایش فرم حفاظت از مشتری" : "ثبت فرم حفاظت از مشتری") +
+    '</h2><form data-form="cpfadd" data-stp="1" class="mgform">' +
+    '<div class="mgrow" data-step="شماره‌ها و خط">' +
+    cpfInput("cf_no", "شماره‌ی فرم", F.no, "", "") +
+    cpfInput("cf_qrci", "شماره‌ی پرونده QRCI", F.qrci, "", "") +
+    "</div>" +
     '<div class="mgrow" data-step="شماره‌ها و خط"><label class="f">خط / سال تولید<select class="in" id="cf_line">' +
-    listOptions(listK("stopLines")) +
-    "</select></label>" +
-    '<label class="f">حوزه<select class="in" id="cf_area">' +
-    Object.keys(AREAS)
-      .filter(function (k) {
-        return k !== "all";
-      })
-      .map(function (k) {
-        return "<option>" + esc(AREAS[k].label) + "</option>";
-      })
-      .join("") +
+    cpfSelectOptions(listK("stopLines"), F.line) +
     "</select></label></div>" +
-    '<label class="f" data-step="شرح و علت ایراد">شرح ایراد<textarea class="in" id="cf_defect"></textarea></label>' +
-    '<label class="f" data-step="شرح و علت ایراد">علت ایجاد ایراد<textarea class="in" id="cf_cause"></textarea></label>' +
-    '<label class="chk" data-step="شرح و علت ایراد"><input type="checkbox" id="cf_informed"> ایراد به اطلاع چکمن و کلیه اپراتورهای مرتبط رسیده است</label>' +
-    '<label class="f" data-step="اقدام و اعتبار">شرح اقدام حفاظت از مشتری<textarea class="in" id="cf_action"></textarea></label>' +
-    '<label class="f" data-step="اقدام و اعتبار">معتبر تا تاریخ (مثلاً ۱۴۰۵/۰۸/۲۰)<input class="in num ltr" id="cf_valid" inputmode="numeric" autocomplete="off" placeholder="14050820"></label>' +
-    '<label class="f" data-step="خودروها و امضا">شماره‌ی خودروهای مشمول (سریال، شاسی، موتور یا اتاق؛ با فاصله یا خط جدید جدا کنید)<textarea class="in num ltr" id="cf_cars"></textarea></label>' +
-    '<label class="f" data-step="خودروها و امضا">امضای «سایر واحدهای ذیربط»<select class="in" id="cf_other"><option value="">ندارد</option>' +
-    listOptions(mgrUnits()) +
+    '<div class="f cpfunits" data-step="شماره‌ها و خط"><b>حوزه‌های مربوط (هر ایستگاهی که ایراد به آن مربوط است)</b>' +
+    cpfAreaChecks(F) +
+    "</div>" +
+    '<label class="f" data-step="شرح و علت ایراد">شرح ایراد<textarea class="in" id="cf_defect">' +
+    esc(F.defect || "") +
+    "</textarea></label>" +
+    '<label class="f" data-step="شرح و علت ایراد">علت ایجاد ایراد<textarea class="in" id="cf_cause">' +
+    esc(F.cause || "") +
+    "</textarea></label>" +
+    '<label class="chk" data-step="شرح و علت ایراد"><input type="checkbox" id="cf_informed"' +
+    (F.informed ? " checked" : "") +
+    "> ایراد به اطلاع چکمن و کلیه اپراتورهای مرتبط رسیده است</label>" +
+    '<label class="f" data-step="اقدام و اعتبار">شرح اقدام حفاظت از مشتری<textarea class="in" id="cf_action">' +
+    esc(F.action || "") +
+    "</textarea></label>" +
+    '<label class="f" data-step="اقدام و اعتبار">نوع مجوز<select class="in" id="cf_kind"><option value="temp">موقت (با تاریخ پایان)</option><option value="perm"' +
+    (F.perm ? " selected" : "") +
+    ">دائمی (روش ثابت؛ بدون تاریخ پایان)</option></select></label>" +
+    '<div class="mgrow" data-step="اقدام و اعتبار">' +
+    cpfInput(
+      "cf_start",
+      "تاریخ شروع (خالی = امروز)",
+      F.vstxt,
+      "num ltr",
+      'inputmode="numeric" placeholder="14050820"',
+    ) +
+    '<span class="cf-end">' +
+    cpfInput(
+      "cf_valid",
+      "تاریخ پایان (مثلاً ۱۴۰۵/۰۹/۳۰)",
+      F.perm ? "" : F.vtxt,
+      "num ltr",
+      'inputmode="numeric" placeholder="14050930"',
+    ) +
+    "</span></div>" +
+    '<label class="f" data-step="خودروها و امضا">شماره‌ی خودروهای مشمول (سریال، شاسی، موتور یا اتاق؛ با فاصله یا خط جدید جدا کنید)<textarea class="in num ltr" id="cf_cars">' +
+    esc((F.cars || []).join("\n")) +
+    "</textarea></label>" +
+    '<div class="f cpfunits" data-step="خودروها و امضا"><b>واحدهایی که باید امضا کنند</b>' +
+    cpfUnitChecks(F.id ? F : null, reg) +
+    "</div>" +
+    '<label class="f" data-step="خودروها و امضا">اگر «سایر واحدهای ذیربط» تیک خورده، کدام بخش؟<select class="in" id="cf_other"><option value="">—</option>' +
+    cpfSelectOptions(mgrUnits(), F.otherUnit) +
     "</select></label>" +
-    '<button class="btn primary" type="submit">ثبت فرم و امضا به‌عنوان سرپرست تولید</button></form></div>'
+    '<button class="btn primary" type="submit">' +
+    (F.id
+      ? "ذخیره‌ی تغییرات"
+      : "ثبت فرم و امضا به‌عنوان " + (reg === "qual" ? "کیفیت" : "سرپرست تولید")) +
+    "</button>" +
+    (F.id
+      ? '<button class="btn" type="button" data-act="cpfeditcancel" data-step="خودروها و امضا">انصراف از ویرایش</button>'
+      : "") +
+    "</form></div>"
   );
 }
 
@@ -27618,6 +28358,17 @@ function clickCpf(ev, el, a, id, d) {
     cpfSign(id, el.getAttribute("data-k"));
     return true;
   }
+  if (a === "cpfedit") {
+    S.cpfEdit = id;
+    S.cpfFresh = true;
+    S.cstep = 0;
+    render();
+    return true;
+  }
+  if (a === "cpfeditcancel") {
+    cpfFormReset();
+    return true;
+  }
   if (a === "cpfdelask") {
     S.cpfDel = id;
     render();
@@ -27636,6 +28387,74 @@ function clickCpf(ev, el, a, id, d) {
     return true;
   }
   return false;
+}
+
+/* ---------- یادآوری پایان اعتبار ---------- */
+// چند روز مانده به پایان اعتبار هشدار داده شود (مالک در «فهرست‌ها» تنظیم می‌کند؛ پیش‌فرض ۳)
+function cpfRemindDays() {
+  var n = +digits(listK("cpfRemind")[0]);
+  return n >= 1 && n <= 30 ? n : 3;
+}
+
+// چند روز تا پایان اعتبار مانده؛ اگر در بازه‌ی یادآوری نیست -1
+function cpfDaysLeft(f) {
+  for (var d = 0; d <= cpfRemindDays(); d++) {
+    var t = toJalali(new Date(Date.now() + d * 864e5).toISOString());
+    if (t && cpfDateKey(t.y, t.m, t.d) === f.vk) return d;
+  }
+  return -1;
+}
+
+function cpfSignedBy(f, id) {
+  return CPF_SLOTS.some(function (x) {
+    var sg = cpfSigned(f, x.k);
+    return !!sg && sg.byId === id;
+  });
+}
+
+// فرم‌های موقتی که کاربر امضا کرده و نزدیک پایان یا منقضی‌اند
+function cpfReminders() {
+  var u = S.user;
+  if (!u) return [];
+  return (S.cpfs || [])
+    .filter(function (f) {
+      var st = cpfStatus(f);
+      return (
+        !f.closedAt &&
+        !f.perm &&
+        cpfSignedBy(f, u.id) &&
+        (st === "expired" || (st === "active" && cpfDaysLeft(f) >= 0))
+      );
+    })
+    .map(function (f) {
+      var left = cpfDaysLeft(f);
+      return (
+        '<div class="m"><b>فرم' +
+        (f.no ? " " + esc(f.no) : "") +
+        "</b> — " +
+        (cpfStatus(f) === "expired"
+          ? "اعتبار تمام شده است"
+          : left
+            ? faDigits(left) + " روز تا پایان اعتبار"
+            : "امروز آخرین روز اعتبار است") +
+        " (" +
+        esc(f.vtxt) +
+        ")</div>"
+      );
+    });
+}
+
+function cpfReminderBar() {
+  var rows = cpfReminders();
+  if (!rows.length) return "";
+  return (
+    '<div class="cpfwarn" role="status"><b>یادآوری فرم حفاظت از مشتری</b>' +
+    rows.join("") +
+    (cpfAllowed()
+      ? '<button type="button" class="btn sm" data-act="tab" data-t="cpf">مشاهده‌ی فرم‌ها</button>'
+      : "") +
+    "</div>"
+  );
 }
 
 /* ════════════════════════════════════════════════════════════
@@ -29344,7 +30163,7 @@ function stageRows(k, r) {
   return rows;
 }
 
-// خروجی ایستگاه شاسی بازدید موتور همان خودرو را هم دارد (چکمن EWT1 هر دو را بازدید می‌کند)
+// خروجی ایستگاه شاسی بازدید موتور همان خودرو را هم دارد (چکمن EWT2 هر دو را بازدید می‌کند)
 function reportSheets(c, sheet) {
   if (!sheet) return stagesFor(c.recs);
   var hasEngine =
@@ -29860,7 +30679,7 @@ function xlsxCpfSheet(rep) {
     n: "حفاظت از مشتری",
     r: [
       ["فرم‌های حفاظت از مشتری (" + faDigits(rep.cpf.length) + ")"],
-      ["شماره فرم", "وضعیت", "شرح ایراد", "اقدام حفاظت", "معتبر تا", "امضاها", "بستن فرم"],
+      ["شماره فرم", "وضعیت", "شرح ایراد", "اقدام حفاظت", "اعتبار", "امضاها", "بستن فرم"],
     ].concat(rep.cpf),
     w: [14, 14, 36, 36, 16, 50, 40],
     h: [0, 1],
@@ -30170,7 +30989,7 @@ function pdfCpfSection(P, rep) {
         r[0],
         r[1],
         r[2],
-        r[3] + "\nمعتبر تا: " + r[4],
+        r[3] + "\nاعتبار: " + r[4],
         r[5] + (r[6] !== "—" ? "\n— بسته شد —\n" + r[6] : ""),
       ];
     }),
@@ -31801,6 +32620,293 @@ function cmdGateway(question) {
   });
 }
 
+/* MOHR AI 167.90: read-only analysis of already scoped dashboard rows. */
+var AI90 = { conversation: [], scope: "", documents: [], query: "", hits: [] };
+function ai90EnsureContext() {
+  var identity = JSON.stringify([
+    S.user && S.user.id,
+    typeof userSheets === "function" ? userSheets() : null,
+  ]);
+  if (AI90.identity !== identity) {
+    AI90.documents = [];
+    AI90.conversation = [];
+    AI90.hits = [];
+    AI90.identity = identity;
+    AI90.scope = "";
+  }
+  if (AI90.rows !== S.data.insp) {
+    AI90.rows = S.data.insp;
+    AI90.conversation = [];
+  }
+}
+function ai90Normalize(s) {
+  return String(s || "")
+    .replace(/ي/g, "ی")
+    .replace(/ك/g, "ک")
+    .replace(/[\u200c\s]+/g, " ")
+    .trim()
+    .toLowerCase();
+}
+function ai90Stats(M) {
+  var durations = cmdClosureHours(M.closed),
+    hours = durations.hours;
+  var groups = cmdRepeatedGroups(M.defs),
+    recurring = [];
+  groups.forEach(function (g) {
+    var cars = Object.create(null);
+    g.rows.forEach(function (x) {
+      var key = String(x.car);
+      if (!cars[key]) cars[key] = [];
+      cars[key].push(x);
+    });
+    Object.keys(cars).forEach(function (k) {
+      var rows = cars[k].slice().sort(function (a, b) {
+        return a.ms - b.ms;
+      });
+      for (var i = 1; i < rows.length; i++) {
+        var prev = rows[i - 1],
+          end = Date.parse(prev.it.closedAt);
+        if (isFinite(end) && end >= prev.ms && end < rows[i].ms)
+          recurring.push({
+            label: g.label,
+            source: cmdSource(rows[i]),
+            previous: cmdSource(prev),
+            closedAt: prev.it.closedAt,
+          });
+      }
+    });
+  });
+  return {
+    meanHours: hours.length
+      ? hours.reduce(function (a, b) {
+          return a + b;
+        }, 0) / hours.length
+      : null,
+    medianHours: cmdMedian(hours),
+    validDurations: hours.length,
+    invalidDurations: durations.invalid,
+    recurring: recurring,
+    groupRepeatShare: M.defs.length
+      ? groups.reduce(function (n, g) {
+          return n + Math.max(0, g.n - 1);
+        }, 0) / M.defs.length
+      : null,
+    observedSources: M.defs.map(cmdSource),
+    coverage: M.coverage,
+  };
+}
+function ai90Answer(question, M) {
+  ai90EnsureContext();
+  var scope = cmdScopeKey(dashF());
+  if (AI90.scope !== scope) {
+    AI90.conversation = [];
+    AI90.scope = scope;
+  }
+  var q = ai90Normalize(question),
+    stats = ai90Stats(M),
+    response;
+  // Follow-up is only topic continuity, never an expansion of the active data scope.
+  if (/^(و |همین|بیشتر|چرا|منبع)/.test(q) && AI90.conversation.length)
+    q = AI90.conversation[AI90.conversation.length - 1].question + " " + q;
+  if (/سند|دستورالعمل|مستند/.test(q)) {
+    AI90.hits = ai90Search(q);
+    response = cmdNewAnswer(
+      question,
+      AI90.hits.length
+        ? AI90.hits
+            .map(function (h) {
+              return h.name + " · نسخه " + h.version + " · بخش " + h.section + "\n" + h.text;
+            })
+            .join("\n\n")
+        : "سند معتبر مرتبط در مخزن همین نشست پیدا نشد. سند یا ارجاعی حدس زده نمی‌شود.",
+    );
+    response.kind = "بازیابی متنی محلی؛ بدون مدل زبانی";
+    response.sources = AI90.hits.map(function (h) {
+      return h.name + "@" + h.version + "#" + h.section;
+    });
+  } else if (/میانگین|متوسط|میانه/.test(q) && /رفع|بسته/.test(q)) {
+    response = cmdNewAnswer(
+      question,
+      "میانگین زمان رفع: " +
+        cmdHours(stats.meanHours) +
+        " ساعت؛ میانه: " +
+        cmdHours(stats.medianHours) +
+        " ساعت. " +
+        cmdNum(stats.validDurations) +
+        " مدت معتبر؛ " +
+        cmdNum(stats.invalidDurations) +
+        " مدت نامعتبر کنار گذاشته شد. جامعه: رویدادهای رفع در بازه انتخابی، نه تمام عیوب ثبت‌شده.",
+    );
+    response.sources = M.closed.map(cmdSource);
+  } else if (/پس از|بعد از/.test(q) && /اصلاح|رفع|تکرار/.test(q)) {
+    response = cmdNewAnswer(
+      question,
+      cmdNum(stats.recurring.length) +
+        " ثبت مجددِ هم‌بند و هم‌خودرو پس از زمان رفع قبلی شناسایی شد. این مشاهده به‌تنهایی اثبات شکست اقدام اصلاحی نیست؛ شناسه اقدام، علت ریشه‌ای و ارتباط اقدام با عیب در قرارداد فعلی وجود ندارد.",
+    );
+    response.sources = stats.recurring.map(function (x) {
+      return x.source;
+    });
+  } else if (/علت|چرا|اثربخش|تأثیر|تاثیر/.test(q)) {
+    response = cmdNewAnswer(
+      question,
+      "واقعیت مشاهده‌شده: " +
+        cmdNum(M.open.length) +
+        " مورد باز و " +
+        cmdNum(M.short.length) +
+        " کسری باز در گروه بازه. تمرکز یا هم‌زمانی فقط فرضیه بررسی است؛ علت قطعی، اثر اقدام اصلاحی و ارتباط کسری با توقف بدون شناسه اقدام و رخداد توقف قابل محاسبه نیست.",
+    );
+    response.sources = M.open.slice(0, 50).map(cmdSource);
+  } else response = cmdAnswer(question, M);
+  response.question = question;
+  response.kind = response.kind || "محاسبه قطعی محلی";
+  response.metric = response.metric || CMD_VERSION;
+  response.sources = response.sources || [];
+  response.text +=
+    "\nدامنه: فیلترهای فعلی داشبورد (نام مدل و زمان داخل پرسش فیلتر را تغییر نمی‌دهد)؛ " +
+    new Date(M.period.from).toLocaleDateString("fa-IR") +
+    " تا " +
+    new Date(M.period.to).toLocaleDateString("fa-IR") +
+    "؛ فقط داده بارگذاری‌شده. کامل‌بودن تاریخچه احراز نشده است.";
+  AI90.conversation.push({ question: question, answer: response });
+  AI90.conversation = AI90.conversation.slice(-8);
+  return response;
+}
+function ai90Search(q) {
+  var words = ai90Normalize(q)
+    .split(/[^\p{L}\p{N}]+/u)
+    .filter(function (w) {
+      return w.length > 2 && !/^(سند|کدام|دستورالعمل|مربوط|است|چه|مستند)$/.test(w);
+    });
+  var hits = [];
+  AI90.documents
+    .filter(function (d) {
+      return d.status === "valid";
+    })
+    .forEach(function (d) {
+      d.sections.forEach(function (t, i) {
+        var normalized = ai90Normalize(t),
+          score = words.reduce(function (n, w) {
+            return n + (normalized.indexOf(w) >= 0 ? 1 : 0);
+          }, 0);
+        if (score)
+          hits.push({ name: d.name, version: d.version, section: i + 1, text: t, score: score });
+      });
+    });
+  return hits
+    .sort(function (a, b) {
+      return b.score - a.score;
+    })
+    .slice(0, 5);
+}
+function ai90LoadDocument() {
+  ai90EnsureContext();
+  var identity = AI90.identity,
+    input = document.querySelector("#ai90_file"),
+    version = cmdInputValue("ai90_version", 60),
+    status = cmdInputValue("ai90_docstatus", 30);
+  if (!input || !input.files.length || !version) {
+    toast("فایل و نسخه سند را مشخص کنید.");
+    return;
+  }
+  var file = input.files[0];
+  input.value = "";
+  if (!/\.(txt|csv)$/i.test(file.name) || file.size > 1024 * 1024 || AI90.documents.length >= 20) {
+    toast("در مرورگر فقط TXT/CSV تا یک مگابایت و حداکثر ۲۰ سند؛ قالب‌های دیگر از سرویس داخلی.");
+    return;
+  }
+  file
+    .text()
+    .then(function (text) {
+      ai90EnsureContext();
+      if (identity !== AI90.identity) throw Error("هویت یا دسترسی تغییر کرد؛ ورود سند لغو شد.");
+      if (text.indexOf("\u0000") >= 0) throw Error("فایل متنی معتبر نیست.");
+      var sections = text.match(/[\s\S]{1,1400}/g) || [];
+      AI90.documents.forEach(function (d) {
+        if (d.name === file.name && d.status === "valid" && status === "valid")
+          d.status = "superseded";
+      });
+      AI90.documents.push({
+        name: file.name,
+        version: version,
+        status: status === "valid" ? "valid" : "unverified",
+        sections: sections,
+      });
+      render();
+      toast("سند فقط در حافظه همین نشست وارد شد؛ اعتبار اعلامی باید توسط مسئول سند احراز شود.");
+    })
+    .catch(function (e) {
+      toast(e.message);
+    });
+}
+function ai90Panel(M) {
+  ai90EnsureContext();
+  var stats = ai90Stats(M);
+  return (
+    '<section class="ai90-panel"><header><small>MOHR AI / LOCAL ANALYST · 167.90</small><h3>مرکز تحلیل و دانش</h3><p>تحلیل قطعی مستقل از مدل؛ بدون ارسال اطلاعات به سرویس خارجی</p></header><div class="ai90-grid"><article><h4>زمان رفع و تکرار واقعی</h4><dl><dt>میانگین زمان رفع</dt><dd>' +
+    cmdHours(stats.meanHours) +
+    " ساعت</dd><dt>میانه زمان رفع</dt><dd>" +
+    cmdHours(stats.medianHours) +
+    " ساعت</dd><dt>ثبت مجدد پس از رفع همان بند و خودرو</dt><dd>" +
+    cmdNum(stats.recurring.length) +
+    "</dd><dt>سهم رخدادهای مازاد در گروه‌های هم‌بند</dt><dd>" +
+    cmdNum(stats.groupRepeatShare === null ? null : 100 * stats.groupRepeatShare) +
+    '٪</dd></dl><p>سهم گروهی، احتمال تکرار یا نرخ خرابی جمعیت نیست. اثربخشی اقدام اصلاحی فاقد منبع مستقیم است.</p></article><article><h4>کفایت داده و سلامت</h4><p>موتور مرورگر: آماده · مدل زبانی: متصل نیست · پیش‌بینی: غیرفعال</p><p>پادرا و اکستند از قرارداد موجود خوانده می‌شوند. نگاشت معتبر باراد و هامون، تقویم تولید، شدت عیب و رخداد توقف برای تحلیل‌های مربوط لازم است؛ حدس زده نمی‌شوند.</p><p>کنترل دسترسی این مرورگر امنیت سروری نیست. سرویس مستقل فقط با هویت سروری و داده مجاز پاسخ می‌دهد؛ اتصال آن به هویت مُهر هنوز نیازمند یکپارچه‌سازی سازمانی است.</p></article></div><details><summary>دانش و مستندات فنی — مخزن محلی همین نشست</summary><p>متن اسناد فقط داده است؛ هیچ فرمانی از سند اجرا نمی‌شود. جست‌وجو واژگانی است، نه معنایی. فایل اصلی یا متن به شبکه ارسال نمی‌شود. با بستن صفحه از حافظه پاک می‌شود.</p><label for="ai90_file">سند TXT یا CSV</label><input id="ai90_file" type="file" accept=".txt,.csv"><label for="ai90_version">نسخه سند</label><input id="ai90_version" maxlength="60"><label for="ai90_docstatus">اعتبار اعلامی</label><select id="ai90_docstatus"><option value="unverified">تأییدنشده؛ خارج از پاسخ معتبر</option><option value="valid">معتبر طبق اعلام مسئول سند</option></select>' +
+    cmdAct("افزودن به حافظه نشست", "cmdai90document", "", "cmd-secondary") +
+    "<ul>" +
+    AI90.documents
+      .map(function (d) {
+        return "<li>" + esc(d.name) + " · " + esc(d.version) + " · " + esc(d.status) + "</li>";
+      })
+      .join("") +
+    "</ul></details><details><summary>زمینه گفت‌وگو و پاسخ‌های همین دامنه</summary>" +
+    AI90.conversation
+      .filter(function () {
+        return AI90.scope === cmdScopeKey(dashF());
+      })
+      .map(function (c) {
+        return cmdAnswerCard(c.answer);
+      })
+      .join("") +
+    "</details>" +
+    cmdAct("دریافت گزارش تحلیل AI", "cmdai90report", "", "cmd-secondary") +
+    "<p>سرویس آفلاین مستقل همراه خروجی: صف، محدودیت نرخ، بازیابی اسناد و تحلیل با مجوز سروری. نصب مدل و اتصال داده مرکزی در این نسخه ادعا نمی‌شود.</p></section>"
+  );
+}
+
+function ai90Report() {
+  var M = cmdAnalyze(dashF());
+  saveFile(
+    "MOHR-AI-167.90-report.json",
+    new Blob(
+      [
+        JSON.stringify(
+          {
+            version: "167.90",
+            mode: "deterministic-local",
+            period: M.period,
+            scope: cmdBriefScope(M),
+            metrics: ai90Stats(M),
+            anomaly: M.anomaly,
+            forecast: M.forecast,
+            documents: AI90.documents.map(function (d) {
+              return { name: d.name, version: d.version, status: d.status };
+            }),
+            limitations: [
+              "Loaded data only; completeness not verified",
+              "No live LLM or central AI service connection",
+              "No causal proof",
+            ],
+          },
+          null,
+          2,
+        ),
+      ],
+      { type: "application/json;charset=utf-8" },
+    ),
+  );
+}
+
 /* ════════════════════════════════════════════════════════════
    فصل 54 — مرکز فرماندهی داشبورد: صفحه‌ها
    سه فضای «اتاق فرمان»، «مرکز تحلیل»، «مشاور مدیریت» و صفحه‌ی شواهد؛ «ابزارهای موجود» همان صفحه‌های قدیمی داشبورد است.
@@ -32466,6 +33572,7 @@ function cmdAdvisor(F, M) {
     cmdBriefSection(M) +
     cmdAssuranceAside(M) +
     cmdQuestionSection(F) +
+    ai90Panel(M) +
     "</div>"
   );
 }
@@ -32705,7 +33812,7 @@ function cmdAskLocal(F) {
   CMD_ANSWER = {
     scope: cmdScopeKey(F),
     rows: S.data.insp,
-    value: cmdAnswer(F.aiQuestion, cmdAnalyze(F)),
+    value: ai90Answer(F.aiQuestion, cmdAnalyze(F)),
   };
   return true;
 }
@@ -32790,6 +33897,14 @@ var CMD_ACTIONS = {
   cmdbrief: cmdDownloadBrief,
   cmdfeedback: function (F, el, value) {
     cmdFeedback(cmdAnalyze(F), value);
+    return false;
+  },
+  cmdai90report: function () {
+    ai90Report();
+    return false;
+  },
+  cmdai90document: function () {
+    ai90LoadDocument();
     return false;
   },
   cmdask: function (F) {
@@ -33238,7 +34353,7 @@ function userRow(u) {
   }
   var del =
     S.confirmUser === u.id
-      ? '<button class="btn sm" data-act="udelyes" data-id="' +
+      ? '<label class="f">دلیل حذف<input class="in" id="udel_reason" maxlength="120"></label><button class="btn sm" data-act="udelyes" data-id="' +
         esc(u.id) +
         '">تأیید حذف</button> <button class="btn sm" data-act="udelno">انصراف</button>'
       : '<button class="btn sm danger" data-act="udelask" data-id="' +
@@ -33322,7 +34437,7 @@ function stationFields() {
 function roleFields() {
   return (
     '<div class="mgrow"><label class="f">نقش<select class="in" id="ur2">' +
-    roleDefs()
+    activeRoles()
       .map(function (r) {
         return '<option value="' + esc(r.id) + '">' + esc(r.name) + "</option>";
       })
@@ -33431,6 +34546,7 @@ function submitAddUser() {
         users: [Object.assign({ id: uc, name: un, station: us, role: ur, password: up }, extra)],
       });
     }, "کاربر ذخیره شد").then(function (ok) {
+      if (ok) adminLog("افزودن کاربر " + uc + " · " + un, "");
       if (ok)
         ["uc", "un", "up"].forEach(function (i) {
           var e = document.getElementById(i);
@@ -33461,6 +34577,7 @@ function submitAddUser() {
       }, "کاربر ذخیره شد");
     })
     .then(function () {
+      adminLog("افزودن کاربر " + uc + " · " + un, "");
       ["uc", "un", "up"].forEach(function (i) {
         var e = document.getElementById(i);
         if (e) e.value = "";
@@ -34009,6 +35126,18 @@ function listsUnchanged(base) {
   );
 }
 
+// ثبت یک رویداد مدیریتی در «تاریخچه‌ی تغییرها»
+function adminLog(what, reason) {
+  var lid = "lg_" + Date.now().toString(36) + Math.random().toString(36).slice(2, 5);
+  return store.set("users", lid, {
+    at: nowIso(),
+    by: S.user ? S.user.name : "",
+    byId: S.user ? S.user.id : "",
+    letter: reason || "",
+    what: what,
+  });
+}
+
 // ذخیره‌ی تغییرات فهرست (با ثبت تغییر؛ اگر دستگاه دیگری فهرست را عوض کرده بود متوقف می‌شود).
 function lsSave(mut, what, needLetter) {
   if (!S.isOwner) return false;
@@ -34026,7 +35155,6 @@ function lsSave(mut, what, needLetter) {
   if (c.ng === null) delete c.ng;
   c.updatedAt = nowIso();
   c.updatedBy = S.user ? S.user.name : "";
-  var lid = "lg_" + Date.now().toString(36) + Math.random().toString(36).slice(2, 5);
   var base = S.lists ? S.lists.updatedAt || "" : "";
   save(function () {
     return listsUnchanged(base)
@@ -34034,13 +35162,7 @@ function lsSave(mut, what, needLetter) {
         return store.set("users", "__lists", c);
       })
       .then(function () {
-        return store.set("users", lid, {
-          at: nowIso(),
-          by: S.user ? S.user.name : "",
-          byId: S.user ? S.user.id : "",
-          letter: letter,
-          what: what,
-        });
+        return adminLog(what, letter);
       });
   }, "ذخیره شد");
   return true;
@@ -34285,10 +35407,7 @@ function lsHideItem(k) {
   var e1 = lsEntry(k),
     hidNow = !!e1.p.x,
     lb1 = entryLabel(e1);
-  if (
-    !hidNow &&
-    openOnItem(k.sh, secItemId(k.secObj, k.i), k.secObj.p === "ex" ? "ex" : "padra")
-  ) {
+  if (!hidNow && openOnItem(k.sh, secItemId(k.secObj, k.i), k.secObj.p === "ex" ? "ex" : "padra")) {
     toast("این آیتم ایراد، نمونه یا کسری باز دارد؛ ابتدا آن را ببندید.");
     return true;
   }
@@ -34489,7 +35608,20 @@ var ROLE_DEFAULTS = [
     scope: "trim",
     tabs: { dash: true, cpf: true },
   },
+  {
+    id: "sup_quality",
+    name: "سرپرست کیفیت",
+    scope: "all",
+    cpfUnit: "qual",
+    tabs: { dash: true, cpf: true },
+  },
 ];
+
+function activeRoles() {
+  return roleDefs().filter(function (r) {
+    return !r.archived;
+  });
+}
 
 function roleDefs() {
   var r = S.lists && S.lists.roles;
@@ -34565,15 +35697,24 @@ function roleForm(r) {
       "</label>"
     );
   }).join("");
-  var scope = areaOptions(r.scope);
-  var del =
-    S.roleDel === r.id
-      ? '<button type="button" class="btn sm danger" data-act="roledelyes" data-id="' +
+  var scope = areaOptions(r.scope),
+    cpfUnit =
+      '<label class="f">واحد در فرم حفاظت از مشتری<select class="in" id="rc_' +
+      r.id +
+      '"><option value="prod">تولید</option><option value="qual"' +
+      (r.cpfUnit === "qual" ? " selected" : "") +
+      ">کیفیت</option></select></label>";
+  var del = r.archived
+    ? '<button type="button" class="btn sm" data-act="rolerestore" data-id="' +
+      esc(r.id) +
+      '">بازگردانی از آرشیو</button>'
+    : S.roleDel === r.id
+      ? '<label class="f">دلیل آرشیو<input class="in" id="ls_letter" maxlength="120"></label><button type="button" class="btn sm danger" data-act="roledelyes" data-id="' +
         esc(r.id) +
-        '">تأیید حذف</button><button type="button" class="btn sm" data-act="roledelno">انصراف</button>'
+        '">تأیید آرشیو</button><button type="button" class="btn sm" data-act="roledelno">انصراف</button>'
       : '<button type="button" class="btn sm danger" data-act="roledelask" data-id="' +
         esc(r.id) +
-        '">حذف نقش</button>';
+        '">آرشیو نقش</button>';
   return (
     '<form data-form="rolesave" data-id="' +
     esc(r.id) +
@@ -34585,7 +35726,9 @@ function roleForm(r) {
     r.id +
     '">' +
     scope +
-    '</select></label><div class="row">' +
+    "</select></label>" +
+    cpfUnit +
+    '<div class="row">' +
     tabs +
     '</div><div class="row"><button class="btn primary" type="submit">ذخیره</button>' +
     del +
@@ -34611,8 +35754,8 @@ function areaOptions(cur) {
 
 function restoreBtns() {
   return S.roleRestore
-    ? '<span class="hint">سه نقش آماده به حالت اولشان برمی‌گردند (نقش‌های دیگر دست نمی‌خورند).</span><button type="button" class="btn sm danger" data-act="rolerestoreyes">تأیید</button><button type="button" class="btn sm" data-act="rolerestoreno">انصراف</button>'
-    : '<button type="button" class="btn sm" data-act="rolerestoreask">برگرداندن سه نقش آماده</button>';
+    ? '<span class="hint">نقش‌های آماده به حالت اولشان برمی‌گردند (نقش‌های دیگر دست نمی‌خورند).</span><button type="button" class="btn sm danger" data-act="rolerestoreyes">تأیید</button><button type="button" class="btn sm" data-act="rolerestoreno">انصراف</button>'
+    : '<button type="button" class="btn sm" data-act="rolerestoreask">برگرداندن نقش‌های آماده</button>';
 }
 
 // نقش‌های ساخته‌شده و دسترسی هر نقش.
@@ -34650,8 +35793,10 @@ function roleFromForm(r) {
   });
   return {
     id: r.id,
+    archived: r.archived,
     name: fieldValue("rn_" + r.id),
     scope: fieldValue("rs_" + r.id) || "all",
+    cpfUnit: fieldValue("rc_" + r.id) === "qual" ? "qual" : "prod",
     tabs: tabs,
   };
 }
@@ -34714,16 +35859,24 @@ function rolesRestore() {
   rolesSave(cur, "برگرداندن نقش‌های آماده");
 }
 
-function roleDelete(id) {
+// نقش حذف نمی‌شود؛ کاربران فعلی دسترسی خود را حفظ می‌کنند و نقش فقط از انتخاب‌ها کنار می‌رود
+function roleSetArchived(id, archived) {
   var r = roleDefs().filter(function (x) {
     return x.id === id;
   })[0];
+  if (archived && !fieldValue("ls_letter")) {
+    toast("دلیل آرشیو را بنویسید.");
+    return;
+  }
   S.roleDel = "";
-  rolesSave(
-    roleDefs().filter(function (x) {
-      return x.id !== id;
-    }),
-    "حذف نقش " + (r ? r.name : ""),
+  lsSave(
+    function (c) {
+      c.roles = roleDefs().map(function (x) {
+        return x.id === id ? Object.assign({}, x, { archived: archived }) : x;
+      });
+    },
+    (archived ? "آرشیو نقش " : "بازگردانی نقش ") + (r ? r.name : ""),
+    archived,
   );
 }
 
@@ -34997,7 +36150,11 @@ function clickOwnerData(ev, el, a, id, d) {
     return true;
   }
   if (a === "roledelyes" && S.isOwner) {
-    roleDelete(el.getAttribute("data-id"));
+    roleSetArchived(el.getAttribute("data-id"), true);
+    return true;
+  }
+  if (a === "rolerestore" && S.isOwner) {
+    roleSetArchived(el.getAttribute("data-id"), false);
     return true;
   }
   if (a === "mgrdel" && S.isOwner) {
@@ -35099,6 +36256,7 @@ var SCAN = {
   tickN: 0,
   detFail: false,
   hinted: false,
+  zxTried: false,
 };
 
 function closeScanner() {
@@ -35157,6 +36315,7 @@ function applyScan(raw, target) {
     S.searchErr = "";
     S.formErr = "";
     S.editing = null;
+    if (S.key) carAlertArm();
     render();
     toast(msg);
     autoOpen();
@@ -35283,6 +36442,13 @@ function scanGot(raw) {
   return false;
 }
 
+// نه اسکنر خود مرورگر هست و نه فایل ZXing بارگذاری شد: به‌جای انتظار بی‌پایان، پیام می‌دهیم.
+function scanNoReader(ok) {
+  if (ok || !SCAN.stream || (SCAN.det && !SCAN.detFail)) return;
+  closeScanner();
+  toast("اسکنر روی این دستگاه یا شبکه کار نمی‌کند. شماره را تایپ کنید.");
+}
+
 function scanHint() {
   var p = document.querySelector("#scanmodal p");
   if (p)
@@ -35308,7 +36474,10 @@ function scanTick(video) {
     return;
   }
   /* اسکنر خود کروم اول؛ اگر ۳ ثانیه نخواند یا خطا داد، ZXing هم وارد می‌شود */
-  if (age > 3000 || !SCAN.det || SCAN.detFail) loadZXing();
+  if ((age > 3000 || !SCAN.det || SCAN.detFail) && !SCAN.zxTried) {
+    SCAN.zxTried = true;
+    loadZXing().then(scanNoReader);
+  }
   var useZx = window.ZXing && (!SCAN.det || SCAN.detFail || (age > 3000 && SCAN.tickN % 2 === 1));
   SCAN.tickN++;
   if (useZx) {
@@ -35330,11 +36499,60 @@ function scanTick(video) {
     });
 }
 
+var SCAN_ZOOMS = [1, 2, 3];
+
+function trackSet(tr, adv) {
+  return tr.applyConstraints({ advanced: [adv] }).catch(function () {});
+}
+
+function scanToolBtn(box, label, onTap) {
+  var b = document.createElement("button");
+  b.type = "button";
+  b.className = "btn sm";
+  b.textContent = label;
+  b.onclick = function () {
+    onTap(b);
+  };
+  box.appendChild(b);
+}
+
+// زوم و چراغ قوه برای بارکد ریز یا کم‌نور؛ فقط وقتی دوربین پشتیبانی کند دکمه‌شان می‌آید.
+function scanTools(tr, cap) {
+  var box = document.createElement("div"),
+    close = document.getElementById("scanclose");
+  box.className = "sc-tools";
+  var zooms = cap.zoom
+    ? SCAN_ZOOMS.filter(function (z) {
+        return z >= cap.zoom.min && z <= cap.zoom.max;
+      })
+    : [];
+  if (zooms.length > 1) {
+    var zi = zooms.length > 1 ? 1 : 0;
+    trackSet(tr, { zoom: zooms[zi] });
+    scanToolBtn(box, "بزرگ‌نمایی ×" + zooms[zi], function (b) {
+      zi = (zi + 1) % zooms.length;
+      trackSet(tr, { zoom: zooms[zi] });
+      b.textContent = "بزرگ‌نمایی ×" + zooms[zi];
+    });
+  }
+  if (cap.torch) {
+    var on = false;
+    scanToolBtn(box, "چراغ قوه", function (b) {
+      on = !on;
+      trackSet(tr, { torch: on });
+      b.setAttribute("aria-pressed", on);
+    });
+  }
+  if (box.children.length && close && close.parentNode) close.parentNode.insertBefore(box, close);
+}
+
 function focusTrack(stream) {
   var tr = stream.getVideoTracks()[0],
     cap = tr && tr.getCapabilities ? tr.getCapabilities() : null;
-  if (cap && cap.focusMode && cap.focusMode.indexOf("continuous") >= 0)
-    tr.applyConstraints({ advanced: [{ focusMode: "continuous" }] }).catch(function () {});
+  if (!cap) return;
+  if (cap.focusMode && cap.focusMode.indexOf("continuous") >= 0)
+    trackSet(tr, { focusMode: "continuous" });
+  scanTools(tr, cap);
 }
 
 // دوربین اسکنر بارکد را باز می‌کند.
@@ -35353,6 +36571,7 @@ function openScanner(target) {
   SCAN.tickN = 0;
   SCAN.detFail = false;
   SCAN.hinted = false;
+  SCAN.zxTried = false;
   var m = document.createElement("div");
   m.id = "scanmodal";
   m.setAttribute("role", "dialog");
@@ -35557,13 +36776,6 @@ document.addEventListener("input", function (ev) {
     var mq = norm(t.value);
     Array.prototype.forEach.call(document.querySelectorAll("#mgulist .mgu"), function (e) {
       e.style.display = !mq || norm(e.getAttribute("data-q")).indexOf(mq) >= 0 ? "" : "none";
-    });
-    return;
-  }
-  if (id === "tq") {
-    var q0 = digits(t.value);
-    Array.prototype.forEach.call(document.querySelectorAll("#todaylist [data-k]"), function (b) {
-      b.style.display = !q0 || b.getAttribute("data-k").indexOf(q0) >= 0 ? "" : "none";
     });
     return;
   }
