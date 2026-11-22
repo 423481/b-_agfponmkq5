@@ -10647,7 +10647,7 @@ var SUPA_URL = "https://kdpmscvzavrdwwoprkfi.supabase.co",
 /* نشانی سرویس دیتابیس شرکت. خالی = همان Supabase (حالت فعلی)؛ پر = همهٔ خواندن/نوشتن به این سرویس می‌رود. */
 var API_URL = "";
 
-var APP_VER = "v167.100";
+var APP_VER = "v167.101";
 
 var AUTH_FN = "";
 
@@ -16803,7 +16803,7 @@ function hasShortStep(sheet) {
 function wizSteps(d) {
   var pr = chassisPair(d),
     st = baseSteps(pr ? pr.c : d);
-  if (!pr && !engineHold(d)) return st;
+  if (!pr && !engineLack(d)) return st;
   var withEngine = addEngineStep(st, d, pr ? engineStepState(pr.e) : "todo");
   return withEngine || (pr ? baseSteps(d) : st);
 }
@@ -17221,10 +17221,15 @@ function viewOnlyCard(d) {
     carHistoryBlock(d) +
     pshWizBlock(d) +
     cpfWizBlock(d) +
-    viewOnlyPanel(d, k) +
+    viewOnlyBody(d, k) +
     exportCard(d) +
     '<button type="button" class="btn corrbtn" data-act="roback">▶ بازگشت</button></div>'
   );
+}
+
+function viewOnlyBody(d, k) {
+  if (k === "eng" && engineNumberNeeded(d)) return engineEntryCard();
+  return engineMissingCard(d) + viewOnlyPanel(d, k);
 }
 
 function roItems(d, list) {
@@ -17861,7 +17866,7 @@ function wizardNav_wizgo(ev, el, a, id, d) {
     openEngineStep(pr);
     return true;
   }
-  if (d.sheet === "chassis" && wk === "eng" && engineHold(d)) {
+  if (d.sheet === "chassis" && wk === "eng" && engineLack(d)) {
     engineRetry();
     return true;
   }
@@ -18915,6 +18920,10 @@ function stepInfoBlocks(d) {
 
 // وقتی هیچ بخشی باز نیست: مرحله‌ی کسری یا تأیید نهایی
 function stepNoSection(d) {
+  return engineMissingCard(d) + stepNoSectionBody(d);
+}
+
+function stepNoSectionBody(d) {
   if (engineHold(d)) return engineHoldCard(d);
   if (hasShortStep(d.sheet) && (!d.shDone || S.shEdit === d.id)) return shortStep(d);
   return finalConfirmCard(d, finalChips(d));
@@ -19235,7 +19244,7 @@ function stepCard(d, edit) {
   if (!edit) return viewOnlyCard(d);
   if (S.acOpen && d.sheet === "final1" && !d.final) return acPage(d);
   var cur = stepSec(d, true);
-  if (engineNumberNeeded(d) && (S.wizView === "eng" || (!cur && !S.wizView)))
+  if (engineNumberNeeded(d) && (S.wizView === "eng" || (!d.final && !cur && !S.wizView)))
     return stepBarOpen() + wizPickBar(d) + engineEntryCard() + "</div>";
   foldItemsOnStepChange(cur);
   if (S.regList && regOn(d)) return stepBarOpen() + regListPage(d, viewedSec(d, cur)) + "</div>";
@@ -21005,16 +21014,44 @@ function chassisPair(d) {
 
 /* شماره‌ی موتور هنگام ثبت اولیه‌ی شاسی معلوم نیست؛ چکمن EWT2 + موتور آن را از روی برگه‌ی موتور وارد می‌کند */
 function engineNumberNeeded(d) {
-  return !!d && d.sheet === "chassis" && !d.engine && !d.final && mergedOn();
+  return !!d && d.sheet === "chassis" && !d.engine && mergedOn();
 }
 
-/* موتور همراه EWT2 است: تا برگه‌ی موتور ساخته و بازدید نشود، تأیید نهایی شاسی بسته می‌ماند (آنلاین و آفلاین) */
-function engineGate(d) {
-  if (!d || d.sheet !== "chassis" || d.final || !mergedOn()) return "";
+/* پیام کمبود موتور برای شاسی، حتی اگر تأیید نهایی شده باشد؛ خالی یعنی مشکلی نیست */
+function engineLack(d) {
+  if (!d || d.sheet !== "chassis" || !mergedOn()) return "";
   if (!d.engine) return "شماره موتور هنوز ثبت نشده است.";
   var pr = chassisPair(d);
   if (!pr) return "برگه‌ی موتور در حال آماده‌سازی است؛ چند لحظه صبر کنید.";
   return engineStepState(pr.e) === "todo" ? "بازدید موتور هنوز انجام نشده است." : "";
+}
+
+/* موتور همراه EWT2 است: تا برگه‌ی موتور ساخته و بازدید نشود، تأیید نهایی شاسی بسته است */
+function engineGate(d) {
+  return d && d.final ? "" : engineLack(d);
+}
+
+// خودروی تأییدشده‌ای که موتورش هرگز بازدید نشده (مثلاً با نسخه‌ی قدیمی بسته شده)
+function engineMissing(d) {
+  if (!d || d.sheet !== "chassis" || !d.final) return false;
+  var e = d.engine ? insp("engine", d.engine) : null;
+  return !e || engineStepState(e) === "todo";
+}
+
+// کادر هشدار پرونده‌ی بسته: چکمن EWT2 + موتور می‌تواند بازدید موتور را همان‌جا تکمیل کند
+function engineMissingCard(d) {
+  if (!engineMissing(d)) return "";
+  var can = !!engineLack(d);
+  return (
+    '<div class="card"><div class="sxh"><b>موتور بازدید نشده</b></div>' +
+    '<p class="hint">این خودرو بدون بازدید موتور تأیید نهایی شده است.</p>' +
+    (can
+      ? '<button type="button" class="btn primary" data-act="wizgo" data-k="eng">' +
+        (d.engine ? "رفتن به بازدید موتور" : "ثبت شماره و بازدید موتور") +
+        "</button>"
+      : "") +
+    "</div>"
+  );
 }
 
 function engineHold(d) {
