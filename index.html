@@ -10647,7 +10647,7 @@ var SUPA_URL = "https://kdpmscvzavrdwwoprkfi.supabase.co",
 /* نشانی سرویس دیتابیس شرکت. خالی = همان Supabase (حالت فعلی)؛ پر = همهٔ خواندن/نوشتن به این سرویس می‌رود. */
 var API_URL = "";
 
-var APP_VER = "v167.98";
+var APP_VER = "v167.100";
 
 var AUTH_FN = "";
 
@@ -14845,7 +14845,7 @@ SHEETS.chassis = {
 /* EXTEND_ITEMS */
 EXTEND_ITEMS.chassis = {
   ewt1: [
-    "کنترل محل جک شاسی",
+    "کنترل محل حک شاسی",
     "کنترل فرآیند سنگ زنی یال شاسی",
     "کنترل پلاک شناسایی قطعه بر روی پوسته کله گاوی",
     "کنترل نصب بیزر دنده عقب",
@@ -16043,19 +16043,6 @@ function openKeyButton(d, tail, withK) {
   );
 }
 
-function inProgressRow(prog) {
-  if (!prog.length) return "";
-  return (
-    '<div class="row" style="margin-top:12px"><span class="hint">در جریان:</span>' +
-    prog
-      .map(function (d) {
-        return openKeyButton(d, "", false);
-      })
-      .join("") +
-    "</div>"
-  );
-}
-
 function todayToggleRow(today) {
   var nProg = today.filter(function (d) {
     return !d.final;
@@ -16086,13 +16073,7 @@ function searchCard() {
     h = searchHeader(sh, mySheets()) + searchForm(sh);
   if (S.searchErr) h += '<p class="err">' + esc(S.searchErr) + "</p>";
   var tj0 = toJalali(nowIso()),
-    mine = myInspections(tj0, tj0 ? tj0.y + "/" + tj0.m + "/" + tj0.d : ""),
-    prog = mine.all
-      .filter(function (d) {
-        return !d.final;
-      })
-      .slice(0, 8);
-  h += inProgressRow(prog);
+    mine = myInspections(tj0, tj0 ? tj0.y + "/" + tj0.m + "/" + tj0.d : "");
   if (mine.all.length) {
     h += todayToggleRow(mine.today);
     if (S.todayOpen) h += todayListBox(mine.today);
@@ -16915,7 +16896,9 @@ function wizBar(d) {
         return (
           '<button type="button" class="wst ' +
           x.state +
-          (S.wizView === x.k ? " view" : "") +
+          (S.wizView === x.k || (x.k === "eng" && S.sheet === "engine" && S.wizView === "ewt1")
+            ? " view"
+            : "") +
           '" role="listitem" data-act="wizgo" data-k="' +
           esc(x.k) +
           '"' +
@@ -17889,7 +17872,9 @@ function wizardNav_wizgo(ev, el, a, id, d) {
   if (pr && d.sheet === "engine") {
     if (wk === "eng") {
       if (!(d.signs && d.signs.ewt1)) return true;
-      wk = "ewt1";
+      S.wizView = "ewt1";
+      render();
+      return true;
     } else {
       openChassisStep(pr, "");
       d = pr.c;
@@ -18524,6 +18509,11 @@ function shortPanel(d) {
 }
 
 // بخش تأییدشده: ایرادهای ثبت‌شده و دکمه‌ی ثبت ایراد تازه؛ رشته‌ی خالی اگر بخش یا امضا نیست
+// داخل ویزارد شاسی، بخش برگه‌ی موتور با نام «موتور» نشان داده می‌شود
+function secTitle(d, sc) {
+  return d.sheet === "engine" && chassisPair(d) ? "موتور (" + sc.name + ")" : sc.name;
+}
+
 function sectionPanel(d, k) {
   var sc = secsOf(d.sheet, prodOf(d)).filter(function (x) {
       return x.id === k;
@@ -18533,7 +18523,7 @@ function sectionPanel(d, k) {
   var df = secDefects(d, sc),
     h =
       '<div class="steplb">بخش ' +
-      esc(sc.name) +
+      esc(secTitle(d, sc)) +
       ' <small style="font-size:15px;color:var(--ok)">✓ تأیید شده</small></div><div class="hint" style="margin:0 0 8px">' +
       (isChs(d.sheet) ? whoWhen(sg.by, sg.at) : "تأیید: " + esc(sg.by) + " · " + esc(when(sg.at))) +
       "</div>";
@@ -18670,14 +18660,16 @@ function rmLi(d, id, txt) {
 
 /* v94 (شاسی): ایرادهای پرتکرار هر بخش (از ثبت‌های قبلی + فهرست مالک) به‌صورت انتخاب‌وثبت؛ نوار ایراد کوچک پایین صفحه */
 // ایرادهای پرتکرار را (از رکوردهای قبلی) برای انتخاب سریع پیشنهاد می‌دهد.
+var FREQUENT_MAX = 4;
 function frequentDefects(sheet, secId) {
-  return memoFor("frequent", sheet + "|" + secId, function () {
+  var uid = S.user ? S.user.id : "";
+  return memoFor("frequent", sheet + "|" + secId + "|" + uid, function () {
     var count = {};
     S.data.insp.forEach(function (x) {
       if (x.sheet !== sheet) return;
       Object.keys(x.items || {}).forEach(function (id) {
         var it = x.items[id];
-        if (!it || it.r !== "ng" || !it.custom || it.sec !== secId) return;
+        if (!it || it.r !== "ng" || !it.custom || it.sec !== secId || it.byId !== uid) return;
         var note = String(it.note || "").trim();
         if (note && note.length <= 40) count[note] = (count[note] || 0) + 1;
       });
@@ -18686,7 +18678,7 @@ function frequentDefects(sheet, secId) {
       .sort(function (a, b) {
         return count[b] - count[a];
       })
-      .slice(0, 12);
+      .slice(0, FREQUENT_MAX);
   });
 }
 
@@ -18745,7 +18737,7 @@ function fqPool(d, sec) {
   Object.keys(S.fqSel || {}).forEach(function (p) {
     if (out.indexOf(p) < 0) out.push(p);
   });
-  return out.slice(0, 12);
+  return out.slice(0, FREQUENT_MAX);
 }
 
 function fqBlock(d, cur) {
@@ -18939,11 +18931,11 @@ function stepCurOpen(cur, d, vi, df2) {
     '">' +
     (pgI
       ? '<div class="sxh"><b>بندهای ' +
-        esc(cur.name) +
+        esc(secTitle(d, cur)) +
         '</b><span class="num">' +
         esc(d.key) +
         "</span></div>"
-      : '<div class="steplb">بخش ' + esc(cur.name) + "</div>") +
+      : '<div class="steplb">بخش ' + esc(secTitle(d, cur)) + "</div>") +
     (pgI
       ? ""
       : '<div class="secsum">' +
