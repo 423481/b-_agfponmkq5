@@ -10647,7 +10647,7 @@ var SUPA_URL = "https://kdpmscvzavrdwwoprkfi.supabase.co",
 /* نشانی سرویس دیتابیس شرکت. خالی = همان Supabase (حالت فعلی)؛ پر = همهٔ خواندن/نوشتن به این سرویس می‌رود. */
 var API_URL = "";
 
-var APP_VER = "v167.101";
+var APP_VER = "v167.102";
 
 var AUTH_FN = "";
 
@@ -17076,6 +17076,8 @@ function openGroups(d) {
         });
       if (rows.length) g.push({ title: sc.name, rows: rows });
     });
+  var eg = engineOpenGroup(d);
+  if (eg) g.push(eg);
   var sh = ids
     .filter(function (i) {
       return open(i, "shortage");
@@ -17111,7 +17113,7 @@ function fgroupHtml(x) {
     '"><b><bdi>' +
     esc(x.title) +
     '</bdi></b><span class="fgn">' +
-    faDigits(x.rows.length) +
+    faDigits(x.n || x.rows.length) +
     " مورد</span><i>" +
     (open ? "▴" : "▾") +
     "</i></button>" +
@@ -17123,7 +17125,7 @@ function fgroupHtml(x) {
 function finalSummaryWiz(d) {
   var groups = openGroups(d),
     total = groups.reduce(function (n, x) {
-      return n + x.rows.length;
+      return n + (x.n || x.rows.length);
     }, 0);
   var h =
     '<div class="stepcur fsum"><div class="steplb" style="color:var(--ok)">✓ تأیید نهایی شد</div>' +
@@ -18885,13 +18887,16 @@ function openShortageIds(d) {
 // فهرست کسری‌های بازِ این برگه (برای نمایش بالای مرحله‌ی تأیید نهایی).
 // کارت «تأیید نهایی»: تعداد موارد باز و یادداشت انتظار برای بخش دیگر.
 function finalConfirmCard(d, chipsHtml) {
-  var openCount = stat(d).open;
+  var engOpen = engineOpenItems(d).length,
+    openCount = stat(d).open + engOpen;
   return (
     '<div class="stepcur"><div class="steplb">تأیید نهایی</div>' +
     chipsHtml +
     '<p class="hint" style="margin:8px 0">' +
     (openCount
-      ? faDigits(openCount) + " مورد باز در پرونده هست و همراه تأیید ثبت می‌شود."
+      ? faDigits(openCount) +
+        " مورد باز در پرونده هست و همراه تأیید ثبت می‌شود." +
+        (engOpen ? " (" + faDigits(engOpen) + " مورد در پیش‌مونتاژ موتور)" : "")
       : "ایرادی ثبت نشده است.") +
     "</p>" +
     waitNote(d) +
@@ -21036,6 +21041,40 @@ function engineMissing(d) {
   if (!d || d.sheet !== "chassis" || !d.final) return false;
   var e = d.engine ? insp("engine", d.engine) : null;
   return !e || engineStepState(e) === "todo";
+}
+
+/* ایراد و کسری باز برگه‌ی موتور همین خودرو (برای صفحه‌ی تأیید نهایی شاسی) */
+function engineOpenItems(d) {
+  var e = d && d.sheet === "chassis" && d.engine ? insp("engine", d.engine) : null;
+  if (!e) return [];
+  var items = e.items || {};
+  return Object.keys(items)
+    .filter(function (id) {
+      var t = items[id];
+      return t && (t.r === "ng" || t.r === "shortage") && !t.closedAt;
+    })
+    .map(function (id) {
+      return { id: id, it: items[id], doc: e };
+    });
+}
+
+function engineOpenRow(x) {
+  var t = x.it,
+    label = t.custom ? t.note || "" : labelOf(x.doc.sheet, x.id, x.doc) + (t.note ? " — " + t.note : ""),
+    txt = t.r === "shortage" ? "⚠ " + (t.part || t.note || "") : label;
+  return "<li>" + esc(txt) + whoWhen(t.by, t.at) + "</li>";
+}
+
+// گروه «پیش‌مونتاژ موتور» برای فهرست موارد باز تأیید نهایی؛ null اگر موردی نباشد
+function engineOpenGroup(d) {
+  var list = engineOpenItems(d);
+  if (!list.length) return null;
+  var rows = list.map(engineOpenRow);
+  if (chassisPair(d))
+    rows.push(
+      '<li><button type="button" class="btn sm" data-act="wizgo" data-k="eng">رفتن به بازدید موتور</button></li>',
+    );
+  return { title: "پیش‌مونتاژ موتور", rows: rows, n: list.length };
 }
 
 // کادر هشدار پرونده‌ی بسته: چکمن EWT2 + موتور می‌تواند بازدید موتور را همان‌جا تکمیل کند
