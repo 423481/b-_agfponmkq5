@@ -10816,6 +10816,330 @@ body:has(.mohr-cmd) .wrap {
   color: #fff;
   border-color: var(--mc-gold);
 }
+.mohr-cmd .cmd-stage svg {
+  width: 92px;
+  height: 42px;
+}
+/* مدال نشان ایستگاه */
+.mohr-cmd .cmd-sicon {
+  display: grid;
+  place-items: center;
+  width: 54px;
+  height: 54px;
+  margin: 2px auto 6px;
+  border-radius: 50%;
+  color: #eaf4fd;
+  background: radial-gradient(circle at 30% 25%, #2b5f8f, #0f2f50 70%);
+  border: 2px solid #d9b45f;
+  box-shadow: 0 6px 14px #00000050, inset 0 0 0 3px #ffffff10;
+}
+.mohr-cmd .cmd-sicon svg,
+.mohr-cmd .cmd-stage .cmd-sicon svg {
+  width: 30px;
+  height: 30px;
+  color: #eaf4fd;
+}
+.mohr-cmd .cmd-stage:hover .cmd-sicon,
+.mohr-cmd .cmd-stage[aria-pressed="true"] .cmd-sicon {
+  background: radial-gradient(circle at 30% 25%, #e3c477, #b8923c 80%);
+  color: #0a1b2d;
+}
+.mohr-cmd .cmd-stage:hover .cmd-sicon svg,
+.mohr-cmd .cmd-stage[aria-pressed="true"] .cmd-sicon svg {
+  color: #0a1b2d;
+}
+@media (max-width: 720px) {
+  .mohr-cmd .cmd-sicon {
+    width: 46px;
+    height: 46px;
+  }
+  .mohr-cmd .cmd-sicon svg,
+  .mohr-cmd .cmd-stage .cmd-sicon svg {
+    width: 26px;
+    height: 26px;
+  }
+}
+
+/* v167.117 — گزارش روزانه‌ی مشاور */
+.mohr-cmd .cmd-daily {
+  grid-column: 1/-1;
+  background: var(--mc-surface);
+  border: 1px solid var(--mc-line);
+  border-top: 3px solid var(--mc-gold, #b8923c);
+  border-radius: 14px;
+  padding: 18px;
+  min-width: 0;
+}
+.mohr-cmd .cmd-daily h3 {
+  font-size: 14px;
+  margin: 22px 0 10px;
+  color: var(--mc-ink);
+}
+.mohr-cmd .cmd-dkpis {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 10px;
+}
+.mohr-cmd .cmd-dkpis > div {
+  background: var(--mc-subtle);
+  border: 1px solid var(--mc-line);
+  border-radius: 12px;
+  padding: 12px;
+  min-width: 0;
+}
+.mohr-cmd .cmd-dkpis small {
+  display: block;
+  font-size: 11px;
+  color: var(--mc-muted);
+}
+.mohr-cmd .cmd-dkpis b {
+  display: block;
+  font-size: 26px;
+  line-height: 1.4;
+  color: var(--mc-ink);
+}
+.mohr-cmd .cmd-dkpis span {
+  font-size: 11px;
+  color: var(--mc-muted);
+}
+.mohr-cmd .cmd-alert {
+  border-radius: 12px;
+  border: 1px solid var(--mc-line);
+  border-inline-start: 4px solid var(--mc-amber);
+  background: var(--mc-amber-soft);
+  padding: 10px 14px;
+  margin-bottom: 8px;
+}
+.mohr-cmd .cmd-alert-high {
+  border-inline-start-color: var(--mc-red);
+  background: var(--mc-red-soft);
+}
+.mohr-cmd .cmd-alert h3 {
+  margin: 0 0 4px;
+  font-size: 13px;
+}
+.mohr-cmd .cmd-alert p {
+  font-size: 12.5px;
+  line-height: 1.9;
+  margin: 0;
+}
+.mohr-cmd .cmd-tablewrap {
+  overflow-x: auto;
+}
+.mohr-cmd .cmd-cmp table,
+.mohr-cmd .cmd-daily table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 12.5px;
+}
+.mohr-cmd .cmd-daily th,
+.mohr-cmd .cmd-daily td {
+  padding: 8px 10px;
+  border-bottom: 1px solid var(--mc-line);
+  text-align: start;
+  white-space: nowrap;
+}
+.mohr-cmd .cmd-daily thead th {
+  font-size: 11px;
+  color: var(--mc-muted);
+}
+.mohr-cmd .cmd-daily tbody th {
+  font-weight: 600;
+  white-space: normal;
+}
+.mohr-cmd .cmd-dbad {
+  color: var(--mc-red);
+  font-weight: 700;
+}
+.mohr-cmd .cmd-dgood {
+  color: var(--mc-green);
+  font-weight: 700;
+}
+.mohr-cmd .cmd-presets {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-bottom: 14px;
+}
+.mohr-cmd .cmd-chip {
+  border: 1px solid var(--mc-line);
+  background: var(--mc-subtle);
+  color: var(--mc-ink);
+  border-radius: 999px;
+  padding: 8px 14px;
+  font: inherit;
+  font-size: 12.5px;
+  cursor: pointer;
+  text-align: start;
+}
+.mohr-cmd .cmd-chip:hover {
+  border-color: var(--mc-gold, #b8923c);
+}
+.mohr-cmd .cmd-daily textarea {
+  width: 100%;
+  border: 1px solid var(--mc-line);
+  border-radius: 10px;
+  background: var(--mc-subtle);
+  color: var(--mc-ink);
+  font: inherit;
+  font-size: 13px;
+  line-height: 2;
+  padding: 10px 12px;
+  margin-bottom: 10px;
+  resize: vertical;
+}
+.mohr-cmd .cmd-alert ul {
+  margin: 6px 0 0;
+  padding-inline-start: 18px;
+  font-size: 12.5px;
+  line-height: 1.9;
+}
+.mohr-cmd .cmd-merge-list {
+  list-style: none;
+  margin: 8px 0 0;
+  padding: 0;
+  display: grid;
+  gap: 8px;
+}
+.mohr-cmd .cmd-merge-list li {
+  border: 1px solid var(--mc-line);
+  border-radius: 10px;
+  padding: 8px 12px;
+  font-size: 12.5px;
+  line-height: 1.9;
+}
+.mohr-cmd .cmd-alert .row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 8px;
+}
+
+/* v167.121 — پنل «اتاق بررسی داده» و بخش‌های جمع‌شونده */
+.mohr-cmd .cmd-ui-section {
+  background: var(--mc-surface);
+  color: var(--mc-ink);
+  border: 1px solid var(--mc-line);
+  border-radius: 9px;
+  min-width: 0;
+  overflow: hidden;
+  margin-top: 12px;
+}
+.mohr-cmd .cmd-ui-section > summary {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 13px 16px;
+  cursor: pointer;
+  font-weight: 700;
+}
+.mohr-cmd .cmd-ui-section > summary small {
+  color: var(--mc-muted);
+  font-weight: 400;
+}
+.mohr-cmd .cmd-ui-section > div {
+  padding: 0 16px 14px;
+}
+
+/* v167.122 — «خاکستری تا غیرعادی»، ردیف خطوط، اهداف لمسی و حداقل اندازه‌ی متن */
+.mohr-cmd .cmd-stage-idle:not([aria-pressed="true"]) {
+  min-height: 44px;
+  flex-direction: row;
+  justify-content: center;
+  gap: 8px;
+  padding: 8px 10px;
+  border-bottom-width: 1px;
+  border-color: #ffffff1f;
+  background: #ffffff0d;
+  box-shadow: none;
+}
+.mohr-cmd .cmd-stage-idle:not([aria-pressed="true"]) .cmd-sicon,
+.mohr-cmd .cmd-stage-idle:not([aria-pressed="true"]) svg,
+.mohr-cmd .cmd-stage-idle:not([aria-pressed="true"]) > strong,
+.mohr-cmd .cmd-stage-idle:not([aria-pressed="true"]) .cmd-stage-number {
+  display: none;
+}
+.mohr-cmd .cmd-stage-idle:not([aria-pressed="true"]) > b {
+  color: #b9cadf;
+  font-weight: 500;
+}
+.mohr-cmd .cmd-line-list .cmd-line-row {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px 12px;
+}
+.mohr-cmd .cmd-line-row > details {
+  flex-basis: 100%;
+}
+.mohr-cmd .cmd-line-open {
+  border-inline-start: 4px solid var(--mc-red);
+  background: var(--mc-red-soft);
+}
+.mohr-cmd .cmd-line-help {
+  margin: 8px 0;
+}
+.mohr-cmd .cmd-mode,
+.mohr-cmd .dchips .pick,
+.mohr-cmd .cmd-secondary,
+.mohr-cmd .cmd-primary,
+.mohr-cmd .cmd-chip,
+.mohr-cmd .cmd-legacy-link {
+  min-height: 44px;
+}
+.mohr-cmd .cmd-link {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+}
+.mohr-cmd .cmd-stage > strong small,
+.mohr-cmd .cmd-stage-number,
+.mohr-cmd .cmd-stage-state,
+.mohr-cmd .cmd-outline-tag,
+.mohr-cmd .cmd-production > small,
+.mohr-cmd .cmd-dossier p,
+.mohr-cmd .cmd-dossier dt,
+.mohr-cmd .cmd-map-legend,
+.mohr-cmd .cmd-line-list span,
+.mohr-cmd .cmd-matrix-header,
+.mohr-cmd .cmd-mapping-gap,
+.mohr-cmd .cmd-rank,
+.mohr-cmd .cmd-pattern-label small,
+.mohr-cmd .cmd-day > b,
+.mohr-cmd .cmd-day > small,
+.mohr-cmd .cmd-ai-status > small,
+.mohr-cmd .cmd-suggestions article > small,
+.mohr-cmd .cmd-suggestions details,
+.mohr-cmd .cmd-answer > small,
+.mohr-cmd .cmd-evidence-row summary > small,
+.mohr-cmd .cmd-evidence-chain,
+.mohr-cmd .cmd-decision-line p,
+.mohr-cmd .cmd-filter-top p,
+.mohr-cmd .cmd-ribbon-value > small,
+.mohr-cmd .cmd-ribbon-note,
+.mohr-cmd .cmd-link,
+.mohr-cmd .cmd-analysis-intro p {
+  font-size: 11px;
+}
+.mohr-cmd .cmd-context small {
+  font-size: 11px !important;
+}
+@media (max-width: 700px) {
+  .mohr-cmd .cmd-art,
+  .mohr-cmd .cmd-brand p,
+  .mohr-cmd .cmd-context small,
+  .mohr-cmd .cmd-mode > small,
+  .mohr-cmd .cmd-brand > div > small,
+  .mohr-cmd .cmd-factory-head small,
+  .mohr-cmd .cmd-title small,
+  .mohr-cmd .cmd-dossier > small {
+    display: none;
+  }
+  .mohr-cmd .cmd-brand {
+    margin-bottom: 10px;
+  }
+}
 
 </style>
 </head>
@@ -10838,7 +11162,7 @@ var SUPA_URL = "https://kdpmscvzavrdwwoprkfi.supabase.co",
 /* نشانی سرویس دیتابیس شرکت. خالی = همان Supabase (حالت فعلی)؛ پر = همهٔ خواندن/نوشتن به این سرویس می‌رود. */
 var API_URL = "";
 
-var APP_VER = "v167.112";
+var APP_VER = "v167.122";
 
 var AUTH_FN = "";
 
@@ -11935,6 +12259,9 @@ function feedUsers(rows0) {
   S.cpfs = rows.filter(function (r) {
     return String(r.id).indexOf("cpf_") === 0;
   });
+  S.merges = rows.filter(function (r) {
+    return String(r.id).indexOf("mrg_") === 0;
+  });
   S.corr = rows
     .filter(function (r) {
       return String(r.id).indexOf("corr_") === 0;
@@ -11960,7 +12287,8 @@ function feedUsers(rows0) {
       String(r.id).indexOf("smp_") !== 0 &&
       String(r.id).indexOf("stop_") !== 0 &&
       String(r.id).indexOf("psh_") !== 0 &&
-      String(r.id).indexOf("cpf_") !== 0
+      String(r.id).indexOf("cpf_") !== 0 &&
+      String(r.id).indexOf("mrg_") !== 0
     );
   });
   setTimeout(sessRestore, 0);
@@ -17872,12 +18200,24 @@ function acPending(d) {
   );
 }
 
+// تست نشتی گاز ۱۰ و ۲۰۰ بار خودروی دوگانه باید پیش از تأیید نهایی تجاری انجام شده باشد
+// (استثنا: عبور ثبت‌شده، یا تحویل با کسری وقتی قطعه‌ی گاز هنوز نرسیده است)
+function gasConfirmBlock(d) {
+  if (d.sheet !== GAS_FINAL_SHEET || fuelOf(d) === "single") return "";
+  var g = gasTestState(d);
+  if (g.done && !g.blockers.length) return "";
+  if (g.waived || (g.blockers.length && releaseOf(d))) return "";
+  return g.blockers.length
+    ? "قطعه‌ی گاز (CNG) کسری دارد و تست نشتی انجام نشده؛ تا رفع کسری یا ثبت تحویل با کسری، تأیید ممکن نیست"
+    : "تست نشتی گاز ۱۰ و ۲۰۰ بار انجام نشده است؛ ابتدا تست انجام شود";
+}
+
 // پیامی که مانع تأیید است (یا رشته‌ی خالی)
 function confirmBlocker(d) {
   if (engineHold(d)) return engineGate(d);
   if (S.editing) return "یک ایراد در حال ثبت است؛ ابتدا «ثبت در پرونده» یا «انصراف» را بزنید";
   if (acPending(d)) return "گاز کولر انجام نشده است؛ ابتدا بندهای «گاز کولر» را بزنید";
-  return "";
+  return gasConfirmBlock(d);
 }
 
 // بندهای ثبت‌نشده «سالم» می‌شوند و بخش‌های بدون امضا با نام کاربر امضا می‌شوند
@@ -19084,7 +19424,18 @@ function openShortageIds(d) {
 // فهرست کسری‌های بازِ این برگه (برای نمایش بالای مرحله‌ی تأیید نهایی).
 // کارت «تأیید نهایی»: تعداد موارد باز و یادداشت انتظار برای بخش دیگر.
 function finalConfirmCard(d, chipsHtml) {
-  var openCount = stat(d).open;
+  var openCount = stat(d).open,
+    gasBlock = gasConfirmBlock(d);
+  if (gasBlock)
+    return (
+      '<div class="stepcur"><div class="steplb">تأیید نهایی</div>' +
+      chipsHtml +
+      '<div class="err" style="margin:8px 0"><b>⛔ ' +
+      esc(gasBlock) +
+      "</b></div>" +
+      waitNote(d) +
+      "</div>"
+    );
   return (
     '<div class="stepcur"><div class="steplb">تأیید نهایی</div>' +
     chipsHtml +
@@ -29750,17 +30101,12 @@ function dashHours(todayMs, t0, now, cfg) {
 function dashLiveCompute(F, now) {
   var t0 = dayStart(now),
     cfg = shiftCfg(),
-    P = dashProduction(F, t0),
-    lines = listK("stopLines");
-  (S.stops || []).forEach(function (x) {
-    if (lines.indexOf(x.line) < 0) lines.push(x.line);
-  });
+    P = dashProduction(F, t0);
   var shiftOn = !!(cfg && cfg.s3),
     fromT = t0 + (shiftOn ? cfg.s1 : 0) * 60000,
     toT = Math.min(now, t0 + (shiftOn ? cfg.s3 : 1440) * 60000);
-  var byT = stopMsByLine(fromT, toT, now),
-    byY = stopMsByLine(fromT - DAY_MS, t0 + (shiftOn ? cfg.s3 : 1440) * 60000 - DAY_MS, now);
-  var open = openStops();
+  var validated = dashValidatedOperations(now, fromT, toT),
+    previous = dashValidatedOperations(now, fromT - DAY_MS, t0 + (shiftOn ? cfg.s3 : 1440) * 60000 - DAY_MS);
   return {
     prodOk: P.ok,
     prodN: Object.keys(P.today).length,
@@ -29769,22 +30115,13 @@ function dashLiveCompute(F, now) {
     ngY: P.ngY,
     target: dashTargetN(F),
     hours: dashHours(P.today, t0, now, cfg),
-    stopMin: Math.round(sumMs(byT) / 60000),
-    stopYMin: Math.round(sumMs(byY) / 60000),
-    eff: shiftOn ? dashEff(lines, byT, toT - fromT) : null,
-    effY: shiftOn ? dashEff(lines, byY, t0 + cfg.s3 * 60000 - (t0 + cfg.s1 * 60000)) : null,
+    stopMin: validated.stopMin,
+    stopYMin: previous.stopMin,
+    eff: null,
+    effY: null,
     shiftOn: shiftOn,
-    lines: lines.map(function (l) {
-      var o = open.filter(function (x) {
-        return x.line === l;
-      })[0];
-      return {
-        n: l,
-        stopped: !!o,
-        reason: o ? o.reason : "",
-        since: o ? o.startAt : "",
-      };
-    }),
+    validation: validated,
+    lines: validated.lines,
   };
 }
 
@@ -29885,8 +30222,8 @@ function dashTrioCard(L) {
     '<div class="dl-trio"><div class="dl-c good"><small>راندمان</small>' +
     effTxt +
     "</div>" +
-    '<div class="dl-c wait"><small>توقف خطوط</small><b class="num">' +
-    faDigits(L.stopMin) +
+    '<div class="dl-c wait"><small>توقف خاتمه‌یافته معتبر</small><b class="num">' +
+    (L.stopMin==null?"—":faDigits(L.stopMin)) +
     "</b><small>دقیقه · " +
     sd.txt +
     "</small></div>" +
@@ -29899,24 +30236,7 @@ function dashTrioCard(L) {
 }
 
 function dashLinesCard(L) {
-  if (!L.lines.length) return "";
-  return (
-    '<div class="card"><h2>وضعیت خطوط تولید</h2><div class="dl-lines">' +
-    L.lines
-      .map(function (l) {
-        return (
-          '<div class="dl-line' +
-          (l.stopped ? " stop" : "") +
-          '"><b><i></i>' +
-          esc(l.n) +
-          "</b><small>" +
-          (l.stopped ? "متوقف: " + esc(l.reason) + " — از ساعت " + esc(timeHM(l.since)) : "فعال") +
-          "</small></div>"
-        );
-      })
-      .join("") +
-    "</div></div>"
-  );
+  return '<div class="card"><h2>وضعیت خطوط تولید</h2><p>وضعیت جاری احراز نشده؛ نبود توقف به معنی فعالیت نیست.</p><div class="cmd-line-list">'+L.lines.map(dashLineEvidenceHtml).join('')+'</div></div>';
 }
 
 function dashHoursCard(L) {
@@ -30099,20 +30419,16 @@ function dashLiveExport(L) {
         : "هدف روزانه تنظیم نشده",
     ],
     ["ایراد ثبت‌شده", num(L.prodOk, L.ngT), num(L.prodOk, L.ngY), ""],
-    ["توقف خط (دقیقه)", faDigits(L.stopMin), faDigits(L.stopYMin), ""],
+    ["توقف خاتمه‌یافته معتبر (دقیقه‌ـ‌خط)", L.stopMin==null?"نامشخص":faDigits(L.stopMin), L.stopYMin==null?"نامشخص":faDigits(L.stopYMin), "توقف باز بدون مشاهده معتبر محاسبه نمی‌شود"],
     ["راندمان (٪)", eff(L.eff), eff(L.effY), L.shiftOn ? "" : "پایان شیفت تنظیم نشده"],
   ];
-  var lines = [["خط", "وضعیت", "دلیل توقف", "تاریخ شروع توقف", "ساعت شروع توقف"]].concat(
-    L.lines.map(function (l) {
-      return [
-        l.n,
-        l.stopped ? "متوقف" : "در حال کار",
-        l.reason,
-        l.stopped ? dateOnly(l.since) : "",
-        l.stopped ? timeHM(l.since) : "",
-      ];
-    }),
+  var lines = [["خط", "وضعیت جاری", "علت آخرین توقف معتبر", "شروع آخرین توقف معتبر", "پایان آخرین توقف معتبر"]].concat(
+    L.lines.map(function(l){return [l.n,dashLineStatusText(l),l.last?l.last.reason:"علت ثبت نشده",
+      l.last?dateOnly(new Date(l.last.start).toISOString())+" "+timeHM(new Date(l.last.start).toISOString()):"نامشخص",
+      l.last&&l.last.end!==null?dateOnly(new Date(l.last.end).toISOString())+" "+timeHM(new Date(l.last.end).toISOString()):"احراز نشده"];})
   );
+  var lineProof = [["خط", "اعتبار و منبع"]].concat(L.lines.map(function(l){return [l.n,
+    "آخرین دریافت: نامشخص؛ وضعیت لحظه‌ای احراز نشده. منبع: "+(l.last?l.last.source:"S.stops؛ سابقه معتبر موجود نیست")+"؛ سوابق موجود جایگزین وضعیت جاری نیستند."];}));
   var hours = [["ساعت", "تعداد خودرو"]].concat(
     L.hours.map(function (x) {
       return [faDigits(x.h) + " تا " + faDigits(x.h + 1), faDigits(x.n)];
@@ -30120,6 +30436,7 @@ function dashLiveExport(L) {
   );
   var out = [{ n: "تولید و توقف امروز", r: kpi, w: [24, 14, 14, 40], h: [0] }];
   if (L.lines.length) out.push({ n: "وضعیت خطوط", r: lines, w: [20, 14, 26, 18, 14], h: [0] });
+  if (L.lines.length) out.push({n:"اعتبار اطلاعات خطوط",r:lineProof,w:[20,72],h:[0]});
   if (L.prodOk && L.hours.length) out.push({ n: "تولید ساعتی", r: hours, w: [22, 16], h: [0] });
   return out;
 }
@@ -30383,6 +30700,91 @@ function submitDailyTarget() {
     },
     "هدف تولید روزانه",
     false,
+  );
+}
+
+/* Dashboard-only read adapter. No writes, transport, inferred running state or synthetic history.
+Legacy stops lack receipt/heartbeat evidence: current state is unknown. Optional trusted
+integration contract is documented separately; not connected by this release. */
+function dashLineTime(value) {
+  if (typeof value !== "string" || !/T.*(?:Z|[+-]\d{2}:\d{2})$/.test(value)) return NaN;
+  var parts=value.match(/^(\d{4})-(\d{2})-(\d{2})T/);
+  if(!parts || +parts[2]<1 || +parts[2]>12 || +parts[3]<1 || +parts[3]>new Date(Date.UTC(+parts[1],+parts[2],0)).getUTCDate())return NaN;
+  return Date.parse(value);
+}
+function dashLineUnion(intervals) {
+  var out = [], sum = 0;
+  intervals.slice().sort(function(a,b){return a[0]-b[0];}).forEach(function(x){
+    var last=out[out.length-1];
+    if(last && x[0]<=last[1]) last[1]=Math.max(last[1],x[1]); else out.push(x.slice());
+  });
+  out.forEach(function(x){sum+=x[1]-x[0];}); return sum;
+}
+function dashValidateLines(stops, names, from, to, now) {
+  var errors=[], valid=[], seen=Object.create(null), conflicts=Object.create(null), allNames=names.filter(function(x){return typeof x==='string' && x.trim();}).slice();
+  (Array.isArray(stops)?stops:[]).forEach(function(x,i){
+    if(!x || typeof x!=='object'){errors.push({source:'S.stops['+i+']',reason:'رکورد نامعتبر'});return;}
+    var line=typeof x.line==='string'?x.line.trim():'', source=x.id || 'S.stops['+i+']';
+    function reject(reason){errors.push({source:String(source),line:line,reason:reason});}
+    if(x.test || x.isTest || x.simulated || x.demo){reject('داده آزمایشی یا شبیه‌سازی‌شده؛ خارج از محاسبه');return;}
+    if(!line){reject('خط مشخص نیست');return;}
+    if(allNames.indexOf(line)<0)allNames.push(line);
+    var start=dashLineTime(x.startAt), ended=x.endAt!=null && x.endAt!=='', end=ended?dashLineTime(x.endAt):null;
+    if(!isFinite(start)||start>now || (ended && (!isFinite(end)||end<start||end>now))){reject('زمان ناقص، فاقد منطقه زمانی، آینده یا متناقض');return;}
+    var sig=JSON.stringify([line,start,end,x.reason||'',x.stopType||'']);
+    if(x.id && seen['id:'+x.id] && seen['id:'+x.id]!==sig){conflicts[String(x.id)]=true;reject('شناسه یکسان با محتوای متناقض');return;}
+    if(seen['sig:'+sig]){reject('رخداد تکراری؛ یک بار محاسبه می‌شود');return;}
+    if(x.id)seen['id:'+x.id]=sig;seen['sig:'+sig]=true;
+    valid.push({id:x.id,source:String(source),line:line,start:start,end:end,reason:typeof x.reason==='string'&&x.reason.trim()?x.reason:'علت ثبت نشده',kind:['planned','unplanned','emergency'].indexOf(x.stopType)>=0?x.stopType:'unknown'});
+  });
+  valid=valid.filter(function(x){return !conflicts[String(x.id)];});
+  allNames=allNames.filter(function(x,i,a){return a.indexOf(x)===i;});
+  var intervals=[], closedN=0;
+  valid.forEach(function(x){if(x.end!==null){var a=Math.max(from,x.start),b=Math.min(to,x.end);if(b>a){intervals.push({line:x.line,a:a,b:b});closedN++;}}});
+  var total=0;allNames.forEach(function(n){total+=dashLineUnion(intervals.filter(function(x){return x.line===n;}).map(function(x){return [x.a,x.b];}));});
+  var out={stopMin:closedN?Math.round(total/60000):null,eff:null,counts:{running:0,stopped:0,waiting:0,unknown:allNames.length,openUnverified:0},errors:errors,
+    receivedAt:null,source:'S.stops؛ سوابق ثبت‌شده، بدون شاهد دریافت و فعالیت لحظه‌ای',
+    lines:allNames.map(function(n){var history=valid.filter(function(x){return x.line===n;}).sort(function(a,b){return b.start-a.start;});
+      return {n:n,status:'unknown',stopped:false,open:!!history[0]&&history[0].end===null,reason:'',since:'',freshness:'احراز نشده',last:history[0]||null,history:history,issues:errors.filter(function(x){return x.line===n;})};})};
+  out.counts.openUnverified=out.lines.filter(function(l){return l.open;}).length;
+  return out;
+}
+function dashValidatedOperations(now, from, to) {
+  return dashValidateLines(S.stops||[],listK('stopLines'),from,to,now);
+}
+function dashLineStatusText(l) {return l.open?'توقف باز ثبت‌شده (تأییدنشده)':l.status==='running'?'در حال کار':l.status==='stopped'?'متوقف':l.status==='waiting'?'در انتظار':'نامشخص';}
+var DASH_STOP_KINDS = { planned: "برنامه‌ریزی‌شده", unplanned: "پیش‌بینی‌نشده", emergency: "اضطراری", unknown: "نوع توقف نامشخص" };
+
+// تاریخ شمسی و ساعت یک لحظه (ms) با رقم فارسی
+function dashStopStamp(ms) {
+  var iso = new Date(ms).toISOString();
+  return dateOnly(iso) + " · " + timeHM(iso);
+}
+
+function dashStopSpan(x) {
+  return x.end === null ? "پایان ثبت نشده" : dashStopStamp(x.start) + " تا " + dashStopStamp(x.end);
+}
+
+function dashStopEvidence(l) {
+  var rows = l.history.map(function (x) {
+    return "<p>" + esc(dashStopSpan(x)) + " · " + esc(x.reason) + " · " + esc(x.source) + "</p>";
+  });
+  var issues = l.issues.map(function (x) {
+    return "<p>" + esc(x.reason) + "</p>";
+  });
+  return "<details><summary>شواهد (" + cmdNum(l.history.length) + ") و خطاهای داده (" + cmdNum(l.issues.length) + ")</summary>" + rows.join("") + issues.join("") + "</details>";
+}
+
+// یک ردیف کوتاه برای هر خط؛ شواهد و خطاهای داده فقط در بخش جمع‌شونده
+function dashLineEvidenceHtml(l) {
+  var last = l.last,
+    since = last && last.end === null ? "از " + dashStopStamp(last.start) : "",
+    lastText = last && last.end !== null ? "آخرین توقف معتبر: " + dashStopStamp(last.start) + " · " + (DASH_STOP_KINDS[last.kind] || "") : "";
+  return (
+    '<div class="cmd-line-row' + (l.open ? " cmd-line-open" : "") + '"><b>' + esc(l.n) + "</b><span>" + dashLineStatusText(l) + "</span>" +
+    (since || lastText ? "<small>" + esc(since || lastText) + "</small>" : "") +
+    dashStopEvidence(l) +
+    "</div>"
   );
 }
 
@@ -32191,11 +32593,12 @@ function cmdSource(x) {
 /* ---------- انتخاب ردیف‌ها بر اساس فیلتر و دسترسی ---------- */
 
 // هر چیزی که فیلتر و دسترسی کاربر را نگه می‌دارد، یک بار ساخته می‌شود
-function cmdContext(F, now) {
+function cmdContext(F, now, analysisPeriod) {
   var scope = userSheets(),
     cfg = shiftCfg(),
     pred = dashPredicates(F, cfg),
-    period = dashPeriod(F.range, now);
+    period = analysisPeriod || dashPeriod(F.range, now);
+  if (analysisPeriod && (!Number.isFinite(period.from) || !Number.isFinite(period.to) || period.from >= period.to || period.to > now + 1 || period.to - period.from > 366 * DAY_MS)) throw new Error("بازه تحلیل معتبر نیست");
   return {
     F: F,
     now: now,
@@ -32279,7 +32682,7 @@ function cmdProductModels(recs, cohort) {
 function cmdRepeatedGroups(defs) {
   var groups = {};
   defs.forEach(function (x) {
-    var label = x.it.custom ? defectLabel(x) : "";
+    var label = x.it.custom ? cmdMergedLabel(defectLabel(x)) : "";
     var id = x.r.sheet + "|" + x.prod + "|" + (x.it.custom ? "custom:" + label : x.id);
     if (!groups[id]) {
       groups[id] = {
@@ -32443,9 +32846,9 @@ function cmdSuggestions(M) {
 
 /* ---------- ساخت شیء M ---------- */
 
-function cmdBuildMetrics(F, now) {
+function cmdBuildMetrics(F, now, analysisPeriod) {
   var D = dashData(),
-    ctx = cmdContext(F, now),
+    ctx = cmdContext(F, now, analysisPeriod),
     rows = cmdSelectRows(ctx, D),
     products = cmdProductModels(rows.recs, rows.cohort),
     closure = cmdClosureHours(rows.closed),
@@ -32502,7 +32905,8 @@ function cmdCacheValid(key) {
     CMD_CACHE &&
     CMD_CACHE.rows === S.data.insp &&
     CMD_CACHE.key === key &&
-    CMD_CACHE.stops === S.stops
+    CMD_CACHE.stops === S.stops &&
+    CMD_CACHE.merges === S.merges
   );
 }
 
@@ -32512,7 +32916,7 @@ function cmdAnalyze(F, now) {
   var key = cmdCacheKey(F, now);
   if (cmdCacheValid(key)) return CMD_CACHE.value;
   var M = cmdBuildMetrics(F, now);
-  CMD_CACHE = { rows: S.data.insp, stops: S.stops, key: key, value: M };
+  CMD_CACHE = { rows: S.data.insp, stops: S.stops, merges: S.merges, key: key, value: M };
   return M;
 }
 
@@ -32543,6 +32947,7 @@ function cmdLive(F, now) {
     L.lines = [];
     L.stopMin = null;
     L.eff = null;
+    L.validation = null;
     L.stopYMin = null;
     L.effY = null;
   }
@@ -32686,6 +33091,8 @@ function cmdCleanQuestion(q) {
 
 // پرسش حاوی شماره‌ی خودرو/شناسه: همان را در داده‌ی مجاز جست‌وجو می‌کند
 function cmdAnswerForId(number, M) {
+  var car = cmdCarSummary(number);
+  if (car) return car;
   var rows = M.cohort.filter(function (x) {
     return String(x.car) === number || String(x.r.key) === number;
   });
@@ -32893,6 +33300,8 @@ function cmdFeedback(M, value) {
       period: M.period,
       helpful: value === "yes",
       mode: "local-rules",
+      analysisScope: cmdScopeKey(dashF()),
+      analysisId: AI121.latest && AI121.latest.signature.indexOf(cmdScopeKey(dashF())+'|')===0 ? AI121.latest.id : null,
     });
     localStorage.setItem(key, JSON.stringify(records.slice(-100)));
     toast("بازخورد فقط روی همین مرورگر ذخیره شد.");
@@ -33048,10 +33457,13 @@ function ai90Answer(question, M) {
   var q = ai90Normalize(question),
     stats = ai90Stats(M),
     response;
+  var extension = ai121TryAnswer(question, M);
+  if (extension) response = extension;
   // Follow-up is only topic continuity, never an expansion of the active data scope.
   if (/^(و |همین|بیشتر|چرا|منبع)/.test(q) && AI90.conversation.length)
     q = AI90.conversation[AI90.conversation.length - 1].question + " " + q;
-  if (/سند|دستورالعمل|مستند/.test(q)) {
+  if (response) { /* Existing answer pipeline retains evidence and conversation. */
+  } else if (/سند|دستورالعمل|مستند/.test(q)) {
     AI90.hits = ai90Search(q);
     response = cmdNewAnswer(
       question,
@@ -33105,7 +33517,8 @@ function ai90Answer(question, M) {
   response.kind = response.kind || "محاسبه قطعی محلی";
   response.metric = response.metric || CMD_VERSION;
   response.sources = response.sources || [];
-  response.text +=
+  if (extension) response.text += "\nتحلیل محلی روی داده بارگذاری‌شده مجاز؛ تاریخچه کامل و هویت فیزیکی خودرو تأیید نشده‌اند. فیلترهای صفحه تغییر نکرده‌اند.";
+  else response.text +=
     "\nدامنه: فیلترهای فعلی داشبورد (نام مدل و زمان داخل پرسش فیلتر را تغییر نمی‌دهد)؛ " +
     new Date(M.period.from).toLocaleDateString("fa-IR") +
     " تا " +
@@ -33213,7 +33626,7 @@ function ai90Panel(M) {
       .join("") +
     "</details>" +
     cmdAct("دریافت گزارش تحلیل AI", "cmdai90report", "", "cmd-secondary") +
-    "<p>سرویس آفلاین مستقل همراه خروجی: صف، محدودیت نرخ، بازیابی اسناد و تحلیل با مجوز سروری. نصب مدل و اتصال داده مرکزی در این نسخه ادعا نمی‌شود.</p></section>"
+    "<p>سرویس مرکزی هوش مصنوعی در این بسته موجود و متصل نیست. مدل محلی، صف سروری، کنترل هویت و اتصال داده مرکزی نیازمند زیرساخت سازمانی هستند؛ تحلیل مرورگر جای امنیت سروری نیست.</p></section>"
   );
 }
 
@@ -33249,6 +33662,21 @@ function ai90Report() {
     ),
   );
 }
+
+/* نشان‌های ایستگاه‌ها برای نقشه‌ی کارخانه. نشان‌ها از مجموعه‌های Phosphor Icons و Tabler Icons (مجوز MIT) گرفته شده‌اند؛ نشان‌های شاسی و کپسول گاز ساخت خودمان‌اند. */
+var CMD_STAGE_ICONS = {
+  chassis: "<svg aria-hidden=\"true\" focusable=\"false\" fill=\"currentColor\" viewBox=\"0 0 256 256\"><rect x=\"20\" y=\"84\" width=\"216\" height=\"16\" rx=\"6\"/><rect x=\"20\" y=\"140\" width=\"216\" height=\"16\" rx=\"6\"/><rect x=\"52\" y=\"100\" width=\"14\" height=\"40\" opacity=\".55\"/><rect x=\"104\" y=\"100\" width=\"14\" height=\"40\" opacity=\".55\"/><rect x=\"156\" y=\"100\" width=\"14\" height=\"40\" opacity=\".55\"/><rect x=\"204\" y=\"100\" width=\"14\" height=\"40\" opacity=\".55\"/><circle cx=\"68\" cy=\"190\" r=\"26\" opacity=\".25\"/><circle cx=\"68\" cy=\"190\" r=\"26\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"12\"/><circle cx=\"188\" cy=\"190\" r=\"26\" opacity=\".25\"/><circle cx=\"188\" cy=\"190\" r=\"26\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"12\"/></svg>",
+  engine: "<svg aria-hidden=\"true\" focusable=\"false\" stroke=\"currentColor\" fill=\"currentColor\" stroke-width=\"0\" viewBox=\"0 0 256 256\"><path d=\"M248,120v48a8,8,0,0,1-8,8H224l-37.66,37.66a8,8,0,0,1-5.65,2.34H103.31a8,8,0,0,1-5.65-2.34L58.34,174.34A8,8,0,0,1,56,168.69V80a8,8,0,0,1,8-8H180.69a8,8,0,0,1,5.65,2.34L224,112h16A8,8,0,0,1,248,120Z\" opacity=\"0.2\"></path><path d=\"M240,104H227.31L192,68.69A15.86,15.86,0,0,0,180.69,64H140V40h24a8,8,0,0,0,0-16H100a8,8,0,0,0,0,16h24V64H64A16,16,0,0,0,48,80v52H24V108a8,8,0,0,0-16,0v64a8,8,0,0,0,16,0V148H48v20.69A15.86,15.86,0,0,0,52.69,180L92,219.31A15.86,15.86,0,0,0,103.31,224h77.38A15.86,15.86,0,0,0,192,219.31L227.31,184H240a16,16,0,0,0,16-16V120A16,16,0,0,0,240,104Zm0,64H224a8,8,0,0,0-5.66,2.34L180.69,208H103.31L64,168.69V80H180.69l37.65,37.66A8,8,0,0,0,224,120h16Z\"></path></svg>",
+  trim: "<svg aria-hidden=\"true\" focusable=\"false\" stroke=\"currentColor\" fill=\"currentColor\" stroke-width=\"0\" viewBox=\"0 0 256 256\"><path d=\"M216,160v32a8,8,0,0,1-8,8H114.11a8,8,0,0,1-7.15-4.42l-58.12-116a8,8,0,0,1,0-7.16L71,28.42a8,8,0,0,1,10.73-3.57l33.89,14.31a8,8,0,0,1,3.57,10.73L104.84,76.42a8,8,0,0,0,0,7.16l31.78,64a8,8,0,0,0,7.16,4.42H208A8,8,0,0,1,216,160Z\" opacity=\"0.2\"></path><path d=\"M224,232a8,8,0,0,1-8,8H112a8,8,0,0,1,0-16H216A8,8,0,0,1,224,232Zm0-72v32a16,16,0,0,1-16,16H114.11a15.93,15.93,0,0,1-14.32-8.85l-58.11-116a16.1,16.1,0,0,1,0-14.32l22.12-44A16,16,0,0,1,85,17.56l33.69,14.22.47.22a16,16,0,0,1,7.15,21.46,1.51,1.51,0,0,1-.11.22L112,80l31.78,64L208,144A16,16,0,0,1,224,160Zm-16,0H143.77a15.91,15.91,0,0,1-14.31-8.85l-31.79-64a16.07,16.07,0,0,1,0-14.29l.12-.22L112,46.32,78.57,32.21c-.16-.06-.31-.14-.46-.21L56,76,114.1,192H208Z\"></path></svg>",
+  gas: "<svg aria-hidden=\"true\" focusable=\"false\" fill=\"currentColor\" viewBox=\"0 0 256 256\"><rect x=\"78\" y=\"88\" width=\"100\" height=\"148\" rx=\"38\" opacity=\".25\"/><rect x=\"78\" y=\"88\" width=\"100\" height=\"148\" rx=\"38\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"14\"/><rect x=\"104\" y=\"62\" width=\"48\" height=\"26\" rx=\"6\"/><rect x=\"118\" y=\"36\" width=\"20\" height=\"26\"/><rect x=\"92\" y=\"22\" width=\"72\" height=\"14\" rx=\"7\"/><rect x=\"78\" y=\"136\" width=\"100\" height=\"12\" opacity=\".6\"/><rect x=\"78\" y=\"176\" width=\"100\" height=\"12\" opacity=\".6\"/></svg>",
+  final1: "<svg aria-hidden=\"true\" focusable=\"false\" stroke=\"currentColor\" fill=\"currentColor\" stroke-width=\"0\" viewBox=\"0 0 256 256\"><path d=\"M208,48V216a8,8,0,0,1-8,8H56a8,8,0,0,1-8-8V48a8,8,0,0,1,8-8H96a39.83,39.83,0,0,0-8,24v8h80V64a39.83,39.83,0,0,0-8-24h40A8,8,0,0,1,208,48Z\" opacity=\"0.2\"></path><path d=\"M168,152a8,8,0,0,1-8,8H96a8,8,0,0,1,0-16h64A8,8,0,0,1,168,152Zm-8-40H96a8,8,0,0,0,0,16h64a8,8,0,0,0,0-16Zm56-64V216a16,16,0,0,1-16,16H56a16,16,0,0,1-16-16V48A16,16,0,0,1,56,32H92.26a47.92,47.92,0,0,1,71.48,0H200A16,16,0,0,1,216,48ZM96,64h64a32,32,0,0,0-64,0ZM200,48H173.25A47.93,47.93,0,0,1,176,64v8a8,8,0,0,1-8,8H88a8,8,0,0,1-8-8V64a47.93,47.93,0,0,1,2.75-16H56V216H200Z\"></path></svg>",
+  final2: "<svg aria-hidden=\"true\" focusable=\"false\" stroke=\"currentColor\" fill=\"none\" stroke-width=\"2\" viewBox=\"0 0 24 24\" stroke-linecap=\"round\" stroke-linejoin=\"round\"><path d=\"M7 21l10 -7l-10 -7\"></path><path d=\"M17 7l-10 7l10 7\"></path><path d=\"M20 7h-16a1 1 0 0 1 -1 -1v-2a1 1 0 0 1 1 -1h16a1 1 0 0 1 1 1v2a1 1 0 0 1 -1 1\"></path><path d=\"M3 21h18\"></path></svg>",
+  mech: "<svg aria-hidden=\"true\" focusable=\"false\" stroke=\"currentColor\" fill=\"currentColor\" stroke-width=\"0\" viewBox=\"0 0 256 256\"><path d=\"M230.1,108.76,198.25,90.62c-.64-1.16-1.31-2.29-2-3.41l-.12-36A104.61,104.61,0,0,0,162,32L130,49.89c-1.34,0-2.69,0-4,0L94,32A104.58,104.58,0,0,0,59.89,51.25l-.16,36c-.7,1.12-1.37,2.26-2,3.41l-31.84,18.1a99.15,99.15,0,0,0,0,38.46l31.85,18.14c.64,1.16,1.31,2.29,2,3.41l.12,36A104.61,104.61,0,0,0,94,224l32-17.87c1.34,0,2.69,0,4,0L162,224a104.58,104.58,0,0,0,34.08-19.25l.16-36c.7-1.12,1.37-2.26,2-3.41l31.84-18.1A99.15,99.15,0,0,0,230.1,108.76ZM128,168a40,40,0,1,1,40-40A40,40,0,0,1,128,168Z\" opacity=\"0.2\"></path><path d=\"M128,80a48,48,0,1,0,48,48A48.05,48.05,0,0,0,128,80Zm0,80a32,32,0,1,1,32-32A32,32,0,0,1,128,160Zm109.94-52.79a8,8,0,0,0-3.89-5.4l-29.83-17-.12-33.62a8,8,0,0,0-2.83-6.08,111.91,111.91,0,0,0-36.72-20.67,8,8,0,0,0-6.46.59L128,41.85,97.88,25a8,8,0,0,0-6.47-.6A111.92,111.92,0,0,0,54.73,45.15a8,8,0,0,0-2.83,6.07l-.15,33.65-29.83,17a8,8,0,0,0-3.89,5.4,106.47,106.47,0,0,0,0,41.56,8,8,0,0,0,3.89,5.4l29.83,17,.12,33.63a8,8,0,0,0,2.83,6.08,111.91,111.91,0,0,0,36.72,20.67,8,8,0,0,0,6.46-.59L128,214.15,158.12,231a7.91,7.91,0,0,0,3.9,1,8.09,8.09,0,0,0,2.57-.42,112.1,112.1,0,0,0,36.68-20.73,8,8,0,0,0,2.83-6.07l.15-33.65,29.83-17a8,8,0,0,0,3.89-5.4A106.47,106.47,0,0,0,237.94,107.21Zm-15,34.91-28.57,16.25a8,8,0,0,0-3,3c-.58,1-1.19,2.06-1.81,3.06a7.94,7.94,0,0,0-1.22,4.21l-.15,32.25a95.89,95.89,0,0,1-25.37,14.3L134,199.13a8,8,0,0,0-3.91-1h-.19c-1.21,0-2.43,0-3.64,0a8.1,8.1,0,0,0-4.1,1l-28.84,16.1A96,96,0,0,1,67.88,201l-.11-32.2a8,8,0,0,0-1.22-4.22c-.62-1-1.23-2-1.8-3.06a8.09,8.09,0,0,0-3-3.06l-28.6-16.29a90.49,90.49,0,0,1,0-28.26L61.67,97.63a8,8,0,0,0,3-3c.58-1,1.19-2.06,1.81-3.06a7.94,7.94,0,0,0,1.22-4.21l.15-32.25a95.89,95.89,0,0,1,25.37-14.3L122,56.87a8,8,0,0,0,4.1,1c1.21,0,2.43,0,3.64,0a8,8,0,0,0,4.1-1l28.84-16.1A96,96,0,0,1,188.12,55l.11,32.2a8,8,0,0,0,1.22,4.22c.62,1,1.23,2,1.8,3.06a8.09,8.09,0,0,0,3,3.06l28.6,16.29A90.49,90.49,0,0,1,222.9,142.12Z\"></path></svg>",
+  roll: "<svg aria-hidden=\"true\" focusable=\"false\" stroke=\"currentColor\" fill=\"currentColor\" stroke-width=\"0\" viewBox=\"0 0 256 256\"><path d=\"M164,224H92c-28.72,0-52-43-52-96S63.28,32,92,32h72c-28.72,0-52,43-52,96S135.28,224,164,224Zm4-136c-8.84,0-16,17.91-16,40s7.16,40,16,40,16-17.91,16-40S176.84,88,168,88Z\" opacity=\"0.2\"></path><path d=\"M149.26,159.26C155.09,173.82,163.5,176,168,176s12.91-2.18,18.74-16.74c3.39-8.48,5.26-19.58,5.26-31.26s-1.87-22.78-5.26-31.26C180.91,82.18,172.5,80,168,80s-12.91,2.18-18.74,16.74C145.87,105.22,144,116.32,144,128S145.87,150.78,149.26,159.26ZM168,96.2c2.62,2.06,8,13,8,31.8s-5.38,29.74-8,31.8c-2.62-2.06-8-13-8-31.8S165.38,98.26,168,96.2ZM232,216H196.41C213.12,197.73,224,165.47,224,128c0-58.32-26.35-104-60-104H92C58.35,24,32,69.68,32,128S58.35,232,92,232H232a8,8,0,0,0,0-16ZM193.74,63.93C202.93,80.91,208,103.67,208,128s-5.07,47.09-14.26,64.07C185.38,207.5,174.82,216,164,216s-21.38-8.5-29.74-23.93C125.07,175.09,120,152.33,120,128s5.07-47.09,14.26-64.07C142.62,48.5,153.18,40,164,40S185.38,48.5,193.74,63.93ZM48,128c0-2.5.07-5,.17-7.44L80,97.83l24.43,17.45c-.28,4.16-.43,8.41-.43,12.72a179.89,179.89,0,0,0,3.07,33.5l-22.42-16a8,8,0,0,0-9.3,0l-23.74,17A161,161,0,0,1,48,128ZM62.26,63.93C70.62,48.5,81.18,40,92,40h39.59c-11.9,13-20.84,33.12-25,57.16L84.65,81.49a8,8,0,0,0-9.3,0L50.49,99.25C52.85,86,56.83,74,62.26,63.93Zm0,128.14a100.08,100.08,0,0,1-5.94-13.32L80,161.83l33.94,24.24c4.6,12,10.6,22.22,17.65,29.93H92C81.18,216,70.62,207.5,62.26,192.07Z\"></path></svg>",
+  road: "<svg aria-hidden=\"true\" focusable=\"false\" stroke=\"currentColor\" fill=\"currentColor\" stroke-width=\"0\" viewBox=\"0 0 256 256\"><path d=\"M232,192H24L96,64h64Z\" opacity=\"0.2\"></path><path d=\"M235.92,199A8,8,0,0,1,225,195.92L155.32,72H136v8a8,8,0,0,1-16,0V72H100.68L31,195.92A8,8,0,0,1,17,188.08L82.32,72H24a8,8,0,0,1,0-16H232a8,8,0,0,1,0,16H173.68L239,188.08A8,8,0,0,1,235.92,199ZM128,112a8,8,0,0,0-8,8v16a8,8,0,0,0,16,0V120A8,8,0,0,0,128,112Zm0,56a8,8,0,0,0-8,8v16a8,8,0,0,0,16,0V176A8,8,0,0,0,128,168Z\"></path></svg>",
+  mech2: "<svg aria-hidden=\"true\" focusable=\"false\" stroke=\"currentColor\" fill=\"currentColor\" stroke-width=\"0\" viewBox=\"0 0 256 256\"><path d=\"M208,144a80,80,0,0,1-80,80V16S208,72,208,144Z\" opacity=\"0.2\"></path><path d=\"M174,47.75a254.19,254.19,0,0,0-41.45-38.3,8,8,0,0,0-9.18,0A254.19,254.19,0,0,0,82,47.75C54.51,79.32,40,112.6,40,144a88,88,0,0,0,176,0C216,112.6,201.49,79.32,174,47.75ZM56,144c0-50,42.26-92.71,64-111.4V215.54A72.08,72.08,0,0,1,56,144Zm80,71.54V32.6C157.74,51.29,200,94,200,144A72.08,72.08,0,0,1,136,215.54Z\"></path></svg>",
+  comm: "<svg aria-hidden=\"true\" focusable=\"false\" stroke=\"currentColor\" fill=\"currentColor\" stroke-width=\"0\" viewBox=\"0 0 256 256\"><path d=\"M216,56v56c0,96-88,120-88,120S40,208,40,112V56a8,8,0,0,1,8-8H208A8,8,0,0,1,216,56Z\" opacity=\"0.2\"></path><path d=\"M208,40H48A16,16,0,0,0,32,56v56c0,52.72,25.52,84.67,46.93,102.19,23.06,18.86,46,25.26,47,25.53a8,8,0,0,0,4.2,0c1-.27,23.91-6.67,47-25.53C198.48,196.67,224,164.72,224,112V56A16,16,0,0,0,208,40Zm0,72c0,37.07-13.66,67.16-40.6,89.42A129.3,129.3,0,0,1,128,223.62a128.25,128.25,0,0,1-38.92-21.81C61.82,179.51,48,149.3,48,112l0-56,160,0ZM82.34,141.66a8,8,0,0,1,11.32-11.32L112,148.69l50.34-50.35a8,8,0,0,1,11.32,11.32l-56,56a8,8,0,0,1-11.32,0Z\"></path></svg>"
+};
 
 /* ════════════════════════════════════════════════════════════
    فصل 54 — مرکز فرماندهی داشبورد: صفحه‌ها
@@ -33308,8 +33736,9 @@ function cmdMetricTag(id) {
   return '<span class="cmd-metric-id">' + id + "</span>";
 }
 
-function cmdCarIcon() {
-  return '<svg viewBox="0 0 100 40" aria-hidden="true"><path d="M8 28V16h20l9-11h29l13 11h11v12H8Z" fill="none" stroke="currentColor" stroke-width="2"/><path d="M34 16l7-7h21l8 7H34Z" fill="currentColor" opacity=".2"/><circle cx="25" cy="29" r="7" fill="currentColor"/><circle cx="75" cy="29" r="7" fill="currentColor"/></svg>';
+/* نشان هر ایستگاه در یک مدال دایره‌ای؛ شکل‌ها در 54-command-icons.js */
+function cmdStageIcon(key) {
+  return '<span class="cmd-sicon">' + (CMD_STAGE_ICONS[key] || CMD_STAGE_ICONS.chassis) + "</span>";
 }
 
 // عنوان کارت: برچسب انگلیسی کوچک + عنوان فارسی + (اختیاری) چیزی در انتهای ردیف
@@ -33342,7 +33771,7 @@ function cmdView() {
   var F = dashF(),
     now = Date.now();
   if (!shiftCfg()) F.shift = "";
-  if (CMD_MODES.indexOf(F.mode) < 0) F.mode = "executive";
+  if (CMD_MODES.indexOf(F.mode) < 0 || (F.mode === "ai" && !aiEnabled())) F.mode = "executive";
   var M = cmdAnalyze(F, now),
     R = dashResult(F, now);
   return (
@@ -33454,7 +33883,9 @@ function cmdHeader(F) {
 }
 
 function cmdModeNav(F) {
-  var buttons = CMD_NAV.map(function (n) {
+  var buttons = CMD_NAV.filter(function (n) {
+    return n[0] !== "ai" || aiEnabled();
+  }).map(function (n) {
     return cmdAct(
       "<span>" + n[1] + "</span><b><bdi>" + n[2] + "</bdi></b><small>" + n[3] + "</small>",
       "cmdmode",
@@ -33611,7 +34042,7 @@ function cmdStationRail(M, focus) {
       '<span class="cmd-stage-number">' +
         faDigits(i + 1) +
         "</span>" +
-        cmdCarIcon() +
+        cmdStageIcon(k) +
         "<b>" +
         esc(SHEETS[k].name) +
         "</b><strong>" +
@@ -33621,7 +34052,7 @@ function cmdStationRail(M, focus) {
         "</span>",
       "cmdfocus",
       k,
-      "cmd-stage" + (s.open ? " cmd-attention" : ""),
+      "cmd-stage" + (s.open ? " cmd-attention" : "") + (!s.cars && !s.open ? " cmd-stage-idle" : ""),
       'aria-pressed="' + (focus === k) + '"',
     );
   });
@@ -33694,29 +34125,59 @@ function cmdDecisionCard(M) {
 }
 
 function cmdLineRow(l) {
+  return dashLineEvidenceHtml(l);
+}
+
+function cmdLineValidationHtml(L) {
+  var v = L.operationsVisible && L.validation;
+  if (!v) return "";
   return (
-    "<div><b>" +
-    esc(l.n) +
-    '</b><span class="' +
-    (l.stopped ? "cmd-bad" : "") +
-    '">' +
-    (l.stopped ? "توقف ثبت‌شده" : "توقف بازی ثبت نشده") +
-    "</span>" +
-    (l.stopped ? "<p>" + esc(l.reason) + " · " + esc(timeHM(l.since)) + "</p>" : "") +
-    "</div>"
+    "<p>توقف باز تأییدنشده: " + cmdNum(v.counts.openUnverified) + " خط · وضعیت نامشخص: " + cmdNum(v.counts.unknown) + "</p>" +
+    "<details><summary>کنترل کیفیت داده (" + cmdNum(v.errors.length) + ")</summary>" +
+    v.errors.map(function (x) { return "<p>" + esc(x.source) + ": " + esc(x.reason) + "</p>"; }).join("") +
+    "</details>"
   );
 }
 
+function cmdUiDisclosure(title, body) {
+  return '<details class="cmd-ui-section"><summary><span>' + title + "</span><small>مشاهده جزئیات</small></summary><div>" + body + "</div></details>";
+}
+
+// خط دارای توقف باز اول می‌آید؛ خطوط بدون هیچ سابقه‌ی معتبر در یک سطر خلاصه می‌شوند
 function cmdLineListHtml(L) {
-  if (L.lines.length) {
-    return '<div class="cmd-line-list">' + L.lines.map(cmdLineRow).join("") + "</div>";
+  if (!L.lines.length) {
+    return (
+      '<p class="cmd-empty">' +
+      (L.operationsVisible
+        ? "اطلاعات خط تولید در داده‌های بارگذاری‌شده وجود ندارد."
+        : "مجوز نمایش توقف خطوط برای دامنه ایستگاهی این حساب تعریف نشده است؛ اطلاعات نمایش داده نمی‌شود.") +
+      "</p>"
+    );
   }
+  var withHistory = L.lines.filter(function (l) {
+      return l.last;
+    }),
+    idle = L.lines.filter(function (l) {
+      return !l.last;
+    });
+  withHistory.sort(function (a, b) {
+    return (b.open ? 1 : 0) - (a.open ? 1 : 0);
+  });
   return (
-    '<p class="cmd-empty">' +
-    (L.operationsVisible
-      ? "اطلاعات خط تولید در داده‌های بارگذاری‌شده وجود ندارد."
-      : "مجوز نمایش توقف خطوط برای دامنه ایستگاهی این حساب تعریف نشده است؛ اطلاعات نمایش داده نمی‌شود.") +
-    "</p>"
+    '<div class="cmd-line-list">' +
+    withHistory.map(cmdLineRow).join("") +
+    "</div>" +
+    (idle.length
+      ? '<p class="cmd-note">بدون سابقه‌ی معتبر توقف: ' +
+        esc(
+          idle
+            .map(function (l) {
+              return l.n;
+            })
+            .join("، "),
+        ) +
+        "</p>"
+      : "")
   );
 }
 
@@ -33724,11 +34185,13 @@ function cmdOperationsCard(L) {
   return (
     '<section class="cmd-operations">' +
     cmdCardTitle("RECORDED OPERATIONS / TODAY", "وضعیت ثبت‌شده خطوط", cmdMetricTag("M12 / M13")) +
-    '<div class="cmd-operation-values"><div><small>توقف تجمعی خط‌ها</small><b>' +
+    '<div class="cmd-operation-values"><div><small>توقف خاتمه‌یافته معتبر</small><b>' +
     cmdNum(L.stopMin) +
-    " <small>دقیقه</small></b></div><div><small>دسترس‌پذیری زمانی</small><b>" +
+    " <small>دقیقه‌ـ‌خط</small></b></div><div><small>دسترس‌پذیری زمانی</small><b>" +
     cmdNum(L.eff) +
-    '<small> ٪</small></b></div></div><p class="cmd-note">جمع دقیقه‌ـ‌خط با زمان توقف کل کارخانه یکسان نیست. راندمان فعلی OEE نیست.</p>' +
+    '<small> ٪</small></b></div></div><details class="cmd-line-help"><summary>توضیح این بخش</summary><p class="cmd-note">جمع دقیقه‌ـ‌خط با زمان توقف کل کارخانه یکسان نیست. فقط بازه‌های خاتمه‌یافته معتبر در این شاخص وارد می‌شوند.</p>' +
+    '<p class="cmd-note">وضعیت جاری خطوط احراز نشده است؛ نبود توقف، اثبات فعالیت نیست. توقف باز فقط به‌صورت «تأییدنشده» نشان داده می‌شود و وارد مجموع و راندمان نمی‌شود. منبع: S.stops · آخرین دریافت: نامشخص.</p></details>' +
+    cmdLineValidationHtml(L) +
     cmdLineListHtml(L) +
     "</section>"
   );
@@ -33990,6 +34453,8 @@ function cmdAdvisor(F, M) {
     '<div class="cmd-ai-status"><span>MOHR AI</span><b>موتور تحلیل محلی فعال</b><small>' +
     esc(CMD_GATEWAY_STATE.text) +
     ' · اطلاعات به سرویس خارجی ارسال نمی‌شود.</small></div><div class="cmd-ai-layout">' +
+    cmdDailySection(F, M) +
+    ai121Panel(F, M) +
     cmdBriefSection(M) +
     cmdAssuranceAside(M) +
     cmdQuestionSection(F) +
@@ -34068,6 +34533,7 @@ function cmdQuestionSection(F) {
   return (
     '<section class="cmd-question">' +
     cmdCardTitle("ASK YOUR DATA", "پرسش مدیریتی با پاسخ قابل ردگیری") +
+    cmdPresetButtons() +
     '<label for="cmd_question">پرسش درباره دامنه مجاز و بازه انتخابی</label><textarea id="cmd_question" rows="3" maxlength="600" placeholder="مثلاً: کدام موارد بیشتر تکرار شده‌اند؟">' +
     esc(F.aiQuestion || "") +
     '</textarea><div class="cmd-ai-actions">' +
@@ -34267,7 +34733,7 @@ function cmdDownloadBrief(F) {
 // هر تابع (F، دکمه، مقدار data-v) را می‌گیرد؛ true یعنی صفحه دوباره کشیده شود
 var CMD_ACTIONS = {
   cmdmode: function (F, el, value) {
-    if (CMD_MODES.indexOf(value) < 0) return true;
+    if (CMD_MODES.indexOf(value) < 0 || (value === "ai" && !aiEnabled())) return true;
     F.mode = value;
     F.detail = "";
     return true;
@@ -34328,6 +34794,25 @@ var CMD_ACTIONS = {
     ai90LoadDocument();
     return false;
   },
+  cmdmrgapprove: function (F, el, value) {
+    return cmdMergeDecide(F, value, "approved");
+  },
+  cmdmrgreject: function (F, el, value) {
+    return cmdMergeDecide(F, value, "rejected");
+  },
+  cmdmrgcancel: function (F, el, value) {
+    return cmdMergeCancel(value);
+  },
+  cmdcopy: function (F) {
+    cmdCopyText(cmdDailyPack(F, cmdAnalyze(F)).text);
+    return false;
+  },
+  cmdpreset: function (F, el, value) {
+    var question = CMD_PRESETS[+value];
+    if (!question) return false;
+    F.aiQuestion = question;
+    return cmdAskLocal(F);
+  },
   cmdask: function (F) {
     F.aiQuestion = cmdInputValue("cmd_question", CMD_QUESTION_MAX);
     return cmdAskLocal(F);
@@ -34346,6 +34831,1356 @@ function cmdClick(ev, el, a) {
   if (handler && handler(dashF(), el, el.getAttribute("data-v") || "")) render();
   return true;
 }
+
+/* ═════════════════════════════════════════════════
+   فصل 56 — مشاور داشبورد: گزارش روزانه، هشدار، مقایسه، پارتو، پرسش‌های آماده
+   همه‌ی اعداد از داده‌ی مجاز کاربر شمرده می‌شوند و هر عدد مرجع دارد؛ چیزی حدس زده نمی‌شود.
+   «ایراد» = مورد نوع ng، «کسری» = مورد نوع shortage؛ نمونه (sample) در شمارش ایراد نیست.
+   توابع اصلی: cmdDailySection، cmdPresetButtons، cmdCarSummary
+   برای تغییر آستانه‌های هشدار فقط CMD_ALERT را ویرایش کنید.
+   ═════════════════════════════════════════════════ */
+
+var CMD_ALERT = {
+  shortageHours: 48, // کسری بازِ قدیمی‌تر از این (ساعت) هشدار است
+  defectHours: 24, // ایراد بازِ قدیمی‌تر از این (ساعت) هشدار است
+  riseFactor: 1.5, // نرخ امروز ایستگاه نسبت به میانگین ۷ روز قبل
+  minCarsToday: 5, // حداقل خودرو در امروز برای قضاوت درباره‌ی ایستگاه
+  minCarsBase: 20, // حداقل خودرو در ۷ روز پایه
+  minDefectsToday: 3, // حداقل ایراد امروز برای هشدار افزایش
+  repeatToday: 3, // یک بند امروز حداقل این‌قدر ثبت شود تا «تکرار» حساب شود
+  baseDays: 7,
+};
+var CMD_RISK = {
+  ng: 3, // امتیاز هر ایراد باز
+  shortage: 1, // امتیاز هر کسری باز
+  cng: 5, // کسری قطعه‌ی گاز (تأیید تجاری تا تست بسته است)
+  age24: 1, // قدیمی‌ترین مورد باز بیش از ۲۴ ساعت
+  age48: 3, // قدیمی‌ترین مورد باز بیش از ۴۸ ساعت
+  high: 10, // امتیاز از این به بالا «زیاد»
+  top: 10, // تعداد خودروی نمایش‌داده‌شده
+};
+var CMD_PARETO_TOP = 6;
+var CMD_OLD_ASK_HOURS = 24; // آستانه‌ی پرسش آماده‌ی «کسری قدیمی»
+var CMD_PRESETS = [
+  "امروز کدام ایستگاه بیشترین ایراد را دارد؟",
+  "کسری‌های باز قدیمی‌تر از ۲۴ ساعت کدام‌اند؟",
+  "خودروهای دارای کسری قطعه گاز کدام‌اند؟",
+  "مقایسه امروز با دیروز و هفته‌ی قبل",
+  "ایرادهای پرتکرار این بازه کدام‌اند؟",
+  "کدام ایرادها پس از رفع دوباره تکرار شد؟",
+];
+
+/* ---------- پنجره‌های زمانی و شمارش ---------- */
+
+function cmdDays(now) {
+  var t0 = dayStart(now);
+  return {
+    t0: t0,
+    end: t0 + DAY_MS,
+    yesterday: t0 - DAY_MS,
+    week: t0 - 6 * DAY_MS,
+    prevWeek: t0 - 13 * DAY_MS,
+    base: t0 - CMD_ALERT.baseDays * DAY_MS,
+  };
+}
+
+function cmdKind(rows, kind) {
+  return rows.filter(function (x) {
+    return x.it.r === kind;
+  });
+}
+
+// ثبت‌ها، موارد و رفع‌شده‌های یک بازه‌ی زمانی در دامنه‌ی مجاز؛ keep اختیاری است (مثلاً شیفت)
+function cmdWindow(ctx, D, from, to, keep) {
+  var okMs = function (ms) {
+    return ms >= from && ms < to && ms <= ctx.now && (!keep || keep(ms));
+  };
+  return {
+    recs: D.recs.filter(function (x) {
+      return ctx.inScope(x) && okMs(x.ms);
+    }),
+    defs: D.defs.filter(function (x) {
+      return ctx.inScope(x) && okMs(x.ms);
+    }),
+    closed: D.defs.filter(function (x) {
+      return !x.open && ctx.inScope(x) && okMs(Date.parse(x.it.closedAt));
+    }),
+  };
+}
+
+function cmdTally(w) {
+  var cars = countCars(w.recs),
+    ng = cmdKind(w.defs, "ng");
+  return {
+    cars: cars,
+    ng: ng.length,
+    shortage: cmdKind(w.defs, "shortage").length,
+    closed: w.closed.length,
+    dpv100: cars ? (100 * ng.length) / cars : null,
+    w: w,
+  };
+}
+
+function cmdStationName(k) {
+  return SHEETS[k] ? SHEETS[k].name : k;
+}
+
+// «ایستگاه شاسی: ۳؛ ایستگاه تزیینات: ۱» از فهرست موارد، بیشترین اول
+function cmdStationCounts(rows) {
+  var by = {};
+  rows.forEach(function (x) {
+    by[x.r.sheet] = (by[x.r.sheet] || 0) + 1;
+  });
+  return Object.keys(by)
+    .sort(function (a, b) {
+      return by[b] - by[a];
+    })
+    .map(function (k) {
+      return cmdStationName(k) + ": " + cmdNum(by[k]);
+    })
+    .join("؛ ");
+}
+
+function cmdDistinctCars(rows) {
+  var s = {};
+  rows.forEach(function (x) {
+    s[x.car] = 1;
+  });
+  return Object.keys(s).length;
+}
+
+/* ---------- هشدارها ---------- */
+
+function cmdAlert(level, title, text, rows) {
+  return { level: level, title: title, text: text, sources: rows.map(cmdSource) };
+}
+
+function cmdOldOpen(M, kind, hours) {
+  return M.all
+    .filter(function (x) {
+      return x.open && x.it.r === kind && (M.now - x.ms) / 3600000 > hours;
+    })
+    .sort(function (a, b) {
+      return a.ms - b.ms;
+    });
+}
+
+function cmdOldAlert(M, kind, hours, title) {
+  var rows = cmdOldOpen(M, kind, hours);
+  if (!rows.length) return null;
+  return cmdAlert(
+    "high",
+    title,
+    cmdNum(rows.length) +
+      " مورد باز، قدیمی‌تر از " +
+      cmdNum(hours) +
+      " ساعت، روی " +
+      cmdNum(cmdDistinctCars(rows)) +
+      " خودرو. " +
+      cmdStationCounts(rows),
+    rows,
+  );
+}
+
+function cmdCngRows(M) {
+  return M.all.filter(function (x) {
+    return x.open && x.it.r === "shortage" && cngPartOf(x.it.part || x.it.note);
+  });
+}
+
+function cmdCngAlert(M) {
+  var rows = cmdCngRows(M);
+  if (!rows.length) return null;
+  return cmdAlert(
+    "mid",
+    "کسری قطعه‌ی گاز (CNG) باز",
+    cmdNum(cmdDistinctCars(rows)) +
+      " خودرو منتظر قطعه‌ی گاز است؛ تا تست نشتی انجام نشود تأیید نهایی تجاری بسته است.",
+    rows,
+  );
+}
+
+// ایستگاه → {cars, ng, rows} برای نرخ ایراد هر ایستگاه در یک بازه
+function cmdStationRates(w) {
+  var out = {};
+  function slot(k) {
+    return out[k] || (out[k] = { ids: {}, ng: 0, rows: [] });
+  }
+  w.recs.forEach(function (x) {
+    slot(x.r.sheet).ids[x.car] = 1;
+  });
+  cmdKind(w.defs, "ng").forEach(function (x) {
+    var s = slot(x.r.sheet);
+    s.ng++;
+    s.rows.push(x);
+  });
+  Object.keys(out).forEach(function (k) {
+    out[k].cars = Object.keys(out[k].ids).length;
+  });
+  return out;
+}
+
+function cmdRiseAlerts(today, base) {
+  var A = CMD_ALERT,
+    list = [];
+  Object.keys(today).forEach(function (k) {
+    var t = today[k],
+      b = base[k];
+    if (!b || t.cars < A.minCarsToday || b.cars < A.minCarsBase || t.ng < A.minDefectsToday) return;
+    var rt = (100 * t.ng) / t.cars,
+      rb = (100 * b.ng) / b.cars;
+    if (rt <= A.riseFactor * rb) return;
+    list.push(
+      cmdAlert(
+        "high",
+        "افزایش ایراد در " + cmdStationName(k),
+        "نرخ امروز " +
+          cmdNum(rt) +
+          " ایراد به ازای ۱۰۰ خودرو (" +
+          cmdNum(t.ng) +
+          " ایراد، " +
+          cmdNum(t.cars) +
+          " خودرو) در برابر میانگین " +
+          cmdNum(A.baseDays) +
+          " روز قبل: " +
+          cmdNum(rb) +
+          ".",
+        t.rows,
+      ),
+    );
+  });
+  return list;
+}
+
+function cmdRepeatAlerts(todayNg) {
+  return cmdRepeatedGroups(todayNg)
+    .filter(function (g) {
+      return g.n >= CMD_ALERT.repeatToday;
+    })
+    .slice(0, 3)
+    .map(function (g) {
+      return cmdAlert(
+        "mid",
+        "تکرار امروز: " + g.label,
+        cmdStationName(g.station) + " — " + cmdNum(g.n) + " ثبت روی " + cmdNum(Object.keys(g.cars).length) + " خودرو.",
+        g.rows,
+      );
+    });
+}
+
+function cmdBuildAlerts(M, T0, rates) {
+  var A = CMD_ALERT;
+  return [
+    cmdOldAlert(M, "shortage", A.shortageHours, "کسری باز قدیمی"),
+    cmdOldAlert(M, "ng", A.defectHours, "ایراد باز قدیمی"),
+    cmdCngAlert(M),
+  ]
+    .concat(cmdRiseAlerts(rates.today, rates.base))
+    .concat(cmdRepeatAlerts(cmdKind(T0.w.defs, "ng")))
+    .filter(Boolean);
+}
+
+/* ---------- مقایسه‌ها ---------- */
+
+function cmdShiftKeep(cfg, n) {
+  return function (ms) {
+    return shiftOf(ms, cfg) === n;
+  };
+}
+
+function cmdProductCtx(F, now, code) {
+  return cmdContext(Object.assign({}, F, { prod: code }), now);
+}
+
+function cmdCompareSets(F, D, now) {
+  var ctx = cmdContext(F, now),
+    d = cmdDays(now),
+    T = function (from, to, c, keep) {
+      return cmdTally(cmdWindow(c || ctx, D, from, to, keep));
+    },
+    sets = [
+      {
+        title: "امروز با دیروز",
+        note: "امروز تا همین لحظه شمرده شده؛ برای مقایسه‌ی منصفانه «ایراد به ازای ۱۰۰ خودرو» را ببینید.",
+        a: ["امروز", T(d.t0, d.end)],
+        b: ["دیروز", T(d.yesterday, d.t0)],
+      },
+      {
+        title: "۷ روز اخیر با ۷ روز قبل از آن",
+        a: ["۷ روز اخیر", T(d.week, d.end)],
+        b: ["۷ روز قبل", T(d.prevWeek, d.week)],
+      },
+    ];
+  if (!F.prod) {
+    sets.push({
+      title: "پادرا با اکستند (۷ روز اخیر)",
+      a: ["پادرا", T(d.week, d.end, cmdProductCtx(F, now, "padra"))],
+      b: ["اکستند", T(d.week, d.end, cmdProductCtx(F, now, "ex"))],
+    });
+  }
+  if (ctx.cfg && !F.shift) {
+    sets.push({
+      title: "شیفت ۱ با شیفت ۲ (۷ روز اخیر)",
+      a: ["شیفت ۱", T(d.week, d.end, ctx, cmdShiftKeep(ctx.cfg, 1))],
+      b: ["شیفت ۲", T(d.week, d.end, ctx, cmdShiftKeep(ctx.cfg, 2))],
+    });
+  }
+  return sets;
+}
+
+var CMD_COMPARE_ROWS = [
+  ["خودروی بازرسی‌شده", "cars", false],
+  ["ایراد ثبت‌شده", "ng", true],
+  ["کسری ثبت‌شده", "shortage", true],
+  ["رفع‌شده", "closed", false],
+  ["ایراد به ازای ۱۰۰ خودرو", "dpv100", true],
+];
+
+function cmdDelta(a, b, worseWhenUp) {
+  if (a == null || b == null) return '<td class="cmd-d0">—</td>';
+  var d = a - b;
+  if (Math.abs(d) < 0.05) return '<td class="cmd-d0">＝</td>';
+  var cls = worseWhenUp ? (d > 0 ? "cmd-dbad" : "cmd-dgood") : "cmd-d0";
+  return '<td class="' + cls + '">' + (d > 0 ? "▲ " : "▼ ") + cmdNum(Math.abs(d)) + "</td>";
+}
+
+function cmdCompareTable(set) {
+  var A = set.a[1],
+    B = set.b[1];
+  return (
+    '<div class="cmd-cmp"><h3>' +
+    esc(set.title) +
+    "</h3>" +
+    (set.note ? '<p class="cmd-note">' + esc(set.note) + "</p>" : "") +
+    '<div class="cmd-tablewrap"><table><thead><tr><th></th><th>' +
+    esc(set.a[0]) +
+    "</th><th>" +
+    esc(set.b[0]) +
+    "</th><th>تفاوت</th></tr></thead><tbody>" +
+    CMD_COMPARE_ROWS.map(function (r) {
+      return (
+        "<tr><th>" +
+        r[0] +
+        "</th><td>" +
+        cmdNum(A[r[1]]) +
+        "</td><td>" +
+        cmdNum(B[r[1]]) +
+        "</td>" +
+        cmdDelta(A[r[1]], B[r[1]], r[2]) +
+        "</tr>"
+      );
+    }).join("") +
+    "</tbody></table></div></div>"
+  );
+}
+
+function cmdCompareText(sets) {
+  return sets
+    .map(function (s) {
+      var A = s.a[1],
+        B = s.b[1];
+      return (
+        s.title +
+        ": " +
+        s.a[0] +
+        " " +
+        cmdNum(A.ng) +
+        " ایراد از " +
+        cmdNum(A.cars) +
+        " خودرو (" +
+        cmdNum(A.dpv100) +
+        " به ازای ۱۰۰)؛ " +
+        s.b[0] +
+        " " +
+        cmdNum(B.ng) +
+        " ایراد از " +
+        cmdNum(B.cars) +
+        " خودرو (" +
+        cmdNum(B.dpv100) +
+        " به ازای ۱۰۰)."
+      );
+    })
+    .join("\n");
+}
+
+/* ---------- پارتو ---------- */
+
+function cmdParetoRows(M) {
+  var groups = cmdRepeatedGroups(cmdKind(M.defs, "ng")),
+    total = groups.reduce(function (s, g) {
+      return s + g.n;
+    }, 0),
+    run = 0;
+  return groups.slice(0, CMD_PARETO_TOP).map(function (g) {
+    run += g.n;
+    return { g: g, share: total ? (100 * run) / total : 0 };
+  });
+}
+
+function cmdParetoHtml(M) {
+  var rows = cmdParetoRows(M);
+  if (!rows.length) return '<p class="cmd-empty">در این بازه ایرادی ثبت نشده است.</p>';
+  return (
+    '<div class="cmd-tablewrap"><table><thead><tr><th>ایراد</th><th>ایستگاه</th><th>تعداد</th><th>خودرو</th><th>تجمعی</th></tr></thead><tbody>' +
+    rows
+      .map(function (r) {
+        return (
+          "<tr><th>" +
+          esc(r.g.label) +
+          "</th><td>" +
+          esc(cmdStationName(r.g.station)) +
+          "</td><td>" +
+          cmdNum(r.g.n) +
+          "</td><td>" +
+          cmdNum(Object.keys(r.g.cars).length) +
+          "</td><td>٪" +
+          cmdNum(r.share) +
+          "</td></tr>"
+        );
+      })
+      .join("") +
+    "</tbody></table></div>"
+  );
+}
+
+/* ---------- خودروهای پرریسک ---------- */
+
+function cmdIsArchivedRow(x) {
+  var set = archIdSet();
+  return !!(set[x.car] || set[x.r.key]);
+}
+
+function cmdRiskGroups(M) {
+  var by = {};
+  M.all.forEach(function (x) {
+    if (!x.open || (x.it.r !== "ng" && x.it.r !== "shortage") || cmdIsArchivedRow(x)) return;
+    (by[x.car] || (by[x.car] = { car: x.car, rows: [] })).rows.push(x);
+  });
+  return Object.keys(by).map(function (k) {
+    return by[k];
+  });
+}
+
+function cmdRiskScore(g, now) {
+  var R = CMD_RISK,
+    ng = cmdKind(g.rows, "ng").length,
+    sh = cmdKind(g.rows, "shortage").length,
+    cng = cmdCngRows({ all: g.rows }).length,
+    oldest = (now - Math.min.apply(null, g.rows.map(cmdMs))) / 3600000,
+    age = oldest > CMD_ALERT.shortageHours ? R.age48 : oldest > CMD_ALERT.defectHours ? R.age24 : 0,
+    parts = [];
+  if (ng) parts.push([cmdNum(ng) + " ایراد باز", ng * R.ng]);
+  if (sh) parts.push([cmdNum(sh) + " کسری باز", sh * R.shortage]);
+  if (cng) parts.push(["کسری قطعه‌ی گاز", R.cng]);
+  if (age) parts.push(["قدیمی‌ترین مورد " + cmdNum(oldest) + " ساعت", age]);
+  return {
+    score: parts.reduce(function (s, p) {
+      return s + p[1];
+    }, 0),
+    oldest: oldest,
+    text: parts
+      .map(function (p) {
+        return p[0] + " (+" + cmdNum(p[1]) + ")";
+      })
+      .join("؛ "),
+  };
+}
+
+function cmdMs(x) {
+  return x.ms;
+}
+
+function cmdRiskCars(M) {
+  return cmdRiskGroups(M)
+    .map(function (g) {
+      return Object.assign({ g: g }, cmdRiskScore(g, M.now));
+    })
+    .sort(function (a, b) {
+      return b.score - a.score || b.oldest - a.oldest;
+    })
+    .slice(0, CMD_RISK.top);
+}
+
+function cmdRiskAlert(r) {
+  return cmdAlert(
+    r.score >= CMD_RISK.high ? "high" : "mid",
+    "خودرو " + r.g.car + " — امتیاز " + cmdNum(r.score),
+    r.text,
+    r.g.rows,
+  );
+}
+
+function cmdRiskHtml(P) {
+  if (!P.risk.length) return '<p class="cmd-empty">خودرویی با مورد باز در دامنه‌ی مجاز نیست.</p>';
+  return (
+    '<p class="cmd-note">امتیاز = ' +
+    cmdNum(CMD_RISK.ng) +
+    " به ازای هر ایراد باز + " +
+    cmdNum(CMD_RISK.shortage) +
+    " به ازای هر کسری باز + " +
+    cmdNum(CMD_RISK.cng) +
+    " کسری قطعه‌ی گاز + سن قدیمی‌ترین مورد. خودروی بایگانی‌شده شمرده نمی‌شود.</p>" +
+    P.risk.map(cmdRiskAlert).map(cmdAlertItem).join("")
+  );
+}
+
+/* ---------- خلاصه‌ی روز برای ارسال ---------- */
+
+function cmdSummaryActions(M, P) {
+  var list = [],
+    old = cmdOldOpen(M, "shortage", CMD_ALERT.shortageHours).length,
+    cng = cmdDistinctCars(cmdCngRows(M));
+  if (old) list.push("پیگیری " + cmdNum(old) + " کسری باز قدیمی‌تر از " + cmdNum(CMD_ALERT.shortageHours) + " ساعت");
+  if (cng) list.push("تأمین قطعه‌ی گاز برای " + cmdNum(cng) + " خودرو");
+  if (P.risk.length)
+    list.push(
+      "بررسی خودروهای پرریسک: " +
+        P.risk
+          .slice(0, 3)
+          .map(function (r) {
+            return r.g.car;
+          })
+          .join("، "),
+    );
+  return list;
+}
+
+function cmdSummaryText(M, P) {
+  var T = P.today,
+    Y = P.yesterday,
+    L = P.live,
+    top = cmdStationCounts(cmdKind(T.w.defs, "ng")).split("؛")[0],
+    lines = [
+      "خلاصه‌ی روزانه — " + dashDayLabel(P.day) + " (تا ساعت " + timeHM(M.now) + ")",
+    ];
+  if (L.prodOk) lines.push("تولید: " + cmdNum(L.prodN) + " (دیروز " + cmdNum(L.prodY) + ")");
+  lines.push(
+    "بازرسی: " + cmdNum(T.cars) + " خودرو؛ ایراد جدید " + cmdNum(T.ng) + " (" + cmdNum(T.dpv100) + " به ازای ۱۰۰ خودرو، دیروز " + cmdNum(Y.dpv100) + ")",
+    "کسری جدید " + cmdNum(T.shortage) + "؛ رفع‌شده " + cmdNum(T.closed),
+    "باز: ایراد " + cmdNum(P.backlog.ng) + "، کسری " + cmdNum(P.backlog.shortage),
+  );
+  if (T.ng) lines.push("بیشترین ایراد امروز: " + top);
+  var todo = cmdSummaryActions(M, P);
+  if (todo.length) lines.push("کارهای پیشنهادی (فقط مشاهده):", todo.map(function (t) { return "• " + t; }).join("\n"));
+  return lines.join("\n");
+}
+
+function cmdCopyText(text) {
+  var box = document.querySelector(".mohr-cmd #cmd_daily_text");
+  function fallback() {
+    if (box) {
+      box.select();
+      try {
+        document.execCommand("copy");
+        toast("متن کپی شد");
+        return;
+      } catch (e) {}
+    }
+    toast("متن را انتخاب و کپی کنید");
+  }
+  if (!navigator.clipboard) return fallback();
+  navigator.clipboard.writeText(text).then(function () {
+    toast("متن کپی شد");
+  }, fallback);
+}
+
+/* ---------- بسته‌ی محاسبه‌ی روزانه (یک بار برای هر M) ---------- */
+
+function cmdDailyPack(F, M) {
+  if (M.dailyPack) return M.dailyPack;
+  var D = dashData(),
+    ctx = cmdContext(F, M.now),
+    d = cmdDays(M.now),
+    T0 = cmdTally(cmdWindow(ctx, D, d.t0, d.end)),
+    T1 = cmdTally(cmdWindow(ctx, D, d.yesterday, d.t0)),
+    base = cmdWindow(ctx, D, d.base, d.t0);
+  var pack = {
+    day: d.t0,
+    today: T0,
+    yesterday: T1,
+    alerts: cmdBuildAlerts(M, T0, { today: cmdStationRates(T0.w), base: cmdStationRates(base) }),
+    sets: cmdCompareSets(F, D, M.now),
+    backlog: {
+      ng: cmdKind(M.all, "ng").filter(cmdIsOpen).length,
+      shortage: cmdKind(M.all, "shortage").filter(cmdIsOpen).length,
+    },
+    live: cmdLive(F, M.now),
+    risk: cmdRiskCars(M),
+  };
+  pack.text = cmdSummaryText(M, pack);
+  M.dailyPack = pack;
+  return pack;
+}
+
+function cmdIsOpen(x) {
+  return x.open;
+}
+
+/* ---------- نمایش ---------- */
+
+function cmdKpi(label, value, sub) {
+  return (
+    "<div><small>" + label + "</small><b>" + value + "</b>" + (sub ? "<span>" + sub + "</span>" : "") + "</div>"
+  );
+}
+
+function cmdKpiHtml(F, M, P) {
+  var L = P.live,
+    T = P.today,
+    Y = P.yesterday;
+  return (
+    '<div class="cmd-dkpis">' +
+    (L.prodOk ? cmdKpi("تولید امروز (نهایی بالا)", cmdNum(L.prodN), "دیروز: " + cmdNum(L.prodY)) : "") +
+    cmdKpi("خودروی بازرسی‌شده امروز", cmdNum(T.cars), "دیروز: " + cmdNum(Y.cars)) +
+    cmdKpi("ایراد جدید امروز", cmdNum(T.ng), "به ازای ۱۰۰ خودرو: " + cmdNum(T.dpv100)) +
+    cmdKpi("کسری جدید امروز", cmdNum(T.shortage), "دیروز: " + cmdNum(Y.shortage)) +
+    cmdKpi("رفع‌شده امروز", cmdNum(T.closed), "دیروز: " + cmdNum(Y.closed)) +
+    cmdKpi("ایراد باز (کل)", cmdNum(P.backlog.ng), "کسری باز: " + cmdNum(P.backlog.shortage)) +
+    "</div>"
+  );
+}
+
+function cmdAlertItem(a) {
+  return (
+    '<article class="cmd-alert cmd-alert-' +
+    a.level +
+    '"><h3>' +
+    esc(a.title) +
+    "</h3><p>" +
+    esc(a.text) +
+    '</p><details><summary>مرجع‌ها (' +
+    cmdNum(a.sources.length) +
+    ')</summary><p class="cmd-source-list" dir="ltr">' +
+    cmdSourceList(a.sources, CMD_SOURCES_SHOWN) +
+    "</p></details></article>"
+  );
+}
+
+function cmdAlertsHtml(P) {
+  if (!P.alerts.length)
+    return '<p class="cmd-empty">هشدار فعالی نیست: کسری یا ایراد باز قدیمی، افزایش نرخ ایستگاه یا تکرار امروز دیده نشد.</p>';
+  return P.alerts.map(cmdAlertItem).join("");
+}
+
+function cmdDailySection(F, M) {
+  var P = cmdDailyPack(F, M);
+  return (
+    '<section class="cmd-daily">' +
+    cmdCardTitle("DAILY REPORT", "گزارش روزانه — " + esc(dashDayLabel(P.day))) +
+    cmdKpiHtml(F, M, P) +
+    "<h3>هشدارها</h3>" +
+    cmdAlertsHtml(P) +
+    "<h3>خودروهای پرریسک</h3>" +
+    cmdRiskHtml(P) +
+    "<h3>مقایسه‌ها</h3>" +
+    P.sets.map(cmdCompareTable).join("") +
+    "<h3>پرتکرارترین ایرادها در بازه‌ی انتخابی</h3>" +
+    cmdParetoHtml(M) +
+    "<h3>ایرادهای هم‌معنا (پیشنهاد ادغام)</h3>" +
+    cmdSemanticHtml(M) +
+    "<h3>خلاصه‌ی امروز برای ارسال</h3>" +
+    '<textarea id="cmd_daily_text" readonly rows="8">' +
+    esc(P.text) +
+    "</textarea>" +
+    cmdAct("کپی خلاصه", "cmdcopy", "", "cmd-primary") +
+    '<p class="cmd-note">آستانه‌ها: کسری باز بیش از ' +
+    cmdNum(CMD_ALERT.shortageHours) +
+    " ساعت، ایراد باز بیش از " +
+    cmdNum(CMD_ALERT.defectHours) +
+    " ساعت، نرخ ایستگاه بیش از " +
+    cmdNum(CMD_ALERT.riseFactor) +
+    " برابر میانگین " +
+    cmdNum(CMD_ALERT.baseDays) +
+    " روز قبل. فقط مشاهده؛ علت تعیین نمی‌شود.</p></section>"
+  );
+}
+
+function cmdPresetButtons() {
+  return (
+    '<div class="cmd-presets">' +
+    CMD_PRESETS.map(function (q, i) {
+      return cmdAct(esc(q), "cmdpreset", String(i), "cmd-chip");
+    }).join("") +
+    "</div>"
+  );
+}
+
+/* ---------- پاسخ‌های پرسش‌های آماده ---------- */
+
+function cmdFact(text, metric, rows) {
+  return { kind: "محاسبه قطعی محلی", text: text, metric: metric, sources: rows.map(cmdSource) };
+}
+
+function cmdAnswerTopStation(q, M) {
+  var P = cmdDailyPack(dashF(), M),
+    rows = cmdKind(P.today.w.defs, "ng");
+  if (!rows.length) return cmdFact("امروز تا این لحظه ایرادی در دامنه‌ی مجاز ثبت نشده است.", "M02", []);
+  return cmdFact(
+    "ایرادهای امروز تا این لحظه به تفکیک ایستگاه (بیشترین اول): " +
+      cmdStationCounts(rows) +
+      ". جمع: " +
+      cmdNum(rows.length) +
+      " ایراد روی " +
+      cmdNum(P.today.cars) +
+      " خودروی بازرسی‌شده.",
+    "M02",
+    rows,
+  );
+}
+
+function cmdAnswerOldShortage(q, M) {
+  var rows = cmdOldOpen(M, "shortage", CMD_OLD_ASK_HOURS);
+  if (!rows.length)
+    return cmdFact("کسری بازِ قدیمی‌تر از " + cmdNum(CMD_OLD_ASK_HOURS) + " ساعت در دامنه‌ی مجاز نیست.", "M04", []);
+  return cmdFact(
+    cmdNum(rows.length) +
+      " کسری باز قدیمی‌تر از " +
+      cmdNum(CMD_OLD_ASK_HOURS) +
+      " ساعت روی " +
+      cmdNum(cmdDistinctCars(rows)) +
+      " خودرو. به تفکیک ایستگاه: " +
+      cmdStationCounts(rows) +
+      ". قدیمی‌ترین: " +
+      cmdNum((M.now - rows[0].ms) / 3600000) +
+      " ساعت.",
+    "M04",
+    rows,
+  );
+}
+
+function cmdAnswerGas(q, M) {
+  var rows = cmdCngRows(M);
+  if (!rows.length) return cmdFact("کسری بازِ قطعه‌ی گاز (CNG) در دامنه‌ی مجاز نیست.", "M04", []);
+  return cmdFact(
+    cmdNum(cmdDistinctCars(rows)) +
+      " خودرو کسری باز قطعه‌ی گاز دارد (" +
+      cmdNum(rows.length) +
+      " مورد). تا رفع کسری و انجام تست ۱۰ و ۲۰۰ بار، تأیید نهایی تجاری فقط با کد تحویل با کسری ممکن است.",
+    "M04",
+    rows,
+  );
+}
+
+function cmdAnswerCompare(q, M) {
+  var F = dashF(),
+    sets = cmdDailyPack(F, M).sets;
+  return cmdFact(cmdCompareText(sets), "M05", []);
+}
+
+// پرسش پیش از تطبیق تمیز می‌شود و ممکن است فاصله‌ها حذف شده باشند؛ پس الگوها به فاصله وابسته نباشند
+CMD_ANSWER_RULES.unshift(
+  { test: /بیشترین\s*ایراد/, answer: cmdAnswerTopStation },
+  { test: /قدیمی/, answer: cmdAnswerOldShortage },
+  { test: /گاز|cng/i, answer: cmdAnswerGas },
+  { test: /مقایسه/, answer: cmdAnswerCompare },
+);
+
+/* ---------- خلاصه‌ی یک خودرو با شماره ---------- */
+
+function cmdCarStageLine(r) {
+  var items = Object.keys(r.items || {}).map(function (id) {
+      return r.items[id];
+    }),
+    open = function (kind) {
+      return items.filter(function (it) {
+        return it.r === kind && !it.closedAt;
+      }).length;
+    };
+  return (
+    cmdStationName(r.sheet) +
+    ": " +
+    (r.final ? "تأیید نهایی شده" : "در جریان") +
+    " — ایراد باز " +
+    cmdNum(open("ng")) +
+    "، کسری باز " +
+    cmdNum(open("shortage"))
+  );
+}
+
+function cmdCarGasLine(d) {
+  if (fuelOf(d) === "single") return "";
+  var g = gasTestState(d);
+  if (g.done) return "تست نشتی گاز: انجام شده.";
+  if (g.blockers.length) return "تست نشتی گاز: انجام نشده؛ منتظر قطعه‌ی " + g.blockers.join("، ") + ".";
+  return "تست نشتی گاز: انجام نشده" + (g.waived ? " (عبور ثبت شده)." : ".");
+}
+
+function cmdCarReleaseLine(d) {
+  var rel = releaseOf(d);
+  return rel ? "تحویل با کسری ثبت شده: " + rel.codes.join("، ") + "." : "";
+}
+
+// null یعنی خودرو در داده‌ی مجاز نیست و پاسخ قدیمی به کار برود
+function cmdCarSummary(number) {
+  var scope = userSheets(),
+    recs = carRecords(number).recs.filter(function (r) {
+      return !r.test && SHEETS[r.sheet] && (!scope || scope.indexOf(r.sheet) >= 0);
+    });
+  if (!recs.length) return null;
+  recs.sort(function (a, b) {
+    return STAGES.indexOf(a.sheet) - STAGES.indexOf(b.sheet);
+  });
+  var first = recs[0],
+    lines = recs.map(cmdCarStageLine).concat([cmdCarGasLine(first), cmdCarReleaseLine(first)]);
+  return {
+    kind: "محاسبه قطعی محلی",
+    text: "خلاصه‌ی خودرو " + number + " (مسیر خط):\n" + lines.filter(Boolean).join("\n"),
+    metric: "M02",
+    sources: recs.map(function (r) {
+      return String(r.id || r.sheet + "_" + r.key);
+    }),
+  };
+}
+
+/* ═════════════════════════════════════════════════
+   فصل 57 — مشاور داشبورد: ایرادهای هم‌معنا (پیشنهاد ادغام)
+   عبارت‌هایی که فقط در نوشتار فرق دارند («درب نامیزان» و «نامیزانی درب») را کنار هم می‌گذارد.
+   کاملاً آفلاین است: نرمال‌سازی متن فارسی + شباهت کلمه‌ها و سه‌حرفی‌ها؛ هیچ مدل و سرویسی ندارد.
+   فقط پیشنهاد است؛ هیچ ایرادی ادغام یا تغییر نمی‌کند و عددهای گزارش‌ها دست نمی‌خورد.
+   توابع اصلی: cmdSemTokens، cmdSemScore، cmdSemCluster (خالص و بدون وابستگی)، cmdSemanticGroups
+   برای افزودن هم‌معنی تازه، CMD_SEM_SYNONYMS را ویرایش کنید.
+   ═════════════════════════════════════════════════ */
+
+var CMD_SEM_THRESHOLD = 0.6; // حداقل شباهت برای هم‌گروه‌شدن
+var CMD_SEM_TOP = 6; // تعداد گروه نمایش‌داده‌شده
+var CMD_SEM_STOP = { و: 1, در: 1, از: 1, به: 1, با: 1, را: 1, که: 1, این: 1, آن: 1, است: 1, شده: 1, روی: 1, برای: 1 };
+// هر کلید به ریشه‌ی خودش نگاشت می‌شود (بعد از نرمال‌سازی و حذف پسوند)
+var CMD_SEM_SYNONYMS = {
+  ناهمتراز: "نامیزان",
+  ناهماهنگ: "نامیزان",
+  ناهمسطح: "نامیزان",
+  خش: "خراش",
+  خطوخش: "خراش",
+  نشت: "نشتی",
+  چکه: "نشتی",
+  لقی: "لق",
+  شل: "لق",
+};
+
+function cmdSemClean(text) {
+  return String(text || "")
+    .replace(/ي/g, "ی")
+    .replace(/ك/g, "ک")
+    .replace(/[ً-ٟـ]/g, "")
+    .replace(/[‌]/g, "")
+    .replace(/[^؀-ۿa-zA-Z0-9\s]/g, " ")
+    .toLowerCase();
+}
+
+function cmdSemStem(word) {
+  var w = word;
+  if (w.length > 4 && /(ها|های)$/.test(w)) w = w.replace(/(ها|های)$/, "");
+  if (w.length > 4 && /ی$/.test(w)) w = w.slice(0, -1);
+  return CMD_SEM_SYNONYMS[w] || w;
+}
+
+// کلمه‌های معنادار، بدون تکرار و بدون ترتیب
+function cmdSemTokens(text) {
+  var seen = {},
+    out = [];
+  cmdSemClean(text)
+    .split(/\s+/)
+    .forEach(function (raw) {
+      var w = raw && !CMD_SEM_STOP[raw] ? cmdSemStem(raw) : "";
+      if (w && !seen[w]) {
+        seen[w] = 1;
+        out.push(w);
+      }
+    });
+  return out;
+}
+
+function cmdSemJaccard(a, b) {
+  var set = {};
+  a.forEach(function (w) {
+    set[w] = 1;
+  });
+  var inter = b.filter(function (w) {
+      return set[w];
+    }).length,
+    union = a.length + b.length - inter;
+  return union ? inter / union : 0;
+}
+
+function cmdSemTrigrams(tokens) {
+  var s = " " + tokens.slice().sort().join(" ") + " ",
+    out = {};
+  for (var i = 0; i + 3 <= s.length; i++) out[s.slice(i, i + 3)] = 1;
+  return Object.keys(out);
+}
+
+// ضریب Dice روی سه‌حرفی‌ها؛ غلط املایی کوچک را تحمل می‌کند
+function cmdSemDice(a, b) {
+  var ga = cmdSemTrigrams(a),
+    gb = cmdSemTrigrams(b),
+    set = {};
+  ga.forEach(function (g) {
+    set[g] = 1;
+  });
+  var inter = gb.filter(function (g) {
+    return set[g];
+  }).length;
+  return ga.length + gb.length ? (2 * inter) / (ga.length + gb.length) : 0;
+}
+
+// شباهت دو توکن‌فهرست بین ۰ و ۱؛ هر چیزی که یک کلمه‌ی ضدمعنا (نه/بدون/عدم) دارد باید در هر دو باشد
+var CMD_SEM_NEGATION = /^(نه|نیست|ندارد|بدون|عدم|نشده)$/;
+
+function cmdSemScore(a, b) {
+  if (!a.length || !b.length) return 0;
+  var neg = function (t) {
+    return t.some(function (w) {
+      return CMD_SEM_NEGATION.test(w);
+    });
+  };
+  if (neg(a) !== neg(b)) return 0;
+  return Math.max(cmdSemJaccard(a, b), cmdSemDice(a, b) * 0.9);
+}
+
+/* ---------- خوشه‌بندی ---------- */
+
+// variants: [{text, n}] → خوشه‌های دست‌کم دو شکل نوشتاری؛ بیشترین تعداد، نماینده‌ی خوشه است
+function cmdSemCluster(variants, threshold) {
+  var clusters = [];
+  variants
+    .map(function (v) {
+      return Object.assign({ tokens: cmdSemTokens(v.text) }, v);
+    })
+    .filter(function (v) {
+      return v.tokens.length;
+    })
+    .sort(function (a, b) {
+      return b.n - a.n;
+    })
+    .forEach(function (v) {
+      var best = null,
+        bestScore = 0;
+      clusters.forEach(function (c) {
+        var sc = cmdSemScore(c.seed.tokens, v.tokens);
+        if (sc >= threshold && sc > bestScore) {
+          best = c;
+          bestScore = sc;
+        }
+      });
+      if (best) best.members.push(v);
+      else clusters.push({ seed: v, members: [v] });
+    });
+  return clusters
+    .filter(function (c) {
+      return c.members.length > 1;
+    })
+    .sort(function (a, b) {
+      return cmdSemTotal(b) - cmdSemTotal(a);
+    });
+}
+
+function cmdSemTotal(cluster) {
+  return cluster.members.reduce(function (s, m) {
+    return s + m.n;
+  }, 0);
+}
+
+/* ---------- ساخت گروه‌ها از ایرادهای دامنه ---------- */
+
+function cmdSemVariants(defs) {
+  var by = {};
+  defs.forEach(function (x) {
+    var text = String(defectLabel(x) || "").trim();
+    if (!text) return;
+    (by[text] || (by[text] = { text: text, n: 0, rows: [] })).n++;
+    by[text].rows.push(x);
+  });
+  return Object.keys(by).map(function (k) {
+    return by[k];
+  });
+}
+
+function cmdSemanticGroups(M) {
+  if (M.semantic) return M.semantic;
+  M.semantic = cmdSemCluster(cmdSemVariants(cmdKind(M.defs, "ng")), CMD_SEM_THRESHOLD)
+    .map(function (c) {
+      return Object.assign(c, { merge: cmdMergeState(c) });
+    })
+    .filter(function (c) {
+      return c.merge.state !== "rejected";
+    })
+    .slice(0, CMD_SEM_TOP);
+  return M.semantic;
+}
+
+/* ---------- نمایش ---------- */
+
+function cmdSemRows(cluster) {
+  return cluster.members.reduce(function (all, m) {
+    return all.concat(m.rows);
+  }, []);
+}
+
+function cmdSemCard(cluster, index) {
+  var rows = cmdSemRows(cluster);
+  return (
+    '<article class="cmd-alert cmd-alert-mid"><h3>' +
+    esc(cluster.seed.text) +
+    "</h3>" +
+    cmdMergeBadge(cluster.merge) +
+    "<p>" +
+    cmdNum(rows.length) +
+    " ثبت در " +
+    cmdNum(cluster.members.length) +
+    " شکل نوشتاری روی " +
+    cmdNum(cmdDistinctCars(rows)) +
+    " خودرو؛ ایستگاه: " +
+    esc(cmdStationCounts(rows)) +
+    "</p><ul>" +
+    cluster.members
+      .map(function (m) {
+        return "<li>" + esc(m.text) + " — " + cmdNum(m.n) + "</li>";
+      })
+      .join("") +
+    '</ul><details><summary>مرجع‌ها (' +
+    cmdNum(rows.length) +
+    ')</summary><p class="cmd-source-list" dir="ltr">' +
+    cmdSourceList(rows.map(cmdSource), CMD_SOURCES_SHOWN) +
+    "</p></details>" +
+    cmdMergeButtons(index, cluster.merge.state) +
+    "</article>"
+  );
+}
+
+function cmdSemanticHtml(M) {
+  var groups = cmdSemanticGroups(M);
+  if (!groups.length)
+    return '<p class="cmd-empty">در این بازه عبارت هم‌معنا با نوشتار متفاوت دیده نشد.</p>' + cmdMergeHistoryHtml();
+  return (
+    '<p class="cmd-note">پیشنهاد ادغام است، نه نتیجه‌ی قطعی: عبارت‌هایی که شبیه هم نوشته شده‌اند کنار هم آمده‌اند. ثبت اصلی چکمن هیچ‌وقت تغییر نمی‌کند. بعد از «تأیید ادغام» فقط در تحلیل داشبورد (پارتو، تکرار، هشدار) یکی شمرده می‌شوند و با «لغو تصمیم» برمی‌گردند.</p>' +
+    groups.map(cmdSemCard).join("") +
+    cmdMergeHistoryHtml()
+  );
+}
+
+/* ═════════════════════════════════════════════════
+   فصل 58 — کنترل هوش مصنوعی داشبورد
+   ۱) سوییچ مدیر: فعال یا غیرفعال‌کردن «مشاور مدیریت» (تنظیمات ← هوش مصنوعی داشبورد).
+   ۲) تأیید ادغام ایرادهای هم‌معنا: تصمیم‌ها در سندهای mrg_* ذخیره می‌شود و برای همه یکی است.
+      فقط مدیر و نقش‌دارای مجوز «mrg» می‌توانند تصمیم بگیرند؛ ثبت اصلی چکمن هرگز تغییر نمی‌کند.
+   توابع اصلی: aiEnabled، cmdMergeCanDecide، cmdMergedLabel، cmdMergeState
+   ═════════════════════════════════════════════════ */
+
+/* ---------- سوییچ هوش مصنوعی ---------- */
+
+function aiEnabled() {
+  return !(S.lists && S.lists.ai && S.lists.ai.on === false);
+}
+
+function aiCard() {
+  var on = aiEnabled();
+  return mgCard(
+    "bolt",
+    "هوش مصنوعی داشبورد",
+    "با خاموش‌کردن، «مشاور مدیریت» و گزارش روزانه‌ی آن (هشدارها، خودروهای پرریسک، مقایسه‌ها، پرسش و پاسخ) برای همه پنهان می‌شود. اتاق فرمان و مرکز تحلیل و داده‌ها دست نمی‌خورند. هر زمان دوباره روشن می‌شود.",
+    '<form data-form="cfgai" class="mgform"><label class="chk"><input type="checkbox" id="ai_on"' +
+      (on ? " checked" : "") +
+      "> هوش مصنوعی داشبورد فعال باشد</label>" +
+      '<p class="hint">وضعیت فعلی: <b>' +
+      (on ? "فعال" : "غیرفعال") +
+      '</b></p><button class="btn primary" type="submit">ذخیره</button></form>',
+  );
+}
+
+function submitAiSwitch() {
+  var on = !!document.getElementById("ai_on").checked;
+  lsSave(
+    function (c) {
+      c.ai = { on: on };
+    },
+    on ? "فعال‌کردن هوش مصنوعی داشبورد" : "غیرفعال‌کردن هوش مصنوعی داشبورد",
+  );
+}
+
+/* ---------- تصمیم‌های ادغام ---------- */
+
+function cmdMergeCanDecide() {
+  return !!S.user && (S.isOwner || (isCustomRole(S.user) && rolePerm("mrg")));
+}
+
+function cmdMergeDocs(status) {
+  return (S.merges || [])
+    .filter(function (d) {
+      return d.status === status;
+    })
+    .sort(function (a, b) {
+      return (a.at || "") < (b.at || "") ? -1 : 1;
+    });
+}
+
+// متن ثبت‌شده → نماینده‌ی ادغام‌های تأییدشده؛ تصمیم جدیدتر قدیمی را باطل می‌کند
+var CMD_MERGE_CACHE = { src: null, map: {} };
+
+function cmdMergeMap() {
+  if (CMD_MERGE_CACHE.src === S.merges) return CMD_MERGE_CACHE.map;
+  var map = {};
+  cmdMergeDocs("approved").forEach(function (d) {
+    (d.members || []).forEach(function (m) {
+      map[m] = d.rep;
+    });
+  });
+  CMD_MERGE_CACHE = { src: S.merges, map: map };
+  return map;
+}
+
+function cmdMergedLabel(label) {
+  return cmdMergeMap()[label] || label;
+}
+
+function cmdMergeCovers(doc, members) {
+  return members.every(function (m) {
+    return (doc.members || []).indexOf(m) >= 0;
+  });
+}
+
+function cmdMergeFind(status, members) {
+  return (
+    cmdMergeDocs(status)
+      .filter(function (d) {
+        return cmdMergeCovers(d, members);
+      })
+      .pop() || null
+  );
+}
+
+// «approved» با سند، «rejected»، یا «pending»
+function cmdMergeState(cluster) {
+  var members = cluster.members.map(function (m) {
+      return m.text;
+    }),
+    ok = cmdMergeFind("approved", members);
+  if (ok) return { state: "approved", doc: ok };
+  return { state: cmdMergeFind("rejected", members) ? "rejected" : "pending", doc: null };
+}
+
+function cmdMergeSave(fields) {
+  save(function () {
+    return store.set(
+      "users",
+      "mrg_" + uid(),
+      Object.assign({ by: S.user.name, byId: S.user.id, at: nowIso() }, fields),
+    );
+  }, "تصمیم ثبت شد");
+}
+
+function cmdMergeDecide(F, index, status) {
+  if (!cmdMergeCanDecide()) return false;
+  var cluster = cmdSemanticGroups(cmdAnalyze(F))[+index];
+  if (!cluster || cmdMergeState(cluster).state !== "pending") return false;
+  cmdMergeSave({
+    status: status,
+    rep: cluster.seed.text,
+    members: cluster.members.map(function (m) {
+      return m.text;
+    }),
+  });
+  return false;
+}
+
+function cmdMergeCancel(id) {
+  if (!cmdMergeCanDecide()) return false;
+  save(function () {
+    return store.update("users", id, { status: "cancelled", cancelledBy: S.user.name, cancelledAt: nowIso() });
+  }, "تصمیم لغو شد");
+  return false;
+}
+
+/* ---------- نمایش ---------- */
+
+function cmdMergeButtons(index, state) {
+  if (!cmdMergeCanDecide() || state !== "pending") return "";
+  return (
+    '<div class="row">' +
+    cmdAct("تأیید ادغام", "cmdmrgapprove", String(index), "cmd-primary") +
+    cmdAct("این‌ها یکی نیستند", "cmdmrgreject", String(index), "cmd-chip") +
+    "</div>"
+  );
+}
+
+function cmdMergeBadge(info) {
+  return info.state === "approved"
+    ? '<p class="cmd-note">✓ ادغام تأیید شده؛ نماینده: <b>' + esc(info.doc.rep) + "</b>" + whoWhen(info.doc.by, info.doc.at, "تأییدکننده") + "</p>"
+    : "";
+}
+
+function cmdMergeHistoryItem(d) {
+  var ok = d.status === "approved";
+  return (
+    '<li><b>' +
+    (ok ? "تأیید" : "رد") +
+    "</b> — " +
+    esc(d.members.join(" | ")) +
+    whoWhen(d.by, d.at, "ثبت‌کننده") +
+    (cmdMergeCanDecide() ? cmdAct("لغو تصمیم", "cmdmrgcancel", d.id, "cmd-chip") : "") +
+    "</li>"
+  );
+}
+
+function cmdMergeHistoryHtml() {
+  var list = cmdMergeDocs("approved").concat(cmdMergeDocs("rejected"));
+  if (!list.length) return "";
+  return (
+    "<details><summary>تصمیم‌های قبلی (" +
+    cmdNum(list.length) +
+    ')</summary><ul class="cmd-merge-list">' +
+    list.map(cmdMergeHistoryItem).join("") +
+    "</ul></details>"
+  );
+}
+
+/* MOHR AI-r4: read-only extensions to the existing local analyst. No model, network,
+   operational writes, automatic rule changes or persistent personal-data archive. */
+var AI121 = {session:typeof crypto!=='undefined'&&crypto.randomUUID?crypto.randomUUID():Date.now().toString(36)+Math.random().toString(36).slice(2),identity:'', history:[], latest:null, lastTick:0, enabled:true, count:0};
+function ai121Ensure() {
+  var allowed=!!S.user && aiEnabled() && dashAllowed(), identity=allowed?JSON.stringify([S.user.id,S.user.role||null,S.user.station||null,userSheets()]):'';
+  if(identity!==AI121.identity || !allowed){AI121.identity=identity;AI121.history=[];AI121.latest=null;AI121.lastTick=0;AI121.count=0;}
+  return allowed;
+}
+function ai121Period(kind,now) {
+  var t=dayStart(now),from=t,to=now+1;
+  if(kind==='week')from=t-6*DAY_MS;
+  if(kind==='yesterday'){from=t-DAY_MS;to=t;}
+  if(kind==='calendarWeek'||kind==='previousWeek'){from=t-((new Date(t+TEHRAN_MS).getUTCDay()+1)%7)*DAY_MS;if(kind==='previousWeek'){to=from;from-=7*DAY_MS;}}
+  if(kind==='month'||kind==='previousMonth'){
+    var fmt=new Intl.DateTimeFormat('en-US-u-ca-persian-nu-latn',{timeZone:'Asia/Tehran',day:'numeric'});
+    from=t-(Number(fmt.format(new Date(t+12*3600000)))-1)*DAY_MS;
+    if(kind==='previousMonth'){to=from;var prev=from-DAY_MS;from=prev-(Number(fmt.format(new Date(prev+12*3600000)))-1)*DAY_MS;}
+  }
+  if(['today','yesterday','week','calendarWeek','previousWeek','month','previousMonth'].indexOf(kind)<0)throw Error('دوره گزارش معتبر نیست');
+  return {from:from,to:to,kind:kind,timeZone:'Asia/Tehran',partial:['today','week','calendarWeek','month'].indexOf(kind)>=0};
+}
+function ai121Metrics(F,kind,now) {return cmdBuildMetrics(F,now,ai121Period(kind,now));}
+function ai121Audit(M,F) {
+  var issues=[],seen=Object.create(null),rows=M.all||[];
+  function add(type,x,detail){issues.push({type:type,source:cmdSource(x),detail:detail});}
+  rows.forEach(function(x){
+    var id=cmdSource(x),stamp=JSON.stringify([x.r.sheet,x.r.key,x.ms,x.it.r,x.it.note,x.it.closedAt]);
+    if(seen[id])add(seen[id]===stamp?'duplicate-source':'conflicting-source',x,'شناسه منبع تکراری؛ نیازمند بررسی، نه حذف خودکار');else seen[id]=stamp;
+    if(!isFinite(x.ms)||x.ms<=0||x.ms>M.now)add('invalid-occurrence-time',x,'زمان وقوع نامعتبر یا آینده');
+    if(x.it.closedAt){var end=Date.parse(x.it.closedAt);if(!isFinite(end)||end<x.ms||end>M.now)add('invalid-closure-time',x,'زمان رفع نامعتبر، آینده یا پیش از ثبت');if(!x.it.closedBy)add('missing-closure-author',x,'زمان رفع بدون نام ثبت‌کننده رفع');}
+    if(x.r.final && x.r.finalAt && Date.parse(x.r.finalAt)<Date.parse(x.r.createdAt))add('invalid-final-time',x,'زمان نهایی پیش از ایجاد پرونده');
+  });
+  var rawChecked=0,scope=userSheets(),rawSeen=Object.create(null);
+  if(F)(S.data.insp||[]).forEach(function(r){
+    if(!r||r.test||!SHEETS[r.sheet]||(scope&&scope.indexOf(r.sheet)<0)||(F.station&&F.station!==r.sheet)||(F.prod&&prodOf(r)!==F.prod))return;
+    var ms=Date.parse(r.createdAt);
+    if(F.shift && (!isFinite(ms)||!shiftCfg()||String(shiftOf(ms,shiftCfg()))!==String(F.shift)))return;
+    rawChecked++;
+    var source=String(r.id||r.sheet+'_'+r.key);
+    if(!isFinite(ms)||ms>M.now)issues.push({type:'raw-invalid-time',source:source,detail:'زمان ایجاد رکورد نامعتبر یا آینده؛ قابل انتساب به بازه گزارش نیست'});
+    if(rawSeen[source])issues.push({type:'duplicate-record-id',source:source,detail:'شناسه رکورد تکراری در داده خام مجاز؛ صرفاً نامزد بررسی'});
+    rawSeen[source]=true;
+  });
+  return {checked:rows.length,rawChecked:rawChecked,issueCount:issues.length,issues:issues.slice(0,200),truncated:issues.length>200,
+    coverage:'ممیزی تاریخچه مجاز بارگذاری‌شده تا مشاهده، مستقل از بازه رخداد گزارش؛ زمان خام نامعتبر قابل انتساب به بازه نیست. منبع دریافت‌نشده قابل ممیزی نیست.'};
+}
+function ai121Associations(M) {
+  var vehicles=Object.create(null),pairs=Object.create(null),ng=cmdKind(M.cohort,'ng');
+  ng.forEach(function(x){if(!x.car)return;var c=vehicles[String(x.car)]||(vehicles[String(x.car)]=Object.create(null));(c[x.r.sheet]||(c[x.r.sheet]=[])).push(cmdSource(x));});
+  Object.keys(vehicles).forEach(function(car){var c=vehicles[car],keys=Object.keys(c).sort();for(var i=0;i<keys.length;i++)for(var j=i+1;j<keys.length;j++){
+    var key=JSON.stringify([keys[i],keys[j]]),g=pairs[key]||(pairs[key]={stations:[keys[i],keys[j]],identifiers:0,sources:[]});g.identifiers++;g.sources=g.sources.concat(c[keys[i]],c[keys[j]]).slice(0,100);
+  }});
+  return {groups:Object.keys(pairs).map(function(k){return pairs[k];}).sort(function(a,b){return b.identifiers-a.identifiers;}).slice(0,10),
+    denominator:Object.keys(vehicles).length,confidence:'توصیفی؛ احتمال آماری و علت ریشه‌ای محاسبه نشده',
+    limitation:'اشتراک شناسه در ثبت‌ها؛ هویت یکتای خودرو فیزیکی و ارتباط علت‌ومعلولی تأیید نشده است. هر زوج در هر شناسه یک بار شمرده می‌شود؛ ارجاع هر زوج حداکثر ۱۰۰ مورد است.'};
+}
+function ai121Stops(F,M) {
+  if(userSheets() || F.prod || F.station || F.shift)return {available:false,reason:'توقف خطوط در دامنه ایستگاهی مجاز نیست یا به فیلتر مدل/ایستگاه/شیفت قابل نگاشت نیست.'};
+  var v=dashValidateLines(S.stops||[],listK('stopLines'),M.period.from,Math.min(M.period.to,M.now),M.now),closed=[];
+  v.lines.forEach(function(l){l.history.forEach(function(x){if(x.end!==null){var start=Math.max(x.start,M.period.from),end=Math.min(x.end,M.period.to,M.now);if(end>start)closed.push({line:x.line,source:x.source,hours:(end-start)/3600000,reason:x.reason,type:x.kind});}});});
+  return {available:true,counts:v.counts,receivedAt:null,stopMinutes:v.stopMin,validatedClosedRecords:closed.length,
+    longest:closed.slice().sort(function(a,b){return b.hours-a.hours;}).slice(0,10),issues:v.errors.slice(0,100),issueCount:v.errors.length,
+    note:'فقط توقف‌های خاتمه‌یافته معتبر؛ مجموع اجتماع بازه‌ها به دقیقه‌ـ‌خط. طول هر رکورد مستقل است و با رکورد دیگر جمع نمی‌شود. جاری‌بودن و ارتباط کسری با توقف احراز نشده است.'};
+}
+function ai121Pack(F,M) {
+  var audit=ai121Audit(M,F),assoc=ai121Associations(M),stops=ai121Stops(F,M),recurring=ai90Stats(M).recurring;
+  return {schema:'mohr-ai-r4',generatedAt:new Date(M.now).toISOString(),period:M.period,
+    scope:{userId:S.user.id,sheets:userSheets()||M.keys,product:F.prod||null,station:F.station||null,shift:F.shift||null,status:F.status||null},
+    coverage:M.coverage,metrics:cmdBriefMetrics(M),metricDefinitions:{defectOccurrences:'همه موارد کیفیت در فیلتر فعلی، نه صرفاً نوع ng',registeredIdentifiers:'شناسه قرارداد موجود؛ نه شمار قطعی خودرو فیزیکی',openInOccurrenceCohort:'گروه ثبت در بازه که اکنون باز است؛ نه موجودی تاریخی در پایان دوره'},audit:audit,associations:assoc,stops:stops,
+    recurrence:recurring.slice(0,200),recurrenceTotal:recurring.length,recurrenceTruncated:recurring.length>200,anomaly:M.anomaly,forecast:M.forecast,
+    confidence:'محاسبات قطعی روی داده مجاز بارگذاری‌شده؛ کامل‌بودن تاریخچه و استنباط علّی تأیید نشده',
+    modelConnected:false,limitations:['No verified causal effect or corrective-action linkage','No live line feed or receipt timestamp','No validated forecast','No central historical AI store; session only','Open state is observed now, not reconstructed at the end of a historical period']};
+}
+function ai121Observe(F,M,force) {
+  if(!ai121Ensure())return null;
+  var signature=cmdScopeKey(F)+'|'+JSON.stringify([M.recs.length,M.all.length,M.closed.length,(S.stops||[]).length]);
+  if(!force && AI121.latest && signature===AI121.latest.signature && M.now-AI121.lastTick<60000)return AI121.latest;
+  var pack=ai121Pack(F,M),snapshot={id:'session-analysis-'+AI121.session+'-'+(++AI121.count),signature:signature,at:pack.generatedAt,pack:pack};
+  AI121.latest=snapshot;AI121.lastTick=M.now;AI121.history.push(snapshot);AI121.history=AI121.history.slice(-12);return snapshot;
+}
+function ai121Tick() {
+  try {
+  if(!ai121Ensure())return;
+  if(!AI121.enabled||document.hidden||S.tab!=='dash'||dashF().mode!=='ai')return;
+  var snapshot=ai121Observe(dashF(),cmdAnalyze(dashF()),true);
+  AI121.error="";
+  var status=document.querySelector('.cmd-ai4-last');
+  if(status&&snapshot)status.textContent='آخرین تحلیل: '+when(snapshot.at)+' · نامزدهای بررسی: '+cmdNum(snapshot.pack.audit.issueCount);
+  // Never redraw the entire page on a timer: preserves typing, open sections and scroll.
+  } catch(e) { AI121.error='پایش نشست تکمیل نشد؛ داده یا قرارداد نیازمند بررسی است: '+String(e.message||e).slice(0,300);var failed=document.querySelector('.cmd-ai4-last');if(failed)failed.textContent=AI121.error; }
+}
+function ai121Refs(sources) {return '<p class="cmd-source-list" dir="ltr">'+sources.map(function(x){return esc(x);}).join(' · ')+'</p>';}
+function ai121Panel(F,M) {
+  var s=ai121Observe(F,M,false);if(!s)return '';var p=s.pack;
+  return cmdUiDisclosure('اتاق بررسی داده و ارتباط‌های احتمالی',
+    '<p>زمان تحلیل: '+esc(when(s.at))+' · '+esc(p.confidence)+'</p><p>'+cmdNum(p.audit.checked)+' ردیف بررسی شد؛ '+cmdNum(p.audit.issueCount)+' مورد نیازمند بازبینی.</p><p>'+esc(p.audit.coverage)+'</p>'+p.audit.issues.slice(0,20).map(function(x){return '<p>'+esc(x.detail)+'</p>'+ai121Refs([x.source]);}).join('')+
+    '<h3>هم‌وقوعی ثبت ایراد بین ایستگاه‌ها</h3><p>'+esc(p.associations.limitation)+'</p>'+(p.associations.groups.length?'':'<p class="cmd-note">در این دامنه، اشتراک شناسه واجد شرایط دیده نشد؛ این نتیجه نبود ارتباط فیزیکی را اثبات نمی‌کند.</p>')+p.associations.groups.map(function(g){return '<p>'+g.stations.map(cmdStationName).map(esc).join(' / ')+' · '+cmdNum(g.identifiers)+' شناسه مشترک</p>'+ai121Refs(g.sources);}).join('')+
+    '<h3>توقف‌های خاتمه‌یافته معتبر</h3><p>'+esc(p.stops.available?p.stops.note:p.stops.reason)+'</p>'+(p.stops.longest||[]).map(function(x){return '<p>'+esc(x.line)+' · '+cmdHours(x.hours)+' ساعت · '+esc(x.reason)+'</p>'+ai121Refs([x.source]);}).join(''))+
+    cmdUiDisclosure('گزارش‌های دوره‌ای، حافظه نشست و وضعیت موتور',
+    (AI121.error?'<p>'+esc(AI121.error)+'</p>':'')+'<p class="cmd-ai4-last" aria-live="polite">آخرین تحلیل: '+esc(when(s.at))+' · نامزدهای بررسی: '+cmdNum(p.audit.issueCount)+'</p><p>پایش هر ۶۰ ثانیه فقط هنگام باز و قابل مشاهده بودن صفحه مشاور. مرورگر بسته یا پنهان: پایش انجام نمی‌شود. مدل زبانی و پیش‌بینی متصل نیستند.</p>'+cmdAct(AI121.enabled?'توقف پایش نشست':'شروع پایش نشست','cmdai4toggle','','cmd-secondary')+
+    cmdAct('تازه‌سازی تحلیل و سوابق','cmdai4refresh','','cmd-secondary')+'<div class="cmd-ai-actions">'+[['today','گزارش امروز'],['week','گزارش ۷ روز تا اکنون'],['month','گزارش ماه شمسی تا اکنون'],['previousMonth','گزارش ماه شمسی قبل']].map(function(x){return cmdAct(x[1],'cmdai4report',x[0],'cmd-secondary');}).join('')+cmdAct('دریافت سوابق تحلیل همین نشست','cmdai4history','','cmd-secondary')+'</div><p>'+cmdNum(AI121.history.length)+' تحلیل در حافظه همین نشست؛ حداکثر ۱۲ تحلیل. با تغییر کاربر یا دامنه مجوز پاک می‌شود؛ جایگزین آرشیو سازمانی نیست.</p>'+AI121.history.slice().reverse().map(function(x){return '<p title="'+esc(x.id)+'">تحلیل '+cmdNum(Number(x.id.split('-').pop()))+' · '+esc(when(x.at))+' · موارد مشکوک: '+cmdNum(x.pack.audit.issueCount)+'</p>';}).join('')+
+    '<p>سناریوی حسابی را در همان گفت‌وگو بپرسید: «سناریو: اگر ۲۰ درصد موارد باز این گروه بسته شوند؟» نتیجه فرضی است و هیچ پرونده‌ای تغییر نمی‌کند.</p>');
+}
+function ai121TryAnswer(question,M) {
+  if(!ai121Ensure())return null;
+  var q=ai90Normalize(fnum(question)).slice(0,600).replace(/٫/g,'.'),F=Object.assign({},dashF()),kind=null,text='',sources=[],metric='AI-r4',ctx=M;
+  if(/باراد|هامون|barad|hamoon/i.test(q))return {text:'نگاشت معتبر محصول درخواست‌شده در قرارداد فعلی وجود ندارد؛ مقایسه یا عدد حدس زده نمی‌شود.',sources:[],metric:'M05'};
+  if(/پیش.?بین|آینده|فردا/.test(q)&&!/سناریو|فرض کنیم/.test(q))return {text:M.forecast.reason,sources:[],metric:'M15'};
+  if(/سناریو|فرض کنیم/.test(q)){
+    var n=q.match(/(-?\d+(?:\.\d+)?)\s*(?:درصد|%|٪)/),scenarioRows=cmdKind(M.open,'ng'),open=scenarioRows.length;
+    return {text:n&&+n[1]>=0&&+n[1]<=100?'سناریوی حسابی و غیرواقعی: مبنا '+cmdNum(open)+' ایراد باز در گروه بازه؛ فرض بسته‌شدن '+cmdNum(+n[1])+' درصد، باقی‌مانده حسابی '+cmdNum(open*(1-+n[1]/100))+'. این عدد ممکن است اعشاری باشد؛ پیش‌بینی، احتمال یا تعداد قطعی خودرو نیست. هیچ داده‌ای تغییر نکرد.':'برای سناریوی حسابی، درصدی بین صفر و صد و فرض بسته‌شدن موارد را مشخص کنید؛ پیش‌بینی علّی ممکن نیست.',sources:scenarioRows.map(cmdSource),metric:'AI-r4-scenario',kind:'سناریوی حسابی — فرضی'};
+  }
+  if(/\d{5,20}/.test(q))return null;
+  var relevant=/پنج.*(?:عیب|ایراد)|(?:عیب|ایراد).*پنج|[5۵].*(?:عیب|ایراد)|بیشترین زمان رفع|طولانی.*رفع|توقف|خطوط|ممیزی|داده.*(?:مشکوک|ناقص|تکراری)|ارتباط|هم.?وقوع|حافظه|سوابق مشابه|ماه|گزارش هفتگی|تعیین تکلیف|توجه فوری|اقدام اصلاحی|اثربخشی/.test(q);
+  if(!relevant)return null;
+  if(/ماه قبل|ماه گذشته/.test(q))kind='previousMonth';else if(/این ماه|ماه جاری/.test(q))kind='month';else if(/هفته قبل|هفته گذشته/.test(q))kind='previousWeek';else if(/این هفته|هفته جاری/.test(q))kind='calendarWeek';else if(/هفته|هفتگی/.test(q))kind='week';else if(/دیروز/.test(q))kind='yesterday';else if(/امروز/.test(q))kind='today';
+  if(/پادرا/.test(q))F.prod='padra';else if(/اکستند|اکستندد|extend/i.test(q))F.prod='ex';
+  if(kind||F.prod!==dashF().prod)ctx=kind?ai121Metrics(F,kind,M.now):cmdBuildMetrics(F,M.now);
+  if(/ماه/.test(q)&&/مقایسه|نسبت|تغییر/.test(q)) {
+    var current=ai121Metrics(F,'month',M.now),previous=ai121Metrics(F,'previousMonth',M.now);
+    function monthLine(label,x){var n=cmdKind(x.cohort,'ng').length;return label+': '+cmdNum(n)+' ایراد، '+cmdNum(x.cars)+' شناسه دارای ثبت، '+cmdNum(x.cars?100*n/x.cars:null)+' ایراد به ازای ۱۰۰ شناسه.';}
+    text=monthLine('ماه شمسی جاری تا اکنون',current)+'\n'+monthLine('ماه شمسی قبل',previous)+'\nماه جاری ناقص و ماه قبل کاملِ تقویمی است؛ پوشش ثبت‌ها کامل احراز نشده. این مقایسه توصیفی است و به‌تنهایی افت کیفیت یا اثر اقدام را اثبات نمی‌کند.';
+    sources=cmdKind(current.cohort,'ng').concat(cmdKind(previous.cohort,'ng')).map(cmdSource);ctx=current;
+  }
+  else if(/اقدام اصلاحی|اثربخشی/.test(q)) {var recurrence=ai90Stats(ctx).recurring;text='اثربخشی اقدام قابل محاسبه نیست: شناسه اقدام، تاریخ اجرا، دامنه اثر و علت تأییدشده در قرارداد داده موجود نیست. '+cmdNum(recurrence.length)+' مشاهده ثبت مجدد هم‌بند/هم‌شناسه پس از رفع در این دامنه دیده شد؛ اثبات شکست اقدام نیست.';sources=recurrence.map(function(x){return x.source;});}
+  else if(/تعیین تکلیف|توجه فوری/.test(q)){if(kind&&kind!=='today'){text='اولویت‌های تاریخی و وضعیت باز در گذشته بدون تاریخچه تغییر وضعیت قابل بازسازی نیست؛ گزارش روزانه مربوط به زمان مشاهده است.';}else{var pack=cmdDailyPack(F,ctx);text=pack.text+'\nاولویت‌ها قواعدی‌اند؛ سن مورد باز تأخیر تعهد نیست.';sources=ctx.open.map(cmdSource);}}
+  else if(/توقف|خطوط/.test(q)) {var stop=ai121Stops(F,ctx);text=stop.available?'وضعیت جاری خطوط احراز نشده؛ '+cmdNum(stop.counts.unknown)+' خط نامشخص. توقف خاتمه‌یافته معتبر: '+cmdNum(stop.stopMinutes)+' دقیقه‌ـ‌خط. '+stop.note+'\n'+stop.longest.map(function(x){return x.line+': '+cmdHours(x.hours)+' ساعت؛ '+x.reason;}).join('\n'):stop.reason;sources=(stop.longest||[]).map(function(x){return x.source;});}
+  else if(/ممیزی|داده.*(?:مشکوک|ناقص|تکراری)/.test(q)){var a=ai121Audit(ctx,F);text=cmdNum(a.checked)+' ردیف؛ '+cmdNum(a.issueCount)+' مورد مشکوک. '+a.coverage+'\n'+a.issues.slice(0,20).map(function(x){return x.detail;}).join('\n');sources=a.issues.map(function(x){return x.source;});}
+  else if(/ارتباط|هم.?وقوع/.test(q)){var a=ai121Associations(ctx);text=a.confidence+'؛ '+a.limitation+'\n'+a.groups.map(function(g){return g.stations.map(cmdStationName).join(' / ')+': '+cmdNum(g.identifiers)+' شناسه مشترک';}).join('\n');sources=a.groups.reduce(function(s,g){return s.concat(g.sources);},[]);}
+  else if(/بیشترین زمان رفع|طولانی.*رفع/.test(q)){var slow=ctx.closed.filter(function(x){var end=Date.parse(x.it.closedAt);return isFinite(end)&&end>=x.ms&&end<=ctx.now;}).sort(function(a,b){return (Date.parse(b.it.closedAt)-b.ms)-(Date.parse(a.it.closedAt)-a.ms);}).slice(0,5);text='طولانی‌ترین زمان‌های ثبت تا رفع در رویدادهای رفع این دامنه؛ نه ارزیابی مسئول اقدام:\n'+slow.map(function(x){return defectLabel(x)+': '+cmdHours((Date.parse(x.it.closedAt)-x.ms)/3600000)+' ساعت';}).join('\n');sources=slow.map(cmdSource);}
+  else if(/پنج|[5۵]/.test(q)){var top=cmdRepeatedGroups(cmdKind(ctx.defs,'ng')).slice(0,5);text='پنج گروه پرتعداد ایراد؛ هم‌بندی به معنی علت مشترک نیست:\n'+top.map(function(g){return g.label+': '+cmdNum(g.n)+' ثبت در '+cmdNum(Object.keys(g.cars).length)+' شناسه';}).join('\n');sources=top.reduce(function(a,g){return a.concat(g.sources);},[]);}
+  else if(/حافظه|سوابق مشابه/.test(q)){
+    var ignore=['حافظه','تاریخی','سوابق','مشابه','جستجو','جست‌وجو','قبلی','را','چیست','کدام','نشان','بده','سابقه'],words=ai90Normalize(q).replace(/[^\p{L}\p{N}\s]/gu,' ').split(/\s+/).filter(function(w){return w.length>1&&ignore.indexOf(w)<0;});
+    var hits=words.length?ctx.all.filter(function(x){var t=ai90Normalize(defectLabel(x)+' '+(x.it.note||'')+' '+(x.it.closeNote||''));return words.every(function(w){return t.indexOf(w)>=0;});}):[];
+    text='جست‌وجوی واژگانی در تاریخچه مجاز بارگذاری‌شده تا زمان مشاهده، مستقل از بازه رخداد صفحه؛ '+cmdNum(hits.length)+' تطبیق؛ حداکثر ۲۰ مورد نخست نمایش داده می‌شود. علت مشترک یا اثربخشی راهکار اثبات نشده است.\n'+hits.slice(0,20).map(function(x){return defectLabel(x)+'؛ توضیح رفع ثبت‌شده: '+String(x.it.closeNote||'ثبت نشده').slice(0,200);}).join('\n')+(words.length?'':'برای جست‌وجو، نام قطعه یا شرح عیب را نیز وارد کنید.');sources=hits.slice(0,20).map(cmdSource);
+  }
+  else {var defs=cmdKind(ctx.defs,'ng');text='گزارش دامنه: '+cmdNum(ctx.cars)+' شناسه دارای ثبت؛ '+cmdNum(defs.length)+' ایراد؛ '+cmdNum(ctx.open.length)+' مورد کیفیت باز در گروه ثبت؛ '+cmdNum(ctx.closed.length)+' رویداد رفع. موارد کیفیت شامل انواع مختلف است.\n'+cmdStationCounts(defs)+'. مقایسه ماه ناقص با ماه کامل رتبه‌بندی عملکرد نیست.';sources=defs.map(cmdSource);}
+  var uniqueSources=Array.from(new Set(sources));
+  if(uniqueSources.length>500)text+='\nارجاع‌ها: ۵۰۰ مورد نخست از '+cmdNum(uniqueSources.length)+'؛ بقیه در پاسخ کوتاه نمایش داده نمی‌شوند.';
+  return {text:text+'\nبازه اختصاصی پاسخ: '+new Date(ctx.period.from).toLocaleDateString('fa-IR',{timeZone:'Asia/Tehran'})+' تا '+new Date(Math.min(ctx.period.to,ctx.now)).toLocaleDateString('fa-IR',{timeZone:'Asia/Tehran'})+'؛ محصول: '+(F.prod||'همه محصولات مجاز')+'؛ '+(kind==='month'?'ماه شمسی تا اکنون، ناقص':'فیلترهای غیرزمانی و مجوز فعلی حفظ شده‌اند')+'.',sources:uniqueSources.slice(0,500),metric:metric,answerPeriod:ctx.period};
+}
+CMD_ACTIONS.cmdai4refresh=function(F){if(ai121Ensure())ai121Observe(F,cmdAnalyze(F),true);return true;};
+CMD_ACTIONS.cmdai4toggle=function(){if(ai121Ensure())AI121.enabled=!AI121.enabled;return true;};
+CMD_ACTIONS.cmdai4report=function(F,el,value){if(!ai121Ensure())return false;if(['today','week','month','previousMonth'].indexOf(value)<0){toast('دوره گزارش معتبر نیست');return false;}var M=ai121Metrics(F,value,Date.now()),p=ai121Pack(F,M);p.existingAnalysis=cmdBrief(M);p.existingAnalysis.scope=p.scope;saveFile('MOHR-AI-'+value+'.json',new Blob([JSON.stringify(p,null,2)],{type:'application/json;charset=utf-8'}));return false;};
+CMD_ACTIONS.cmdai4history=function(){if(!ai121Ensure())return false;saveFile('MOHR-AI-session-history.json',new Blob([JSON.stringify({scope:AI121.identity,history:AI121.history,centralArchive:false},null,2)],{type:'application/json;charset=utf-8'}));return false;};
+setInterval(ai121Tick,60000);
+
+document.addEventListener('visibilitychange',function(){if(!document.hidden)ai121Tick();});
 
 /* ════════════════════════════════════════════════════════════
    فصل 60 — مدیریت: صفحه‌ی اصلی و ناوبری
@@ -34669,6 +36504,7 @@ var SET_PAGES = [
   ["target", "sliders", "هدف تولید روزانه", "", targetCard],
   ["mgr", "users", "سمت‌ها و بخش‌های مدیریتی", "فهرست فرم افزودن کاربر", mgrCard],
   ["mark", "bolt", "نشانه‌ی کسری باز", "بارگذاری سبک", markCard],
+  ["ai", "sliders", "هوش مصنوعی داشبورد", "فعال یا غیرفعال", aiCard],
 ];
 
 /* ════════════════════════════════════════════════════════════
@@ -35998,6 +37834,13 @@ var ROLE_PERMS = [
   ["cpf", "فرم حفاظت از مشتری"],
 ];
 
+// مجوزهایی که تب نیستند؛ فقط در فرم نقش تیک می‌خورند
+var ROLE_EXTRA_PERMS = [["mrg", "تأیید ادغام ایرادهای هم‌معنا (داشبورد)"]];
+
+function rolePermFields() {
+  return ROLE_PERMS.concat(ROLE_EXTRA_PERMS);
+}
+
 var AREAS = {
   all: { label: "همه‌ی حوزه‌ها", sheets: null },
   chassis: { label: "شاسی و موتور", sheets: ["chassis", "engine"] },
@@ -36034,7 +37877,7 @@ var ROLE_DEFAULTS = [
     name: "سرپرست کیفیت",
     scope: "all",
     cpfUnit: "qual",
-    tabs: { dash: true, cpf: true },
+    tabs: { dash: true, cpf: true, mrg: true },
   },
 ];
 
@@ -36105,7 +37948,7 @@ function roleSheetsTxt(u) {
 
 /* ---------- صفحه‌ی مدیریت نقش‌ها ---------- */
 function roleForm(r) {
-  var tabs = ROLE_PERMS.map(function (p) {
+  var tabs = rolePermFields().map(function (p) {
     return (
       '<label class="chk"><input type="checkbox" id="rp_' +
       r.id +
@@ -36208,7 +38051,7 @@ function rolesSave(next, what) {
 
 function roleFromForm(r) {
   var tabs = {};
-  ROLE_PERMS.forEach(function (p) {
+  rolePermFields().forEach(function (p) {
     var e = document.getElementById("rp_" + r.id + "_" + p[0]);
     if (e && e.checked) tabs[p[0]] = true;
   });
@@ -37385,6 +39228,7 @@ document.addEventListener("submit", function (ev) {
   if (f === "cpfclose" && canCpfCreate()) return cpfClose(ev.target.getAttribute("data-id"));
   if (f === "stopedit" && canStop()) return submitStopEdit(ev);
   if (f === "cfglen" && S.isOwner) return submitNumberLengths();
+  if (f === "cfgai" && S.isOwner) return submitAiSwitch();
   if (f === "shsearch") return submitShortSearch();
   if (f === "carsearch") return submitCarSearch();
   if (f === "search") return submitSearch();
