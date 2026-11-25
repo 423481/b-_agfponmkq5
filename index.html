@@ -11141,6 +11141,195 @@ body:has(.mohr-cmd) .wrap {
   }
 }
 
+/* v167.123 — روند شاخص‌ها، پارتو، تحویل شیفت، نیازمند توجه و پیگیری هشدارها */
+.mohr-cmd .cmd-kpitrend {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  margin-top: 6px;
+  color: var(--mc-muted);
+  font-size: 11px;
+}
+.mohr-cmd .cmd-kpitrend .cmd-spark {
+  width: 100%;
+  max-width: 120px;
+  height: 22px;
+}
+.mohr-cmd .cmd-kpitrend-good {
+  color: var(--mc-green);
+}
+.mohr-cmd .cmd-kpitrend-bad {
+  color: var(--mc-red);
+}
+.mohr-cmd .cmd-pareto {
+  margin: 8px 0;
+  color: var(--mc-blue);
+}
+.mohr-cmd .cmd-pareto svg {
+  width: 100%;
+  max-width: 420px;
+  height: auto;
+}
+.mohr-cmd .cmd-pareto figcaption {
+  color: var(--mc-muted);
+  font-size: 11px;
+}
+.mohr-cmd .cmd-handover,
+.mohr-cmd .cmd-attention-list {
+  margin-top: 12px;
+}
+.mohr-cmd .cmd-handover textarea {
+  width: 100%;
+  min-height: 160px;
+  font: inherit;
+  font-size: 13px;
+  background: var(--mc-surface);
+  color: var(--mc-ink);
+  border: 1px solid var(--mc-line);
+  border-radius: 8px;
+  padding: 10px;
+}
+.mohr-cmd .cmd-follow {
+  margin-top: 8px;
+  padding: 8px 10px;
+  border-inline-start: 3px solid var(--mc-blue);
+  background: var(--mc-blue-soft);
+  border-radius: 6px;
+}
+.mohr-cmd .cmd-follow-line {
+  margin: 0;
+  font-size: 12px;
+}
+.mohr-cmd .cmd-follow-late {
+  color: var(--mc-red);
+}
+.mohr-cmd .cmd-follow-form {
+  margin-top: 8px;
+}
+.mohr-cmd .cmd-follow-form summary {
+  cursor: pointer;
+  min-height: 44px;
+  display: flex;
+  align-items: center;
+  color: var(--mc-blue);
+}
+.mohr-cmd .cmd-stage-idle {
+  align-self: start;
+}
+.mohr-cmd .cmd-kpitrend {
+  grid-column: 1 / -1;
+}
+.mohr-cmd .cmd-follow-form .btn,
+.mohr-cmd .cmd-follow-form .in {
+  min-height: 44px;
+}
+.mohr-cmd .cmd-minibar {
+  display: none;
+}
+@media (max-width: 700px) {
+  .mohr-cmd .cmd-minibar {
+    display: flex;
+    justify-content: space-between;
+    gap: 8px;
+    position: sticky;
+    top: env(safe-area-inset-top, 0px);
+    z-index: 5;
+    padding: 8px 12px;
+    background: var(--mc-surface);
+    color: var(--mc-ink);
+    border: 1px solid var(--mc-line);
+    border-radius: 8px;
+    font-size: 12px;
+    box-shadow: 0 2px 8px #0000001a;
+  }
+}
+
+/* v167.125 — چیدمان منظم: جدول مقایسه با ستون ثابت، ریل ایستگاه‌ها، «نمایش بیشتر» و فهرست پرش */
+.mohr-cmd .cmd-cmpgrid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 8px 28px;
+}
+@media (min-width: 1100px) {
+  .mohr-cmd .cmd-cmpgrid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+.mohr-cmd .cmd-cmptable {
+  table-layout: fixed;
+}
+.mohr-cmd .cmd-cmptable .c0 {
+  width: 40%;
+}
+.mohr-cmd .cmd-cmptable .c1 {
+  width: 20%;
+}
+.mohr-cmd .cmd-cmptable td,
+.mohr-cmd .cmd-cmptable thead th:not(:first-child) {
+  text-align: end;
+  font-variant-numeric: tabular-nums;
+  font-feature-settings: "tnum";
+}
+.mohr-cmd .cmd-cmptable tbody th {
+  text-align: start;
+}
+.mohr-cmd .cmd-d0 {
+  color: var(--mc-muted);
+}
+.mohr-cmd .cmd-more {
+  margin-top: 8px;
+}
+.mohr-cmd .cmd-more > summary {
+  cursor: pointer;
+  min-height: 44px;
+  display: flex;
+  align-items: center;
+  color: var(--mc-blue);
+  font-weight: 600;
+  font-size: 12.5px;
+}
+.mohr-cmd .cmd-rail-label {
+  margin: 14px 0 8px;
+  font-size: 11px;
+  color: #a4c4dc;
+}
+.mohr-cmd .cmd-rail::before {
+  display: none;
+}
+.mohr-cmd .cmd-rail {
+  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+  align-items: stretch;
+}
+.mohr-cmd .cmd-rail-idle {
+  grid-template-columns: repeat(auto-fill, minmax(170px, 1fr));
+  gap: 8px;
+}
+.mohr-cmd .cmd-rail-idle .cmd-stage-idle {
+  align-self: stretch;
+}
+.mohr-cmd .cmd-ainav {
+  display: none;
+}
+@media (min-width: 1000px) {
+  .mohr-cmd .cmd-ainav {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    position: sticky;
+    top: 0;
+    z-index: 5;
+    padding: 8px 0;
+    margin-bottom: 8px;
+    background: var(--mc-surface, #fff);
+    border-bottom: 1px solid var(--mc-line);
+  }
+}
+@media (min-width: 1000px) {
+  .mohr-cmd .cmd-executive {
+    align-items: stretch;
+  }
+}
+
 </style>
 </head>
 <body>
@@ -11162,7 +11351,7 @@ var SUPA_URL = "https://kdpmscvzavrdwwoprkfi.supabase.co",
 /* نشانی سرویس دیتابیس شرکت. خالی = همان Supabase (حالت فعلی)؛ پر = همهٔ خواندن/نوشتن به این سرویس می‌رود. */
 var API_URL = "";
 
-var APP_VER = "v167.122";
+var APP_VER = "v167.126";
 
 var AUTH_FN = "";
 
@@ -11561,8 +11750,47 @@ function verPut(id, v) {
   } catch (e) {}
 }
 
+/* وضعیت شبکه: با اولین شکست، تا NET_COOL_MS درخواست‌ها فوری رد می‌شوند و ثبت‌ها مستقیم به صف می‌روند؛
+   بازیابی را netProbe (هر ۶ ثانیه) با یک درخواست کوتاه تشخیص می‌دهد. */
+var NET_COOL_MS = 20000;
+var NET_PROBE_MS = 5000;
+var NET = { failed: false, downUntil: 0, probing: false };
+
+function netFail() {
+  var was = NET.failed;
+  NET.failed = true;
+  NET.downUntil = Date.now() + NET_COOL_MS;
+  if (!was) setTimeout(syncRefresh, 0);
+}
+
+function netOk() {
+  var was = NET.failed;
+  NET.failed = false;
+  NET.downUntil = 0;
+  if (was) setTimeout(syncRefresh, 0);
+}
+
+function netBlocked() {
+  return NET.failed && Date.now() < NET.downUntil;
+}
+
+function netProbe() {
+  if (!NET.failed || NET.probing || !store || !store.raw) return;
+  NET.probing = true;
+  sbFetch("inspections?select=id&limit=1", { probe: true }, NET_PROBE_MS).then(
+    function () {
+      NET.probing = false;
+      offFlush();
+    },
+    function () {
+      NET.probing = false;
+    },
+  );
+}
+
 function sbFetch(path, opt, ms) {
   opt = opt || {};
+  if (!opt.probe && netBlocked()) return Promise.reject(new Error("اتصال به سرور برقرار نشد"));
   var h = Object.assign(
     API_URL
       ? { Authorization: "Bearer " + authBearer() }
@@ -11583,6 +11811,7 @@ function sbFetch(path, opt, ms) {
   }).then(
     function (r) {
       if (tm) clearTimeout(tm);
+      netOk();
       if (!r.ok)
         return r.text().then(function (t) {
           throw new Error("سرور: " + r.status + " " + t.slice(0, 120));
@@ -11595,6 +11824,7 @@ function sbFetch(path, opt, ms) {
     },
     function (e) {
       if (tm) clearTimeout(tm);
+      netFail();
       throw new Error("اتصال به سرور برقرار نشد");
     },
   );
@@ -11604,6 +11834,7 @@ function sbFetch(path, opt, ms) {
    وضعیت هر اتصال در یک شیء sb نگه داشته می‌شود (حافظه‌ی رکوردها، مشترک‌ها، زمان‌سنج‌ها)؛
    توابع زیر فقط روی همین sb کار می‌کنند و makeSupabase آن‌ها را به هم وصل می‌کند. */
 
+var CAR_WAIT_MS = 2000; // صفحه‌ی خودرو بیشتر از این منتظر سرور نمی‌ماند
 var SB_FULL_MS = 300000; // هر ۵ دقیقه یک همگام‌سازی کامل (برای دیدن حذف‌ها)
 var SB_PAGE = 500;
 var SB_META_PAGE = 1000;
@@ -12093,7 +12324,7 @@ function makeSupabase() {
 }
 
 function probeSupa() {
-  return sbFetch("inspections?select=id&limit=1", {}, 6000).then(
+  return sbFetch("inspections?select=id&limit=1", { probe: true }, 6000).then(
     function () {
       return makeSupabase();
     },
@@ -12262,6 +12493,9 @@ function feedUsers(rows0) {
   S.merges = rows.filter(function (r) {
     return String(r.id).indexOf("mrg_") === 0;
   });
+  S.followups = rows.filter(function (r) {
+    return String(r.id).indexOf("alt_") === 0;
+  });
   S.corr = rows
     .filter(function (r) {
       return String(r.id).indexOf("corr_") === 0;
@@ -12288,7 +12522,8 @@ function feedUsers(rows0) {
       String(r.id).indexOf("stop_") !== 0 &&
       String(r.id).indexOf("psh_") !== 0 &&
       String(r.id).indexOf("cpf_") !== 0 &&
-      String(r.id).indexOf("mrg_") !== 0
+      String(r.id).indexOf("mrg_") !== 0 &&
+      String(r.id).indexOf("alt_") !== 0
     );
   });
   setTimeout(sessRestore, 0);
@@ -12347,7 +12582,7 @@ function ensureCar(vals) {
       return v && !CARF[v] && a.indexOf(v) === i;
     });
   if (!need.length) return Promise.resolve();
-  return store.fetchCar(need).then(
+  var fetched = store.fetchCar(need).then(
     function () {
       need.forEach(function (v) {
         CARF[v] = 1;
@@ -12355,6 +12590,12 @@ function ensureCar(vals) {
     },
     function () {},
   );
+  return Promise.race([
+    fetched,
+    new Promise(function (resolve) {
+      setTimeout(resolve, CAR_WAIT_MS);
+    }),
+  ]);
 }
 
 function markS(id, d) {
@@ -12398,7 +12639,7 @@ function offWrap(st) {
       setTimeout(offFlush, 1500);
       return true;
     }
-    if (OFFLINE.q.length) return Promise.resolve(queue());
+    if (OFFLINE.q.length || NET.failed) return Promise.resolve(queue());
     var p =
       k === "del"
         ? st.del(c, id)
@@ -14420,8 +14661,8 @@ function syncText() {
         (OFFLINE.full ? " · حافظه پر است" : "")
     : navigator.onLine === false
       ? "اتصال قطع است"
-      : S.offStart
-        ? "آفلاین · سرور در دسترس نیست"
+      : S.offStart || NET.failed
+        ? "آفلاین · سرور در دسترس نیست؛ ثبت‌ها روی دستگاه ذخیره می‌شوند"
         : S.mode === "shared"
           ? "ذخیره مشترک"
           : S.mode === "local"
@@ -14429,12 +14670,25 @@ function syncText() {
             : "در حال اتصال";
 }
 
+function syncClass() {
+  return S.mode === "shared" && !S.offStart && !NET.failed && !OFFLINE.q.length && navigator.onLine !== false
+    ? ""
+    : "local";
+}
+
+// نشانگر وضعیت را بدون رندر دوباره‌ی کل صفحه به‌روز می‌کند (برای تغییر ناگهانی وضعیت شبکه)
+function syncRefresh() {
+  var chips = document.querySelectorAll(".sync");
+  for (var i = 0; i < chips.length; i++) {
+    chips[i].className = ("sync " + syncClass()).trim();
+    chips[i].innerHTML = "<i></i>" + syncText();
+  }
+}
+
 function syncChip() {
   return (
     '<span class="sync ' +
-    (S.mode === "shared" && !S.offStart && !OFFLINE.q.length && navigator.onLine !== false
-      ? ""
-      : "local") +
+    syncClass() +
     '" data-act="offtoggle" role="button" tabindex="0"><i></i>' +
     syncText() +
     "</span>"
@@ -33781,7 +34035,7 @@ function cmdView() {
     cmdHeader(F) +
     cmdModeNav(F) +
     cmdFilterBox(F, R) +
-    cmdRibbon(M) +
+    cmdRibbon(F, M) +
     '<div class="cmd-content" aria-live="polite">' +
     cmdContent(F, M, R, now) +
     "</div>" +
@@ -33922,7 +34176,7 @@ function cmdFilterBox(F, R) {
 }
 
 // چهار عدد اصلی بالای صفحه؛ هر کدام به فهرست شواهدش باز می‌شود
-function cmdRibbon(M) {
+function cmdRibbon(F, M) {
   var cells = [
     ["شناسه‌های ثبت‌شده", M.cars, "cars", "M01"],
     ["موارد بازِ گروه بازه", M.open.length, "open", "M02"],
@@ -33940,6 +34194,7 @@ function cmdRibbon(M) {
             cmdNum(c[1]) +
             "</strong>" +
             cmdMetricTag(c[3]) +
+            cmdTrendHtml(F, M, c[2]) +
             '<i aria-hidden="true">↗</i>',
           c[2],
           "",
@@ -33954,9 +34209,9 @@ function cmdRibbon(M) {
 // بدنه‌ی صفحه بر اساس فضای انتخاب‌شده؛ اگر شواهد باز باشد همان نمایش داده می‌شود
 function cmdContent(F, M, R, now) {
   if (F.detail) return cmdDetails(F, M);
-  if (F.mode === "executive") return cmdExecutive(F, M, cmdLive(F, now));
+  if (F.mode === "executive") return cmdMiniBar(F, M) + cmdExecutive(F, M, cmdLive(F, now)) + cmdFollowListOnce();
   if (F.mode === "analytics") return cmdAnalytics(F, M);
-  if (F.mode === "ai") return cmdAdvisor(F, M);
+  if (F.mode === "ai") return cmdMiniBar(F, M) + cmdAdvisor(F, M) + cmdFollowListOnce();
   return cmdLegacy(F, R, now);
 }
 
@@ -34036,8 +34291,10 @@ function cmdStageText(s) {
 
 // یک دکمه برای هر ایستگاه؛ با لمس آن، پرونده‌ی ایستگاه کنار صفحه عوض می‌شود
 function cmdStationRail(M, focus) {
+  var idleKeys = {};
   var stages = M.keys.map(function (k, i) {
     var s = M.stations[k];
+    idleKeys[k] = !s.cars && !s.open;
     return cmdAct(
       '<span class="cmd-stage-number">' +
         faDigits(i + 1) +
@@ -34056,8 +34313,19 @@ function cmdStationRail(M, focus) {
       'aria-pressed="' + (focus === k) + '"',
     );
   });
+  var active = stages.filter(function (_, i) {
+      return !idleKeys[M.keys[i]];
+    }),
+    idle = stages.filter(function (_, i) {
+      return idleKeys[M.keys[i]];
+    });
   return (
-    '<div class="cmd-rail" role="group" aria-label="ایستگاه‌های مجاز">' + stages.join("") + "</div>"
+    '<div class="cmd-rail-wrap" role="group" aria-label="ایستگاه‌های مجاز">' +
+    (active.length ? '<div class="cmd-rail">' + active.join("") + "</div>" : "") +
+    (idle.length
+      ? '<p class="cmd-rail-label">بدون ثبت در این بازه</p><div class="cmd-rail cmd-rail-idle">' + idle.join("") + "</div>"
+      : "") +
+    "</div>"
   );
 }
 
@@ -34120,12 +34388,22 @@ function cmdDecisionCard(M) {
           })
           .join("")
       : '<p class="cmd-empty">در فیلتر فعلی مورد بازی برای رتبه‌بندی ثبت نشده است؛ این نتیجه تأیید سلامت خط نیست.</p>') +
+    cmdAttentionHtml(M) +
     '<div class="cmd-data-gap"><b>خودروهای متوقف‌شده</b><p>منبع موقعیت و توقفِ خودرو در قرارداد فعلی داشبورد وجود ندارد. سن ایراد باز جایگزین توقف فیزیکی خودرو نمی‌شود.</p></div></section>'
   );
 }
 
 function cmdLineRow(l) {
   return dashLineEvidenceHtml(l);
+}
+
+// نوار کوچک چسبان در موبایل: هنگام اسکرول، عددهای اصلی دیده می‌شوند
+function cmdMiniBar(F, M) {
+  var P = cmdDailyPack(F, M);
+  return (
+    '<div class="cmd-minibar"><span>ایراد باز <b>' + cmdNum(P.backlog.ng) + "</b></span><span>کسری باز <b>" + cmdNum(P.backlog.shortage) +
+    "</b></span><span>امروز <b>" + cmdNum(P.today.cars) + "</b> خودرو</span></div>"
+  );
 }
 
 function cmdLineValidationHtml(L) {
@@ -34141,6 +34419,19 @@ function cmdLineValidationHtml(L) {
 
 function cmdUiDisclosure(title, body) {
   return '<details class="cmd-ui-section"><summary><span>' + title + "</span><small>مشاهده جزئیات</small></summary><div>" + body + "</div></details>";
+}
+
+// فهرست بلند: چند مورد اول باز، بقیه پشت «نمایش بیشتر»
+function cmdMoreHtml(items, keep) {
+  if (items.length <= keep) return items.join("");
+  return (
+    items.slice(0, keep).join("") +
+    '<details class="cmd-more"><summary>نمایش ' +
+    cmdNum(items.length - keep) +
+    " مورد دیگر</summary>" +
+    items.slice(keep).join("") +
+    "</details>"
+  );
 }
 
 // خط دارای توقف باز اول می‌آید؛ خطوط بدون هیچ سابقه‌ی معتبر در یک سطر خلاصه می‌شوند
@@ -34453,6 +34744,7 @@ function cmdAdvisor(F, M) {
     '<div class="cmd-ai-status"><span>MOHR AI</span><b>موتور تحلیل محلی فعال</b><small>' +
     esc(CMD_GATEWAY_STATE.text) +
     ' · اطلاعات به سرویس خارجی ارسال نمی‌شود.</small></div><div class="cmd-ai-layout">' +
+    cmdHandoverSection(F, M) +
     cmdDailySection(F, M) +
     ai121Panel(F, M) +
     cmdBriefSection(M) +
@@ -34803,6 +35095,19 @@ var CMD_ACTIONS = {
   cmdmrgcancel: function (F, el, value) {
     return cmdMergeCancel(value);
   },
+  cmdjump: function (F, el, value) {
+    var target = document.querySelector(".mohr-cmd #" + value);
+    if (target) target.scrollIntoView({ behavior: "smooth", block: "start" });
+    return false;
+  },
+  cmdhandcopy: function (F) {
+    var M = cmdAnalyze(F);
+    cmdCopyText(cmdHandoverText(M, cmdHandoverPack(F, M)), "cmd_handover_text");
+    return false;
+  },
+  cmdfupdone: function (F, el, value) {
+    return cmdFollowDone(value);
+  },
   cmdcopy: function (F) {
     cmdCopyText(cmdDailyPack(F, cmdAnalyze(F)).text);
     return false;
@@ -34843,7 +35148,7 @@ function cmdClick(ev, el, a) {
 var CMD_ALERT = {
   shortageHours: 48, // کسری بازِ قدیمی‌تر از این (ساعت) هشدار است
   defectHours: 24, // ایراد بازِ قدیمی‌تر از این (ساعت) هشدار است
-  riseFactor: 1.5, // نرخ امروز ایستگاه نسبت به میانگین ۷ روز قبل
+  pValue: 0.01, // هشدار افزایش: احتمال تصادفی‌بودن (پواسون) کمتر از این باشد
   minCarsToday: 5, // حداقل خودرو در امروز برای قضاوت درباره‌ی ایستگاه
   minCarsBase: 20, // حداقل خودرو در ۷ روز پایه
   minDefectsToday: 3, // حداقل ایراد امروز برای هشدار افزایش
@@ -34914,6 +35219,8 @@ function cmdTally(w) {
   return {
     cars: cars,
     ng: ng.length,
+    clean: cars - cmdDistinctCars(ng),
+    ftt: cars ? (100 * (cars - cmdDistinctCars(ng))) / cars : null,
     shortage: cmdKind(w.defs, "shortage").length,
     closed: w.closed.length,
     dpv100: cars ? (100 * ng.length) / cars : null,
@@ -34951,8 +35258,9 @@ function cmdDistinctCars(rows) {
 
 /* ---------- هشدارها ---------- */
 
-function cmdAlert(level, title, text, rows) {
-  return { level: level, title: title, text: text, sources: rows.map(cmdSource) };
+// key: شناسه‌ی پایدار هشدار برای ثبت پیگیری (مسئول و موعد)
+function cmdAlert(level, title, text, rows, key) {
+  return { level: level, title: title, text: text, sources: rows.map(cmdSource), key: key };
 }
 
 function cmdOldOpen(M, kind, hours) {
@@ -34979,6 +35287,7 @@ function cmdOldAlert(M, kind, hours, title) {
       " خودرو. " +
       cmdStationCounts(rows),
     rows,
+    "old:" + kind,
   );
 }
 
@@ -34997,6 +35306,7 @@ function cmdCngAlert(M) {
     cmdNum(cmdDistinctCars(rows)) +
       " خودرو منتظر قطعه‌ی گاز است؛ تا تست نشتی انجام نشود تأیید نهایی تجاری بسته است.",
     rows,
+    "cng",
   );
 }
 
@@ -35020,6 +35330,28 @@ function cmdStationRates(w) {
   return out;
 }
 
+// احتمال دیدن k ایراد یا بیشتر اگر میانگین انتظار μ باشد (توزیع پواسون)
+function cmdPoissonTail(k, mu) {
+  var term = Math.exp(-mu),
+    below = 0;
+  for (var i = 0; i < k; i++) {
+    below += term;
+    term = (term * mu) / (i + 1);
+  }
+  return Math.max(0, 1 - below);
+}
+
+// فاصله‌ی اطمینان ۹۵٪ ویلسون برای یک نسبت (٪)؛ برای تعداد کم از روش ساده دقیق‌تر است
+function cmdWilson(successes, n) {
+  if (!n) return null;
+  var z = 1.96,
+    p = successes / n,
+    d = 1 + (z * z) / n,
+    mid = (p + (z * z) / (2 * n)) / d,
+    half = (z * Math.sqrt((p * (1 - p)) / n + (z * z) / (4 * n * n))) / d;
+  return [100 * (mid - half), 100 * (mid + half)];
+}
+
 function cmdRiseAlerts(today, base) {
   var A = CMD_ALERT,
     list = [];
@@ -35028,8 +35360,9 @@ function cmdRiseAlerts(today, base) {
       b = base[k];
     if (!b || t.cars < A.minCarsToday || b.cars < A.minCarsBase || t.ng < A.minDefectsToday) return;
     var rt = (100 * t.ng) / t.cars,
-      rb = (100 * b.ng) / b.cars;
-    if (rt <= A.riseFactor * rb) return;
+      rb = (100 * b.ng) / b.cars,
+      p = cmdPoissonTail(t.ng, (b.ng / b.cars) * t.cars);
+    if (rt <= rb || p >= A.pValue) return;
     list.push(
       cmdAlert(
         "high",
@@ -35044,8 +35377,11 @@ function cmdRiseAlerts(today, base) {
           cmdNum(A.baseDays) +
           " روز قبل: " +
           cmdNum(rb) +
-          ".",
+          "؛ احتمال تصادفی‌بودن این افزایش حدود " +
+          cmdNum(100 * p) +
+          "٪.",
         t.rows,
+        "rise:" + k,
       ),
     );
   });
@@ -35064,6 +35400,7 @@ function cmdRepeatAlerts(todayNg) {
         "تکرار امروز: " + g.label,
         cmdStationName(g.station) + " — " + cmdNum(g.n) + " ثبت روی " + cmdNum(Object.keys(g.cars).length) + " خودرو.",
         g.rows,
+        "rep:" + g.station + "|" + g.label,
       );
     });
 }
@@ -35134,6 +35471,7 @@ var CMD_COMPARE_ROWS = [
   ["کسری ثبت‌شده", "shortage", true],
   ["رفع‌شده", "closed", false],
   ["ایراد به ازای ۱۰۰ خودرو", "dpv100", true],
+  ["خودروی بدون ایراد (FTT) ٪", "ftt", false],
 ];
 
 function cmdDelta(a, b, worseWhenUp) {
@@ -35152,7 +35490,7 @@ function cmdCompareTable(set) {
     esc(set.title) +
     "</h3>" +
     (set.note ? '<p class="cmd-note">' + esc(set.note) + "</p>" : "") +
-    '<div class="cmd-tablewrap"><table><thead><tr><th></th><th>' +
+    '<div class="cmd-tablewrap"><table class="cmd-cmptable"><colgroup><col class="c0"><col class="c1"><col class="c1"><col class="c1"></colgroup><thead><tr><th></th><th>' +
     esc(set.a[0]) +
     "</th><th>" +
     esc(set.b[0]) +
@@ -35217,10 +35555,37 @@ function cmdParetoRows(M) {
   });
 }
 
+// ستون‌ها تعداد هر گروه و خط، درصد تجمعی؛ خط چین ۸۰٪. اولین گروه سمت راست (جهت خواندن فارسی)
+function cmdParetoChart(rows) {
+  var w = 300,
+    h = 110,
+    step = w / rows.length,
+    max = rows[0].g.n || 1,
+    pts = [];
+  var bars = rows
+    .map(function (r, i) {
+      var x = w - (i + 1) * step + step * 0.15,
+        bh = (r.g.n / max) * (h - 20),
+        y = h - bh;
+      pts.push((w - (i + 0.5) * step).toFixed(1) + "," + (h - (r.share / 100) * (h - 20)).toFixed(1));
+      return '<rect x="' + x.toFixed(1) + '" y="' + y.toFixed(1) + '" width="' + (step * 0.7).toFixed(1) + '" height="' + bh.toFixed(1) + '" fill="currentColor" opacity=".35"/>';
+    })
+    .join("");
+  var line80 = (h - 0.8 * (h - 20)).toFixed(1);
+  return (
+    '<figure class="cmd-pareto"><svg viewBox="0 0 ' + w + " " + h + '" role="img" aria-label="پارتو: ستون‌ها تعداد هر ایراد و خط، درصد تجمعی">' +
+    bars +
+    '<line x1="0" x2="' + w + '" y1="' + line80 + '" y2="' + line80 + '" stroke="currentColor" stroke-dasharray="4 3" opacity=".5"/>' +
+    '<polyline fill="none" stroke="currentColor" stroke-width="2" points="' + pts.join(" ") + '"/></svg>' +
+    "<figcaption>ستون: تعداد · خط: درصد تجمعی · خط‌چین: ۸۰٪</figcaption></figure>"
+  );
+}
+
 function cmdParetoHtml(M) {
   var rows = cmdParetoRows(M);
   if (!rows.length) return '<p class="cmd-empty">در این بازه ایرادی ثبت نشده است.</p>';
   return (
+    cmdParetoChart(rows) +
     '<div class="cmd-tablewrap"><table><thead><tr><th>ایراد</th><th>ایستگاه</th><th>تعداد</th><th>خودرو</th><th>تجمعی</th></tr></thead><tbody>' +
     rows
       .map(function (r) {
@@ -35307,6 +35672,7 @@ function cmdRiskAlert(r) {
     "خودرو " + r.g.car + " — امتیاز " + cmdNum(r.score),
     r.text,
     r.g.rows,
+    "risk:" + r.g.car,
   );
 }
 
@@ -35320,7 +35686,12 @@ function cmdRiskHtml(P) {
     " به ازای هر کسری باز + " +
     cmdNum(CMD_RISK.cng) +
     " کسری قطعه‌ی گاز + سن قدیمی‌ترین مورد. خودروی بایگانی‌شده شمرده نمی‌شود.</p>" +
-    P.risk.map(cmdRiskAlert).map(cmdAlertItem).join("")
+    cmdMoreHtml(
+      P.risk.map(function (r) {
+        return cmdAlertItem(cmdRiskAlert(r), P.now);
+      }),
+      CMD_MORE_KEEP,
+    )
   );
 }
 
@@ -35365,8 +35736,8 @@ function cmdSummaryText(M, P) {
   return lines.join("\n");
 }
 
-function cmdCopyText(text) {
-  var box = document.querySelector(".mohr-cmd #cmd_daily_text");
+function cmdCopyText(text, boxId) {
+  var box = document.querySelector(".mohr-cmd #" + (boxId || "cmd_daily_text"));
   function fallback() {
     if (box) {
       box.select();
@@ -35395,6 +35766,7 @@ function cmdDailyPack(F, M) {
     T1 = cmdTally(cmdWindow(ctx, D, d.yesterday, d.t0)),
     base = cmdWindow(ctx, D, d.base, d.t0);
   var pack = {
+    now: M.now,
     day: d.t0,
     today: T0,
     yesterday: T1,
@@ -35418,6 +35790,15 @@ function cmdIsOpen(x) {
 
 /* ---------- نمایش ---------- */
 
+function cmdPercentText(v) {
+  return v == null ? "—" : cmdNum(v) + "٪";
+}
+
+function cmdFttRange(T) {
+  var r = cmdWilson(T.clean, T.cars);
+  return !r ? "بدون بازرسی" : "بازه‌ی اطمینان ۹۵٪: " + cmdNum(r[0]) + " تا " + cmdNum(r[1]);
+}
+
 function cmdKpi(label, value, sub) {
   return (
     "<div><small>" + label + "</small><b>" + value + "</b>" + (sub ? "<span>" + sub + "</span>" : "") + "</div>"
@@ -35433,14 +35814,16 @@ function cmdKpiHtml(F, M, P) {
     (L.prodOk ? cmdKpi("تولید امروز (نهایی بالا)", cmdNum(L.prodN), "دیروز: " + cmdNum(L.prodY)) : "") +
     cmdKpi("خودروی بازرسی‌شده امروز", cmdNum(T.cars), "دیروز: " + cmdNum(Y.cars)) +
     cmdKpi("ایراد جدید امروز", cmdNum(T.ng), "به ازای ۱۰۰ خودرو: " + cmdNum(T.dpv100)) +
+    cmdKpi("خودروی بدون ایراد (FTT) امروز", cmdPercentText(T.ftt), cmdFttRange(T)) +
     cmdKpi("کسری جدید امروز", cmdNum(T.shortage), "دیروز: " + cmdNum(Y.shortage)) +
     cmdKpi("رفع‌شده امروز", cmdNum(T.closed), "دیروز: " + cmdNum(Y.closed)) +
     cmdKpi("ایراد باز (کل)", cmdNum(P.backlog.ng), "کسری باز: " + cmdNum(P.backlog.shortage)) +
+    cmdKpi("سن کسری‌های باز", cmdNum(P.backlog.shortage), cmdAgeBucketsText(cmdOpenRows(M, "shortage"), M.now)) +
     "</div>"
   );
 }
 
-function cmdAlertItem(a) {
+function cmdAlertItem(a, now) {
   return (
     '<article class="cmd-alert cmd-alert-' +
     a.level +
@@ -35452,14 +35835,40 @@ function cmdAlertItem(a) {
     cmdNum(a.sources.length) +
     ')</summary><p class="cmd-source-list" dir="ltr">' +
     cmdSourceList(a.sources, CMD_SOURCES_SHOWN) +
-    "</p></details></article>"
+    "</p></details>" +
+    cmdFollowBadge(cmdFollowFor(a.key), now) +
+    cmdFollowForm(a.key, a.title) +
+    "</article>"
   );
 }
 
 function cmdAlertsHtml(P) {
   if (!P.alerts.length)
     return '<p class="cmd-empty">هشدار فعالی نیست: کسری یا ایراد باز قدیمی، افزایش نرخ ایستگاه یا تکرار امروز دیده نشد.</p>';
-  return P.alerts.map(cmdAlertItem).join("");
+  return P.alerts
+    .map(function (a) {
+      return cmdAlertItem(a, P.now);
+    })
+    .join("");
+}
+
+var CMD_MORE_KEEP = 3;
+var CMD_AI_NAV = [
+  ["cmd_sec_alerts", "هشدارها"],
+  ["cmd_sec_risk", "خودروهای پرریسک"],
+  ["cmd_sec_cmp", "مقایسه‌ها"],
+  ["cmd_sec_pareto", "پارتو"],
+  ["cmd_sec_summary", "خلاصه برای ارسال"],
+];
+
+function cmdAiNav() {
+  return (
+    '<nav class="cmd-ainav" aria-label="پرش به بخش">' +
+    CMD_AI_NAV.map(function (n) {
+      return cmdAct(n[1], "cmdjump", n[0], "cmd-chip");
+    }).join("") +
+    "</nav>"
+  );
 }
 
 function cmdDailySection(F, M) {
@@ -35468,17 +35877,18 @@ function cmdDailySection(F, M) {
     '<section class="cmd-daily">' +
     cmdCardTitle("DAILY REPORT", "گزارش روزانه — " + esc(dashDayLabel(P.day))) +
     cmdKpiHtml(F, M, P) +
-    "<h3>هشدارها</h3>" +
+    cmdAiNav() +
+    '<h3 id="cmd_sec_alerts">هشدارها</h3>' +
     cmdAlertsHtml(P) +
-    "<h3>خودروهای پرریسک</h3>" +
+    '<h3 id="cmd_sec_risk">خودروهای پرریسک</h3>' +
     cmdRiskHtml(P) +
-    "<h3>مقایسه‌ها</h3>" +
+    '<h3 id="cmd_sec_cmp">مقایسه‌ها</h3><div class="cmd-cmpgrid">' +
     P.sets.map(cmdCompareTable).join("") +
-    "<h3>پرتکرارترین ایرادها در بازه‌ی انتخابی</h3>" +
+    "</div>" +
+    '<h3 id="cmd_sec_pareto">پرتکرارترین ایرادها در بازه‌ی انتخابی</h3>' +
     cmdParetoHtml(M) +
-    "<h3>ایرادهای هم‌معنا (پیشنهاد ادغام)</h3>" +
-    cmdSemanticHtml(M) +
-    "<h3>خلاصه‌ی امروز برای ارسال</h3>" +
+    cmdUiDisclosure("ایرادهای هم‌معنا (پیشنهاد ادغام)", cmdSemanticHtml(M)) +
+    '<h3 id="cmd_sec_summary">خلاصه‌ی امروز برای ارسال</h3>' +
     '<textarea id="cmd_daily_text" readonly rows="8">' +
     esc(P.text) +
     "</textarea>" +
@@ -35487,11 +35897,11 @@ function cmdDailySection(F, M) {
     cmdNum(CMD_ALERT.shortageHours) +
     " ساعت، ایراد باز بیش از " +
     cmdNum(CMD_ALERT.defectHours) +
-    " ساعت، نرخ ایستگاه بیش از " +
-    cmdNum(CMD_ALERT.riseFactor) +
-    " برابر میانگین " +
+    " ساعت، افزایش ایستگاه نسبت به میانگین " +
     cmdNum(CMD_ALERT.baseDays) +
-    " روز قبل. فقط مشاهده؛ علت تعیین نمی‌شود.</p></section>"
+    " روز قبل وقتی احتمال تصادفی‌بودنش کمتر از " +
+    cmdNum(100 * CMD_ALERT.pValue) +
+    "٪ باشد (آزمون پواسون). فقط مشاهده؛ علت تعیین نمی‌شود.</p></section>"
   );
 }
 
@@ -36181,6 +36591,460 @@ CMD_ACTIONS.cmdai4history=function(){if(!ai121Ensure())return false;saveFile('MO
 setInterval(ai121Tick,60000);
 
 document.addEventListener('visibilitychange',function(){if(!document.hidden)ai121Tick();});
+
+/* ═════════════════════════════════════════════════
+   فصل 59 — روند و تغییر شاخص‌های بالای داشبورد
+   زیر هر عدد بالای صفحه: نمودار کوچک ۳۰ روز اخیر و تغییر نسبت به بازه‌ی قبلیِ هم‌اندازه.
+   مقایسه روی «تعداد ثبت‌شده در بازه» است (نه وضعیت امروزِ مورد باز)، تا منصفانه باشد.
+   توابع اصلی: cmdTrendSeries، cmdTrendDelta، cmdTrendHtml
+   ═════════════════════════════════════════════════ */
+
+var CMD_TREND_DAYS = 30;
+
+// هر شاخص: چه چیزی شمرده می‌شود، و کم‌شدنش خوب است یا زیاد شدنش
+var CMD_TREND_KINDS = {
+  cars: { label: "خودروی بازرسی‌شده", lowerBetter: null },
+  open: { label: "ایراد جدید", lowerBetter: true },
+  closed: { label: "رفع‌شده", lowerBetter: false },
+  shortage: { label: "کسری جدید", lowerBetter: true },
+};
+
+function cmdTrendBuckets(t0) {
+  var out = [];
+  for (var i = 0; i < CMD_TREND_DAYS; i++) out.push({ recs: [], ng: 0, shortage: 0, closed: 0 });
+  var first = t0 - (CMD_TREND_DAYS - 1) * DAY_MS;
+  return {
+    days: out,
+    at: function (ms) {
+      var i = Math.floor((ms - first) / DAY_MS);
+      return i >= 0 && i < CMD_TREND_DAYS ? out[i] : null;
+    },
+  };
+}
+
+// شمارش روزانه‌ی سی روز اخیر؛ یک بار عبور روی داده
+function cmdTrendSeries(F, M) {
+  if (M.trend) return M.trend;
+  var ctx = cmdContext(F, M.now),
+    D = dashData(),
+    buckets = cmdTrendBuckets(dayStart(M.now));
+  D.recs.forEach(function (x) {
+    var b = ctx.inScope(x) && x.ms <= M.now && buckets.at(x.ms);
+    if (b) b.recs.push(x);
+  });
+  D.defs.forEach(function (x) {
+    if (!ctx.inScope(x)) return;
+    var b = x.ms <= M.now && buckets.at(x.ms),
+      c = !x.open && buckets.at(Date.parse(x.it.closedAt));
+    if (b && x.it.r === "ng") b.ng++;
+    if (b && x.it.r === "shortage") b.shortage++;
+    if (c) c.closed++;
+  });
+  var days = buckets.days;
+  M.trend = {
+    cars: days.map(function (b) {
+      return countCars(b.recs);
+    }),
+    open: days.map(function (b) {
+      return b.ng;
+    }),
+    closed: days.map(function (b) {
+      return b.closed;
+    }),
+    shortage: days.map(function (b) {
+      return b.shortage;
+    }),
+  };
+  return M.trend;
+}
+
+// مقدار بازه‌ی انتخابی و بازه‌ی قبلیِ هم‌اندازه؛ اگر بازه معتبر نباشد null
+function cmdTrendTotals(F, M) {
+  if (M.trendTotals !== undefined) return M.trendTotals;
+  var len = M.period.to - M.period.from,
+    ok = Number.isFinite(len) && len > 0,
+    ctx = ok && cmdContext(F, M.now),
+    D = ok && dashData(),
+    pair = function (from, to) {
+      var t = cmdTally(cmdWindow(ctx, D, from, to));
+      return { cars: t.cars, open: t.ng, closed: t.closed, shortage: t.shortage };
+    };
+  M.trendTotals = ok ? { now: pair(M.period.from, M.period.to), prev: pair(M.period.from - len, M.period.from) } : null;
+  return M.trendTotals;
+}
+
+function cmdTrendDelta(cur, prev, lowerBetter) {
+  if (!prev) return { txt: cur ? "بازه‌ی قبل ثبتی نبود" : "", tone: "flat" };
+  var d = Math.round(((cur - prev) / prev) * 100);
+  if (!d) return { txt: "بدون تغییر نسبت به بازه‌ی قبل", tone: "flat" };
+  var good = lowerBetter === null ? null : lowerBetter ? d < 0 : d > 0;
+  return {
+    txt: (d > 0 ? "▲ " : "▼ ") + cmdNum(Math.abs(d)) + "٪ نسبت به بازه‌ی قبل",
+    tone: good === null ? "flat" : good ? "good" : "bad",
+  };
+}
+
+// زمان از راست به چپ می‌گذرد (جهت خواندن فارسی)؛ قدیمی‌ترین روز سمت راست
+function cmdSparkline(values) {
+  var w = 96,
+    h = 22,
+    max = Math.max.apply(null, values.concat([1])),
+    pts = values.map(function (v, i) {
+      var x = w - (i / (values.length - 1)) * w,
+        y = h - 2 - (v / max) * (h - 4);
+      return x.toFixed(1) + "," + y.toFixed(1);
+    });
+  return (
+    '<svg class="cmd-spark" viewBox="0 0 ' + w + " " + h + '" preserveAspectRatio="none" aria-hidden="true" focusable="false"><polyline fill="none" stroke="currentColor" stroke-width="1.6" points="' +
+    pts.join(" ") +
+    '"/></svg>'
+  );
+}
+
+function cmdTrendHtml(F, M, kind) {
+  var spec = CMD_TREND_KINDS[kind],
+    series = cmdTrendSeries(F, M)[kind],
+    totals = cmdTrendTotals(F, M),
+    delta = totals ? cmdTrendDelta(totals.now[kind], totals.prev[kind], spec.lowerBetter) : { txt: "", tone: "flat" };
+  return (
+    '<span class="cmd-kpitrend cmd-kpitrend-' + delta.tone + '" title="' + esc(spec.label) + " — " + cmdNum(CMD_TREND_DAYS) + ' روز اخیر">' +
+    cmdSparkline(series) +
+    "<small>" + esc(spec.label) + (delta.txt ? ": " + esc(delta.txt) : "") + "</small></span>"
+  );
+}
+
+/* ═════════════════════════════════════════════════
+   فصل 59 — پیگیری هشدارهای داشبورد (مسئول و موعد)
+   برای هر هشدار می‌شود یک مسئول و یک موعد ثبت کرد؛ در سندهای alt_* ذخیره می‌شود و برای همه یکی است.
+   فقط مدیر و نقش‌دارای مجوز «fup» می‌توانند ثبت کنند. هشدارها و ثبت اصلی چکمن تغییر نمی‌کنند.
+   توابع اصلی: cmdFollowCanEdit، cmdFollowFor، cmdFollowBadge، cmdFollowForm، cmdFollowOpenHtml
+   ═════════════════════════════════════════════════ */
+
+var CMD_FOLLOW_DUE = [
+  ["امروز", 0],
+  ["فردا", 1],
+  ["۳ روز دیگر", 3],
+  ["یک هفته دیگر", 7],
+];
+
+function cmdFollowCanEdit() {
+  return !!S.user && (S.isOwner || (isCustomRole(S.user) && rolePerm("fup")));
+}
+
+function cmdFollowOpenDocs() {
+  return (S.followups || [])
+    .filter(function (d) {
+      return d.status === "open";
+    })
+    .sort(function (a, b) {
+      return (a.due || 0) - (b.due || 0);
+    });
+}
+
+function cmdFollowFor(key) {
+  return (
+    cmdFollowOpenDocs().filter(function (d) {
+      return d.key === key;
+    })[0] || null
+  );
+}
+
+function cmdFollowOverdue(doc, now) {
+  return doc.due < dayStart(now);
+}
+
+function cmdFollowSubmit(ev) {
+  if (!cmdFollowCanEdit()) return false;
+  var f = ev.target.elements,
+    owner = String(f.owner.value || "").trim(),
+    days = +f.due.value;
+  if (!owner) {
+    toast("نام مسئول را بنویسید");
+    return false;
+  }
+  var fields = {
+      kind: "followup",
+      key: f.key.value,
+      title: f.title.value,
+      owner: owner,
+      due: dayStart(Date.now()) + days * DAY_MS,
+      status: "open",
+      by: S.user.name,
+      byId: S.user.id,
+      at: nowIso(),
+    },
+    old = cmdFollowFor(fields.key);
+  save(function () {
+    return old ? store.update("users", old.id, fields) : store.set("users", "alt_" + uid(), fields);
+  }, "پیگیری ثبت شد");
+  return false;
+}
+
+function cmdFollowDone(id) {
+  if (!cmdFollowCanEdit()) return false;
+  save(function () {
+    return store.update("users", id, { status: "done", doneBy: S.user.name, doneAt: nowIso() });
+  }, "پیگیری بسته شد");
+  return false;
+}
+
+/* ---------- نمایش ---------- */
+
+function cmdFollowLines(doc, now) {
+  return (
+    '<p class="cmd-follow-line">مسئول: <b>' +
+    esc(doc.owner) +
+    "</b></p>" +
+    '<p class="cmd-follow-line' +
+    (cmdFollowOverdue(doc, now) ? " cmd-follow-late" : "") +
+    '">موعد: <b>' +
+    esc(dateOnly(new Date(doc.due).toISOString())) +
+    "</b>" +
+    (cmdFollowOverdue(doc, now) ? " — سررسید گذشته" : "") +
+    "</p>" +
+    whoWhen(doc.by, doc.at, "ثبت‌کننده")
+  );
+}
+
+function cmdFollowBadge(doc, now) {
+  if (!doc) return "";
+  return (
+    '<div class="cmd-follow">' +
+    cmdFollowLines(doc, now) +
+    (cmdFollowCanEdit() ? cmdAct("انجام شد", "cmdfupdone", doc.id, "cmd-chip") : "") +
+    "</div>"
+  );
+}
+
+// فهرست نام‌ها برای فیلد مسئول؛ یک بار در هر صفحه
+function cmdFollowListOnce() {
+  return cmdFollowCanEdit() ? cmdFollowOwnerList() : "";
+}
+
+function cmdFollowOwnerList() {
+  return (
+    '<datalist id="cmd_owner_list">' +
+    (S.data.users || [])
+      .map(function (u) {
+        return '<option value="' + esc(u.name || "") + '">';
+      })
+      .join("") +
+    "</datalist>"
+  );
+}
+
+function cmdFollowForm(key, title) {
+  if (!cmdFollowCanEdit()) return "";
+  return (
+    '<details class="cmd-follow-form"><summary>' +
+    (cmdFollowFor(key) ? "تغییر مسئول و موعد" : "تعیین مسئول و موعد") +
+    '</summary><form data-form="cmdfollow" class="mgform"><input type="hidden" name="key" value="' +
+    esc(key) +
+    '"><input type="hidden" name="title" value="' +
+    esc(title) +
+    '"><label class="f">مسئول<input class="in" name="owner" list="cmd_owner_list" autocomplete="off"></label>' +
+    '<label class="f">موعد<select class="in" name="due">' +
+    CMD_FOLLOW_DUE.map(function (d) {
+      return '<option value="' + d[1] + '">' + d[0] + "</option>";
+    }).join("") +
+    '</select></label><button class="btn primary" type="submit">ثبت</button></form></details>'
+  );
+}
+
+// همه‌ی پیگیری‌های باز، حتی اگر هشدارشان دیگر فعال نباشد؛ برای تحویل شیفت
+function cmdFollowOpenHtml(now) {
+  var docs = cmdFollowOpenDocs();
+  if (!docs.length) return '<p class="cmd-empty">پیگیری بازی ثبت نشده است.</p>';
+  return docs
+    .map(function (d) {
+      return '<article class="cmd-alert cmd-alert-mid"><h3>' + esc(d.title) + "</h3>" + cmdFollowBadge(d, now) + "</article>";
+    })
+    .join("");
+}
+
+function cmdFollowSummaryLines(now) {
+  var docs = cmdFollowOpenDocs(),
+    late = docs.filter(function (d) {
+      return cmdFollowOverdue(d, now);
+    });
+  if (!docs.length) return [];
+  return ["پیگیری باز: " + cmdNum(docs.length) + " (سررسید گذشته: " + cmdNum(late.length) + ")"].concat(
+    docs.slice(0, 5).map(function (d) {
+      return "• " + d.title + " — مسئول: " + d.owner + " — موعد: " + dateOnly(new Date(d.due).toISOString());
+    }),
+  );
+}
+
+/* ═════════════════════════════════════════════════
+   فصل 59 — تحویل شیفت و فهرست «نیازمند توجه»
+   تحویل شیفت: آنچه شیفت بعد باید بداند (موارد باز و سنشان، توقف باز، تکرارها، پیگیری‌های باز) با دکمه‌ی کپی.
+   نیازمند توجه: خودروهایی که «تعداد مورد باز × سن» بیشتری دارند. فقط مشاهده؛ علت تعیین نمی‌شود.
+   توابع اصلی: cmdShiftWindow، cmdHandoverPack، cmdHandoverSection، cmdAttentionHtml
+   ═════════════════════════════════════════════════ */
+
+var CMD_HANDOVER_FALLBACK_HOURS = 8; // وقتی ساعت شیفت‌ها تعریف نشده است
+var CMD_ATTENTION_TOP = 5;
+
+// شروع شیفت جاری؛ بدون تنظیم شیفت، چند ساعت اخیر
+function cmdShiftWindow(now) {
+  var cfg = shiftCfg();
+  if (!cfg) return { from: now - CMD_HANDOVER_FALLBACK_HOURS * 3600000, label: cmdNum(CMD_HANDOVER_FALLBACK_HOURS) + " ساعت اخیر (شیفت تعریف نشده)" };
+  var m = Math.floor(((now + TEHRAN_MS) % DAY_MS) / 60000),
+    first = m >= cfg.s1 && m < cfg.s2,
+    since = first ? m - cfg.s1 : m >= cfg.s2 ? m - cfg.s2 : m + 1440 - cfg.s2;
+  return { from: now - since * 60000, label: first ? "شیفت ۱ (صبح)" : "شیفت ۲ (بعدازظهر)" };
+}
+
+function cmdOpenRows(M, kind) {
+  return cmdKind(M.all, kind).filter(function (x) {
+    return cmdIsOpen(x) && !cmdIsArchivedRow(x);
+  });
+}
+
+// سن مورد باز در سه سطل: کمتر از ۱ روز، ۱ تا ۳ روز، بیش از ۳ روز
+function cmdAgeBucketsText(rows, now) {
+  var b = [0, 0, 0];
+  rows.forEach(function (x) {
+    var days = (now - x.ms) / DAY_MS;
+    b[days < 1 ? 0 : days <= 3 ? 1 : 2]++;
+  });
+  return "کمتر از ۱ روز: " + cmdNum(b[0]) + " · ۱ تا ۳ روز: " + cmdNum(b[1]) + " · بیش از ۳ روز: " + cmdNum(b[2]);
+}
+
+function cmdOldestOf(rows, now) {
+  if (!rows.length) return null;
+  var first = rows.reduce(function (a, b) {
+    return b.ms < a.ms ? b : a;
+  });
+  return { car: first.car, age: elapsedTxt(now - first.ms) };
+}
+
+function cmdOpenStopLines(L) {
+  return ((L.validation && L.validation.lines) || []).filter(function (l) {
+    return l.open;
+  });
+}
+
+function cmdHandoverPack(F, M) {
+  if (M.handover) return M.handover;
+  var ctx = cmdContext(F, M.now),
+    win = cmdShiftWindow(M.now),
+    w = cmdWindow(ctx, dashData(), win.from, M.now + 1),
+    ng = cmdOpenRows(M, "ng"),
+    sh = cmdOpenRows(M, "shortage"),
+    P = {
+      win: win,
+      created: cmdKind(w.defs, "ng").length,
+      createdShort: cmdKind(w.defs, "shortage").length,
+      closed: w.closed.length,
+      ng: ng,
+      sh: sh,
+      oldNg: cmdOldestOf(ng, M.now),
+      oldSh: cmdOldestOf(sh, M.now),
+      stops: cmdOpenStopLines(cmdLive(F, M.now)),
+      repeats: cmdRepeatedGroups(cmdKind(w.defs, "ng")).slice(0, 3),
+    };
+  M.handover = P;
+  return P;
+}
+
+function cmdOldestLine(label, count, oldest) {
+  return label + ": " + cmdNum(count) + (oldest ? " (قدیمی‌ترین: خودرو " + oldest.car + "، " + oldest.age + ")" : "");
+}
+
+// متن هر بار ساخته می‌شود چون پیگیری‌ها مستقل از کش تحلیل عوض می‌شوند
+function cmdHandoverText(M, P) {
+  var iso = new Date(M.now).toISOString(),
+    lines = [
+      "تحویل شیفت",
+      "شیفت: " + P.win.label,
+      "تاریخ: " + dateOnly(iso),
+      "ساعت: " + timeHM(iso),
+      "تهیه‌کننده: " + (S.user ? S.user.name : ""),
+      "در این شیفت: ایراد جدید " + cmdNum(P.created) + "، کسری جدید " + cmdNum(P.createdShort) + "، رفع‌شده " + cmdNum(P.closed),
+      cmdOldestLine("ایراد باز", P.ng.length, P.oldNg),
+      cmdOldestLine("کسری باز", P.sh.length, P.oldSh),
+      "سن کسری‌های باز: " + cmdAgeBucketsText(P.sh, M.now),
+    ];
+  if (P.stops.length)
+    lines.push(
+      "توقف باز (تأییدنشده): " +
+        P.stops
+          .map(function (l) {
+            return l.n;
+          })
+          .join("، "),
+    );
+  if (P.repeats.length)
+    lines.push(
+      "تکرارهای این شیفت: " +
+        P.repeats
+          .map(function (g) {
+            return g.label + " (" + cmdNum(g.n) + ")";
+          })
+          .join("؛ "),
+    );
+  return lines.concat(cmdFollowSummaryLines(M.now)).join("\n");
+}
+
+function cmdHandoverSection(F, M) {
+  var P = cmdHandoverPack(F, M);
+  return (
+    '<section class="cmd-handover">' +
+    cmdCardTitle("SHIFT HANDOVER", "تحویل شیفت — " + esc(P.win.label)) +
+    '<textarea id="cmd_handover_text" readonly rows="10">' +
+    esc(cmdHandoverText(M, P)) +
+    "</textarea>" +
+    cmdAct("کپی تحویل شیفت", "cmdhandcopy", "", "cmd-primary") +
+    "<h3>پیگیری‌های باز</h3>" +
+    cmdFollowOpenHtml(M.now) +
+    "</section>"
+  );
+}
+
+/* ---------- نیازمند توجه ---------- */
+
+function cmdAttentionScore(g, now) {
+  var oldest = (now - Math.min.apply(null, g.rows.map(cmdMs))) / 86400000;
+  return { g: g, oldest: oldest, score: g.rows.length * Math.max(1, oldest) };
+}
+
+function cmdAttentionCars(M) {
+  return cmdRiskGroups(M)
+    .map(function (g) {
+      return cmdAttentionScore(g, M.now);
+    })
+    .sort(function (a, b) {
+      return b.score - a.score;
+    })
+    .slice(0, CMD_ATTENTION_TOP);
+}
+
+function cmdAttentionAlert(a) {
+  var age = elapsedTxt(a.oldest * 86400000);
+  return cmdAlert(
+    a.oldest >= 2 ? "high" : "mid",
+    "خودرو " + a.g.car + " — قدیمی‌ترین مورد " + age,
+    cmdNum(a.g.rows.length) + " مورد باز؛ " + cmdStationCounts(a.g.rows),
+    a.g.rows,
+    "attn:" + a.g.car,
+  );
+}
+
+function cmdAttentionHtml(M) {
+  var list = cmdAttentionCars(M);
+  if (!list.length) return "";
+  return (
+    '<div class="cmd-attention-list"><h3>نیازمند توجه</h3><p class="cmd-note">رتبه = تعداد مورد باز × سن قدیمی‌ترین مورد (حداقل یک روز).</p>' +
+    cmdMoreHtml(
+      list.map(function (a) {
+        return cmdAlertItem(cmdAttentionAlert(a), M.now);
+      }),
+      CMD_MORE_KEEP,
+    ) +
+    "</div>"
+  );
+}
 
 /* ════════════════════════════════════════════════════════════
    فصل 60 — مدیریت: صفحه‌ی اصلی و ناوبری
@@ -37835,7 +38699,10 @@ var ROLE_PERMS = [
 ];
 
 // مجوزهایی که تب نیستند؛ فقط در فرم نقش تیک می‌خورند
-var ROLE_EXTRA_PERMS = [["mrg", "تأیید ادغام ایرادهای هم‌معنا (داشبورد)"]];
+var ROLE_EXTRA_PERMS = [
+  ["mrg", "تأیید ادغام ایرادهای هم‌معنا (داشبورد)"],
+  ["fup", "تعیین مسئول و موعد پیگیری هشدارها (داشبورد)"],
+];
 
 function rolePermFields() {
   return ROLE_PERMS.concat(ROLE_EXTRA_PERMS);
@@ -38993,6 +39860,7 @@ window.addEventListener("offline", function () {
 });
 
 setInterval(offFlush, 6000);
+setInterval(netProbe, 6000);
 
 window.addEventListener("error", function (ev) {
   var r = document.getElementById("app");
@@ -39229,6 +40097,7 @@ document.addEventListener("submit", function (ev) {
   if (f === "stopedit" && canStop()) return submitStopEdit(ev);
   if (f === "cfglen" && S.isOwner) return submitNumberLengths();
   if (f === "cfgai" && S.isOwner) return submitAiSwitch();
+  if (f === "cmdfollow" && dashAllowed()) return cmdFollowSubmit(ev);
   if (f === "shsearch") return submitShortSearch();
   if (f === "carsearch") return submitCarSearch();
   if (f === "search") return submitSearch();
