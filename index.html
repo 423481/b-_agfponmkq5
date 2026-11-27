@@ -11814,7 +11814,7 @@ var SUPA_URL = "https://kdpmscvzavrdwwoprkfi.supabase.co",
 /* نشانی سرویس دیتابیس شرکت. خالی = همان Supabase (حالت فعلی)؛ پر = همهٔ خواندن/نوشتن به این سرویس می‌رود. */
 var API_URL = "";
 
-var APP_VER = "v167.134";
+var APP_VER = "v167.135";
 
 var AUTH_FN = "";
 
@@ -18639,11 +18639,42 @@ function fgroupHtml(x) {
   );
 }
 
+// گروه «گاز کولر» برای خلاصه‌ی تأیید نهایی بالا: هر گزینه با نام، تاریخ و ساعت جدا
+function acGroup(d) {
+  if (d.sheet !== "final1") return null;
+  var ids = [AC_GAS_ID, AC_N2_ID, AC_LEAK_ID],
+    labels = SHEETS.final1.sections.filter(function (x) {
+      return x.id === "ac";
+    })[0].items,
+    rows = ids
+      .filter(function (id) {
+        return acChosen(d, id);
+      })
+      .map(function (id) {
+        var it = d.items[id];
+        return (
+          "<li><b>" +
+          esc(labels[ids.indexOf(id)]) +
+          (id === AC_LEAK_ID ? (it.closedAt ? " (بسته شد)" : " (باز)") : "") +
+          "</b>" +
+          (id === AC_LEAK_ID && it.note ? "<br>محل نشتی: " + esc(it.note) : "") +
+          whoWhen(it.by, it.at) +
+          "</li>"
+        );
+      });
+  return { title: "گاز کولر", rows: rows.length ? rows : ["<li>گاز کولر ثبت نشده است.</li>"] };
+}
+
 function finalSummaryWiz(d) {
   var groups = openGroups(d),
     total = groups.reduce(function (n, x) {
       return n + x.rows.length;
-    }, 0);
+    }, 0),
+    ac = acGroup(d);
+  if (ac) {
+    groups.push(ac);
+    if (acChosen(d, AC_LEAK_ID) && !d.items[AC_LEAK_ID].closedAt) total++;
+  }
   var h =
     '<div class="stepcur fsum"><div class="steplb" style="color:var(--ok)">✓ تأیید نهایی شد</div>' +
     finalInfoRows(d.final);
@@ -19019,6 +19050,43 @@ function doneSectionCards(d) {
     .join("");
 }
 
+// کارت «گاز کولر» برگه‌ی نهایی بالا: گزینه‌های انتخاب‌شده، محل نشتی، نام و زمان
+function doneAcCard(d) {
+  if (d.sheet !== "final1") return "";
+  var ids = [AC_GAS_ID, AC_N2_ID, AC_LEAK_ID],
+    labels = SHEETS.final1.sections.filter(function (x) {
+      return x.id === "ac";
+    })[0].items,
+    chosen = ids.filter(function (id) {
+      return acChosen(d, id);
+    }),
+    leakOpen = acChosen(d, AC_LEAK_ID) && !d.items[AC_LEAK_ID].closedAt;
+  var body = chosen.length
+    ? chosen
+        .map(function (id) {
+          var it = d.items[id],
+            i = ids.indexOf(id);
+          return (
+            "<div><b>" +
+            esc(labels[i]) +
+            (id === AC_LEAK_ID ? (it.closedAt ? " (بسته شد)" : " (باز)") : "") +
+            "</b>" +
+            (id === AC_LEAK_ID && it.note ? "<p>محل نشتی: " + esc(it.note) + "</p>" : "") +
+            dsub(d, it.by, it.at) +
+            "</div>"
+          );
+        })
+        .join("")
+    : '<p class="hint">گاز کولر ثبت نشده است.</p>';
+  return doneFold(
+    "ac",
+    leakOpen ? "dng" : "",
+    "گاز کولر",
+    chosen.length ? esc(acSummary(d)) : "✗ ثبت نشده",
+    body,
+  );
+}
+
 // فهرست قطعه‌های کسری و نمونه‌ی باز؛ هر کدام فقط متن
 function openShortSample(d) {
   var shl = [],
@@ -19082,6 +19150,7 @@ function doneCards(d) {
     doneIdentCard(d) +
     doneCpfCard(d) +
     doneSectionCards(d) +
+    doneAcCard(d) +
     doneShortSampleCards(d) +
     (d.final
       ? '<div class="dcard"><div class="drow"><b>تأیید نهایی</b></div>' +
@@ -32221,13 +32290,7 @@ function itemStatusText(it, sec, r) {
   var signed = r.signs && r.signs[sec.id],
     s =
       RESULT_TEXT[it.r] ||
-      (sec.choice
-        ? signed
-          ? "انجام نشده"
-          : "بازدید نشده"
-        : it.r === "ok" || signed
-          ? "سالم"
-          : "بازدید نشده");
+      (sec.choice ? "انتخاب نشده" : it.r === "ok" || signed ? "سالم" : "بازدید نشده");
   if (!DEFECT_KINDS[it.r]) return s;
   return s + (it.closedAt ? " (بسته شد)" : " (باز)");
 }
