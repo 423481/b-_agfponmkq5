@@ -11814,7 +11814,7 @@ var SUPA_URL = "https://kdpmscvzavrdwwoprkfi.supabase.co",
 /* نشانی سرویس دیتابیس شرکت. خالی = همان Supabase (حالت فعلی)؛ پر = همهٔ خواندن/نوشتن به این سرویس می‌رود. */
 var API_URL = "";
 
-var APP_VER = "v167.133";
+var APP_VER = "v167.134";
 
 var AUTH_FN = "";
 
@@ -16679,7 +16679,7 @@ SHEETS.final1 = {
       id: "ac",
       name: "گاز کولر",
       choice: true,
-      items: ["تزریق گاز", "تزریق ازت", "نشتی"],
+      items: ["تزریق گاز کولر", "تزریق گاز ازت", "نشتی از اتصالات کولر"],
     },
   ],
 };
@@ -18718,7 +18718,7 @@ function acPage(d) {
     esc(ac.name) +
     '</b><span class="num">' +
     esc(d.key) +
-    '</span></div><p class="hint">هر کدام را که انجام شد بزنید تا سبز شود. برای برداشتن دوباره بزنید.</p><div class="items">' +
+    '</span></div><p class="hint">یکی از سه گزینه را انتخاب کنید تا به مرحله‌ی بعد بروید. «ازت» و «نشتی» را می‌شود با هم انتخاب کرد؛ «تزریق گاز کولر» با آن‌ها هم‌زمان نمی‌شود.</p><div class="items">' +
     visItems(d, ac)
       .map(function (x) {
         return itemRow(d, secItemId(ac, x.i), x.l, edit, false, x.p);
@@ -18728,9 +18728,30 @@ function acPage(d) {
   );
 }
 
+// خلاصه‌ی گزینه‌های انتخاب‌شده‌ی گاز کولر برای متن دکمه
+function acSummary(d) {
+  return [
+    [AC_GAS_ID, "تزریق گاز کولر"],
+    [AC_N2_ID, "ازت"],
+    [AC_LEAK_ID, "نشتی"],
+  ]
+    .filter(function (x) {
+      return acChosen(d, x[0]);
+    })
+    .map(function (x) {
+      return x[1];
+    })
+    .join(" + ");
+}
+
 function acButton(d) {
   if (d.sheet !== "final1" || S.itemsOpen || d.final) return "";
-  return '<button class="btn stepitemsbtn" data-act="acopen">گاز کولر ◀</button>';
+  var sum = acSummary(d);
+  return (
+    '<button class="btn stepitemsbtn" data-act="acopen">گاز کولر' +
+    (sum ? ": " + esc(sum) : "") +
+    " ◀</button>"
+  );
 }
 
 /* ── نمای فقط‌خواندنی ── */
@@ -19192,19 +19213,27 @@ function wizardStepBack(d) {
 /* ── تأیید نهایی ── */
 
 // تأیید نهایی بازدید؛ فقط وقتی همه‌ی بخش‌ها امضا شده باشد.
-// بندهای «گاز کولر» نهایی بالا که هنوز نه سالم و نه ایراد خورده‌اند
+// «گاز کولر» نهایی بالا: انتخاب یکی از سه گزینه کافی است
+var AC_GAS_ID = "ac-0"; // تزریق گاز کولر
+var AC_N2_ID = "ac-1"; // تزریق گاز ازت
+var AC_LEAK_ID = "ac-2"; // نشتی از اتصالات کولر (با توضیح محل نشتی)
+
+function acChosen(d, id) {
+  return !!(d.items && d.items[id] && d.items[id].r);
+}
+
+// تزریق گاز کولر با ازت و نشتی هم‌زمان انتخاب نمی‌شود؛ ازت و نشتی با هم ممکن است
+function acConflict(d, id) {
+  if (id === AC_GAS_ID) return acChosen(d, AC_N2_ID) || acChosen(d, AC_LEAK_ID);
+  return acChosen(d, AC_GAS_ID);
+}
+
 function acPending(d) {
-  var ac =
-    d.sheet === "final1" &&
-    secsOf(d.sheet, prodOf(d)).filter(function (x) {
-      return x.choice;
-    })[0];
   return (
-    !!ac &&
-    visItems(d, ac).some(function (x) {
-      var it = d.items && d.items[secItemId(ac, x.i)];
-      return !(it && it.r);
-    })
+    d.sheet === "final1" &&
+    !acChosen(d, AC_GAS_ID) &&
+    !acChosen(d, AC_N2_ID) &&
+    !acChosen(d, AC_LEAK_ID)
   );
 }
 
@@ -19224,7 +19253,7 @@ function gasConfirmBlock(d) {
 function confirmBlocker(d) {
   if (engineHold(d)) return engineGate(d);
   if (S.editing) return "یک ایراد در حال ثبت است؛ ابتدا «ثبت در پرونده» یا «انصراف» را بزنید";
-  if (acPending(d)) return "گاز کولر انجام نشده است؛ ابتدا بندهای «گاز کولر» را بزنید";
+  if (acPending(d)) return "گاز کولر انجام نشده است؛ یکی از سه گزینه‌ی «گاز کولر» را انتخاب کنید";
   return gasConfirmBlock(d);
 }
 
@@ -19278,6 +19307,11 @@ function afterFinalSaved(done, hasFinal) {
 function confirmFinal(d) {
   var block = confirmBlocker(d);
   if (block) {
+    if (acPending(d)) {
+      S.acOpen = true;
+      render();
+      window.scrollTo(0, 0);
+    }
     toast(block);
     return;
   }
@@ -20467,6 +20501,7 @@ function finalConfirmCard(d, chipsHtml) {
       ? faDigits(openCount) + " مورد باز در پرونده هست و همراه تأیید ثبت می‌شود."
       : "ایرادی ثبت نشده است.") +
     "</p>" +
+    acButton(d) +
     waitNote(d) +
     "</div>"
   );
@@ -20821,6 +20856,7 @@ function stepCard(d, edit) {
   if (!edit) return viewOnlyCard(d);
   if (S.acOpen && d.sheet === "final1" && !d.final) return acPage(d);
   var cur = stepSec(d, true);
+  if (!cur && !S.wizView && !d.final && acPending(d)) return acPage(d);
   if (engineNumberNeeded(d) && (S.wizView === "eng" || (!d.final && !cur && !S.wizView)))
     return stepBarOpen() + wizPickBar(d) + engineEntryCard() + "</div>";
   foldItemsOnStepChange(cur);
@@ -20838,31 +20874,71 @@ function stepCard(d, edit) {
 
 /* ── ردیف آیتم ── */
 
+// جعبه‌ی ثبت نشتی: نوشتن محل نشتی الزامی است
+function acLeakBox(id, it) {
+  return (
+    '<div class="editbox"><label class="f">نشتی از کدام اتصال کولر است؟ (الزامی)' +
+    '<textarea class="in" id="nt-' +
+    id +
+    '" placeholder="مثلاً: اتصال شلنگ کمپرسور، مهره‌ی کندانسور…">' +
+    esc(S.edDraft != null ? S.edDraft : it.note || "") +
+    "</textarea></label>" +
+    sugBox("nt-" + id) +
+    (S.editErr ? '<p class="err">' + esc(S.editErr) + "</p>" : "") +
+    '<div class="row"><button class="btn primary sm" data-act="savenote" data-id="' +
+    id +
+    '">ثبت در پرونده</button>' +
+    micBtn("nt-" + id) +
+    '<button class="btn sm" data-act="cancel">انصراف</button></div></div>'
+  );
+}
+
+// یک گزینه‌ی «گاز کولر»؛ off = قفل (بدون دسترسی یا در تضاد با گزینه‌ی انتخاب‌شده)
+function acItemRow(d, id, label, off, pc) {
+  var it = (d.items && d.items[id]) || {},
+    leak = id === AC_LEAK_ID,
+    on = leak ? it.r === "ng" : it.r === "done";
+  var btn = leak
+    ? '<button class="k-ng" data-act="mark" data-id="' +
+      id +
+      '" data-r="ng" aria-pressed="' +
+      on +
+      '"' +
+      (off || on ? " disabled" : "") +
+      ">" +
+      (on ? "✓ نشتی ثبت شد" : "ثبت نشتی") +
+      "</button>"
+    : '<button class="k-ok" data-act="toggle" data-id="' +
+      id +
+      '" aria-pressed="' +
+      on +
+      '"' +
+      (off ? " disabled" : "") +
+      ">" +
+      (on ? "✓ انجام شد" : "انجام شد") +
+      "</button>";
+  var h =
+    '<div class="it' +
+    pc +
+    (on ? (leak ? " ng" : " done") : "") +
+    '"><div class="top2"><span class="lb">' +
+    esc(label) +
+    '</span><div class="seg">' +
+    btn +
+    "</div></div>";
+  if (leak && S.editing === id) h += acLeakBox(id, it);
+  else if (leak && on) h += noteBlock(d, id, it, !off);
+  return h + "</div>";
+}
+
 // یک ردیف آیتم: دکمه‌ی سالم، ایراد، کسری و توضیح.
 function itemRow(d, id, label, edit, locked, p) {
   var it = (d.items && d.items[id]) || {},
     r = it.r || "";
   var dis = !edit || locked ? " disabled" : "";
   var pc = p ? (p.ts ? " ts-" + p.ts : "") + (p.is ? " is-" + p.is : "") : "";
-  if (id.indexOf("ac-") === 0 && d.sheet === "final1") {
-    return (
-      '<div class="it' +
-      pc +
-      " " +
-      (r === "done" ? "done" : "") +
-      '"><div class="top2"><span class="lb">' +
-      esc(label) +
-      '</span><div class="seg"><button class="k-ok" data-act="toggle" data-id="' +
-      id +
-      '" aria-pressed="' +
-      (r === "done") +
-      '"' +
-      dis +
-      ">" +
-      (r === "done" ? "✓ انجام شد" : "انجام شد") +
-      "</button></div></div></div>"
-    );
-  }
+  if (id.indexOf("ac-") === 0 && d.sheet === "final1")
+    return acItemRow(d, id, label, !edit || locked || acConflict(d, id), pc);
   var h =
     '<div class="it' +
     pc +
@@ -21633,6 +21709,10 @@ function itemMark_mark(ev, el, a, id, d) {
 function itemMark_toggle(ev, el, a, id, d) {
   var cur = (d.items && d.items[id] && d.items[id].r) || "",
     tm = {};
+  if (cur !== "done" && acConflict(d, id)) {
+    toast("این گزینه با گزینه‌ی انتخاب‌شده هم‌زمان نمی‌شود؛ ابتدا آن را بردارید");
+    return true;
+  }
   tm[id] = itemMark(cur === "done" ? "" : "done", "");
   writeItems(tm);
 
@@ -21679,7 +21759,11 @@ function itemMark_savenote(ev, el, a, id, d) {
   var note = picks.join("، ") + (picks.length && free ? " — " : "") + free;
   if (!note) {
     S.editErr =
-      S.editType === "ng" ? "نوع ایراد را انتخاب کنید یا توضیح بنویسید." : "شرح را بنویسید.";
+      id === AC_LEAK_ID
+        ? "محل نشتی را بنویسید."
+        : S.editType === "ng"
+          ? "نوع ایراد را انتخاب کنید یا توضیح بنویسید."
+          : "شرح را بنویسید.";
     render();
     return true;
   }
