@@ -4801,17 +4801,6 @@ body.scrolled .totop {
 .lgs .lgc form :is(.btn, .in) {
   min-height: var(--menu-tap);
 }
-.mgtop {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  flex-wrap: wrap;
-}
-.mgtop h1 {
-  margin: 0;
-  font-size: 20px;
-  flex: 1 1 auto;
-}
 .mgback {
   min-height: 40px;
   padding: 0 14px;
@@ -11551,6 +11540,259 @@ body:has(.mohr-cmd) .wrap {
   opacity: 1;
 }
 
+/* ════════════════════════════════════════════════════════════
+   فصل 17 — مدیریت: منوی ثابت بالا و ظاهر سرمه‌ای/طلایی
+   همرنگ داشبورد. منو همیشه بالای صفحه و در یک جاست؛ چیدمان با لمس گزینه‌ها جابه‌جا نمی‌شود.
+   ════════════════════════════════════════════════════════════ */
+
+.mgpage {
+  --mg-navy: #12293f;
+  --mg-navy-2: #1b3a5a;
+  --mg-gold: #e1b66d;
+  --mg-gold-ink: #2a1d05;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+/* ── نوار منو ── */
+
+.mgnav {
+  position: sticky;
+  top: 0;
+  z-index: 20;
+  display: flex;
+  gap: 6px;
+  padding: 8px;
+  border-radius: 16px;
+  background: var(--mg-navy);
+  box-shadow: 0 6px 16px -10px rgba(10, 20, 40, 0.7);
+  overflow-x: auto;
+  scrollbar-width: none;
+  -webkit-overflow-scrolling: touch;
+}
+.mgnav::-webkit-scrollbar {
+  display: none;
+}
+.mgnav-btn {
+  flex: 0 0 auto;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 44px;
+  padding: 0 14px;
+  border: 1px solid transparent;
+  border-radius: 12px;
+  background: transparent;
+  color: #cbd7e6;
+  font: inherit;
+  font-size: 14px;
+  font-weight: 700;
+  white-space: nowrap;
+  cursor: pointer;
+}
+.mgnav-btn .mgi {
+  width: 18px;
+  height: 18px;
+  padding: 0;
+  background: none;
+  color: inherit;
+}
+.mgnav-btn:hover {
+  background: var(--mg-navy-2);
+  color: #fff;
+}
+.mgnav-btn[aria-current="page"] {
+  background: var(--mg-gold);
+  border-color: var(--mg-gold);
+  color: var(--mg-gold-ink);
+}
+.mgnav-btn:focus-visible {
+  outline: 2px solid var(--mg-gold);
+  outline-offset: 2px;
+}
+
+/* ── زیرتب‌ها ── */
+
+.mgpage .mgseg {
+  background: var(--mg-navy-2);
+}
+.mgpage .mgseg button {
+  color: #cbd7e6;
+}
+.mgpage .mgseg button[aria-selected="true"] {
+  background: var(--mg-gold);
+  color: var(--mg-gold-ink);
+  box-shadow: none;
+}
+
+/* ── صفحه‌ی مرکز مدیریت ── */
+
+.mgpage .mghero {
+  background: var(--mg-navy);
+  border-bottom: 3px solid var(--mg-gold);
+}
+.mgpage .mgtile {
+  --tn: var(--mg-navy) !important;
+  border-color: var(--line);
+  border-bottom: 3px solid var(--mg-gold);
+  background: var(--surface);
+}
+.mgpage .mgtile .mgi {
+  background: var(--mg-navy);
+  color: var(--mg-gold);
+}
+.mgpage .mgtile:hover {
+  box-shadow: 0 8px 18px -12px rgba(18, 41, 63, 0.6);
+}
+
+@media (max-width: 899px) {
+  .mgnav {
+    margin-inline: -4px;
+  }
+  .mgnav-btn {
+    padding: 0 12px;
+  }
+}
+
+/* ════════════════════════════════════════════════════════════
+   فصل 18 — نوار اصلی برنامه (بازدید، گزارش، داشبورد، …) و رنگ بخش‌های مدیریت
+   یک قاعده برای همه‌ی صفحه‌ها: در گوشی نوار همیشه پایین و سرمه‌ای/طلایی است
+   (حتی در صفحه‌های «طراحی ایستگاه»)؛ در دسکتاپ گزینه‌ی انتخاب‌شده سرمه‌ای با نشان طلایی است.
+   ════════════════════════════════════════════════════════════ */
+
+:root {
+  --nav-navy: #12293f;
+  --nav-navy-2: #1b3a5a;
+  --nav-gold: #e1b66d;
+  --nav-gold-ink: #2a1d05;
+}
+
+/* ── دسکتاپ: گزینه‌ی انتخاب‌شده ── */
+
+.tabs.main .tab[aria-selected="true"],
+#app[data-ce-design]:not([data-ce-design=""]) .tabs.main > .tab[aria-selected="true"] {
+  background: var(--nav-navy);
+  border-color: var(--nav-navy);
+  color: var(--nav-gold);
+  box-shadow: inset 0 -3px var(--nav-gold);
+}
+#app[data-ce-design]:not([data-ce-design=""]) > .tabs.main > .tab[aria-selected="true"] {
+  box-shadow: inset -3px 0 var(--nav-gold);
+}
+
+/* ── گوشی: نوار پایین ثابت در همه‌ی صفحه‌ها ── */
+
+@media (max-width: 699px) {
+  .tabs.main,
+  #app[data-ce-design]:not([data-ce-design=""]) > .tabs.main {
+    position: fixed;
+    inset-inline: 0;
+    inset-block: auto 0;
+    z-index: 8;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    gap: 6px;
+    width: 100%;
+    margin: 0;
+    padding: 8px 10px calc(8px + env(safe-area-inset-bottom, 0px));
+    border: 0;
+    border-top: 2px solid var(--nav-gold);
+    border-radius: 0;
+    background: var(--nav-navy);
+    box-shadow: 0 -8px 20px rgba(10, 20, 40, 0.28);
+  }
+  .tabs.main .tab,
+  #app[data-ce-design]:not([data-ce-design=""]) .tabs.main > .tab {
+    flex: 1 1 0;
+    width: auto;
+    min-width: 0;
+    min-height: 48px;
+    padding: 0 4px;
+    justify-content: center;
+    border: 1px solid transparent;
+    border-radius: 12px;
+    background: transparent;
+    color: #cbd7e6;
+    font-size: 13px;
+    line-height: 1.25;
+    text-align: center;
+    box-shadow: none;
+  }
+  .tabs.main .tab[aria-selected="true"],
+  #app[data-ce-design]:not([data-ce-design=""]) .tabs.main > .tab[aria-selected="true"],
+  #app[data-ce-design]:not([data-ce-design=""]) > .tabs.main > .tab[aria-selected="true"] {
+    background: var(--nav-gold);
+    border-color: var(--nav-gold);
+    color: var(--nav-gold-ink);
+    box-shadow: none;
+  }
+  /* در گوشی گزینه‌های کم‌کاربرد زیر «بیشتر» می‌روند (استایل ایستگاه نمایششان را باز می‌کرد) */
+  #app[data-ce-design]:not([data-ce-design=""]) .tabs.main > .tab-x {
+    display: none;
+  }
+  #app[data-ce-design]:not([data-ce-design=""]) .tabs.main > .tab-more {
+    display: inline-flex;
+  }
+  /* برگه‌ی «بیشتر» هم مثل بقیه بالای نوار پایین باز می‌شود */
+  #app[data-ce-design]:not([data-ce-design=""]) .moresheet {
+    position: fixed;
+    inset-inline: 10px;
+    inset-block: auto calc(78px + env(safe-area-inset-bottom, 0px));
+    flex: none;
+    width: auto;
+    padding: 10px;
+    border-radius: 16px;
+    box-shadow: 0 10px 30px rgba(16, 24, 40, 0.25);
+  }
+  #app[data-ce-design]:not([data-ce-design=""]) {
+    padding-bottom: 92px;
+  }
+}
+
+/* ── رنگ همه‌ی بخش‌های مدیریت: سرمه‌ای/طلایی (کارت‌ها، دکمه‌ها، تیک‌ها) ── */
+
+.mgpage {
+  --stamp: #1b3a5a;
+  --stamp-soft: #e4ebf3;
+}
+.mgpage .card:not(.testbar) {
+  border-top: 3px solid var(--mg-gold);
+}
+.mgpage .card h2 {
+  color: var(--ink);
+}
+.mgpage .btn.primary {
+  background: var(--mg-navy);
+  border-color: var(--mg-navy);
+  color: var(--mg-gold);
+}
+.mgpage .btn.primary:hover {
+  background: var(--mg-navy-2);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) .mgpage {
+    --stamp: #e1b66d;
+    --stamp-soft: #2a3142;
+  }
+  :root:not([data-theme="light"]) .mgpage .btn.primary {
+    background: var(--mg-gold);
+    border-color: var(--mg-gold);
+    color: var(--mg-gold-ink);
+  }
+}
+:root[data-theme="dark"] .mgpage {
+  --stamp: #e1b66d;
+  --stamp-soft: #2a3142;
+}
+:root[data-theme="dark"] .mgpage .btn.primary {
+  background: var(--mg-gold);
+  border-color: var(--mg-gold);
+  color: var(--mg-gold-ink);
+}
+
 </style>
 </head>
 <body>
@@ -11572,7 +11814,7 @@ var SUPA_URL = "https://kdpmscvzavrdwwoprkfi.supabase.co",
 /* نشانی سرویس دیتابیس شرکت. خالی = همان Supabase (حالت فعلی)؛ پر = همهٔ خواندن/نوشتن به این سرویس می‌رود. */
 var API_URL = "";
 
-var APP_VER = "v167.131";
+var APP_VER = "v167.133";
 
 var AUTH_FN = "";
 
@@ -15762,7 +16004,9 @@ function render() {
     }
   }
   root
-    .querySelectorAll(".subtab[aria-selected=true],.tabs .tab[aria-selected=true]")
+    .querySelectorAll(
+      ".subtab[aria-selected=true],.tabs .tab[aria-selected=true],.mgnav [aria-current=page]",
+    )
     .forEach(function (t) {
       var b = t.getBoundingClientRect();
       if (t.scrollIntoView && b.top >= 0 && b.bottom <= window.innerHeight)
@@ -39494,39 +39738,76 @@ function mgCur() {
   return S.tab === "admin" ? S.adm || "" : S.tab;
 }
 
+// عنوان کوتاه گزینه‌ها در نوار منو (تا همه در یک ردیف جا شوند)
+var MG_NAV_LABEL = {
+  users: "کاربران",
+  list: "فهرست‌ها",
+  flask: "نمونه‌زنی",
+  sliders: "تنظیمات",
+  shield: "امنیت",
+  database: "داده‌ها",
+};
+
+// دکمه‌ی یک گزینه‌ی نوار منو: نشان + عنوان کوتاه
+function mgNavBtn(target, icon, label, selected) {
+  return (
+    '<button type="button" class="mgnav-btn" data-act="mg" data-t="' +
+    target +
+    '" aria-current="' +
+    (selected ? "page" : "false") +
+    '">' +
+    mgIcon(icon) +
+    "<span>" +
+    label +
+    "</span></button>"
+  );
+}
+
+// نوار منوی ثابت مدیریت: همیشه بالای صفحه و در همان جا؛ فقط گزینه‌ی انتخاب‌شده عوض می‌شود.
+function mgNav(cur) {
+  var items = [mgNavBtn("home", "bolt", "مرکز", !cur)];
+  MG_GROUPS.forEach(function (g) {
+    var on = g[3].some(function (p) {
+      return p[0] === cur;
+    });
+    items.push(mgNavBtn(g[3][0][0], g[0], MG_NAV_LABEL[g[0]], on));
+  });
+  MG_ADV.forEach(function (x) {
+    items.push(mgNavBtn(x[0], x[1], MG_NAV_LABEL[x[1]], x[0] === cur));
+  });
+  return '<nav class="mgnav" aria-label="منوی مدیریت">' + items.join("") + "</nav>";
+}
+
+// زیرتب‌های گروه فعلی (مثلاً کاربران / نقش‌ها)؛ برای گروه تک‌صفحه‌ای خالی است.
+function mgSubTabs(cur) {
+  var g = MG_GROUPS.filter(function (x) {
+    return x[3].some(function (p) {
+      return p[0] === cur;
+    });
+  })[0];
+  if (!g || g[3].length < 2) return "";
+  return (
+    '<div class="mgseg" role="tablist">' +
+    g[3]
+      .map(function (p) {
+        return (
+          '<button type="button" role="tab" data-act="mg" data-t="' +
+          p[0] +
+          '" aria-selected="' +
+          (p[0] === cur) +
+          '">' +
+          p[1] +
+          "</button>"
+        );
+      })
+      .join("") +
+    "</div>"
+  );
+}
+
 function mgmtBar() {
   var cur = mgCur();
-  if (!cur) return "";
-  var g = MG_GROUPS.filter(function (x) {
-      return x[3].some(function (p) {
-        return p[0] === cur;
-      });
-    })[0],
-    adv = MG_ADV.filter(function (x) {
-      return x[0] === cur;
-    })[0];
-  var h =
-    '<div class="mgtop"><button type="button" class="mgback" data-act="mg" data-t="home">→ مرکز مدیریت</button><h1>' +
-    esc(g ? g[1] : adv ? adv[2] : "") +
-    "</h1></div>";
-  if (g && g[3].length > 1)
-    h +=
-      '<div class="mgseg" role="tablist">' +
-      g[3]
-        .map(function (p) {
-          return (
-            '<button type="button" role="tab" data-act="mg" data-t="' +
-            p[0] +
-            '" aria-selected="' +
-            (p[0] === cur) +
-            '">' +
-            p[1] +
-            "</button>"
-          );
-        })
-        .join("") +
-      "</div>";
-  return h;
+  return mgNav(cur) + mgSubTabs(cur);
 }
 
 var MG_TONE = {
